@@ -130,3 +130,6 @@ dmypy.json
 
 #environment variables file
 *.env
+ 
+#testing files
+*testing.py
