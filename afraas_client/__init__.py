@@ -1,7 +1,7 @@
 from .Camera import *
 from .Project import *
 from .Recognizer import *
-from db import db
+# from db import db
 
 import mysql.connector
 import cv2 as cv

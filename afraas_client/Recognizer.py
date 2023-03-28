@@ -6,17 +6,17 @@ import os
 
 class Recognizer:
     def __init__(self, 
-                cascade=r"AFRAAS\resources\models\haar_face.xml", 
-                model=r"AFRAAS\resources\models\face_trained.yml"):
+                cascade=r"afraas_client\resources\models\haar_face.xml", 
+                model=r"afraas_client\resources\models\face_trained.yml"):
         self.pathToCascade = cascade
         self.pathToModel = model
-        self.pathToLabels = r"AFRAAS\resources\models\labels.npy"
-        self.pathToFeatures = r"AFRAAS\resources\models\features.npy"
+        self.pathToLabels = r"afraas_client\resources\models\labels.npy"
+        self.pathToFeatures = r"afraas_client\resources\models\features.npy"
         try:
             self.cascade = cv.CascadeClassifier(self.pathToCascade)
             self.model = cv.face.LBPHFaceRecognizer_create()
             self.model.read(model)
-
+            
             l = np.load(self.pathToLabels)
             self.labels = l.tolist()
 
@@ -27,7 +27,7 @@ class Recognizer:
             message = "haar cascade or model is not found on the path provided"
             raise Exception(message)
         
-        self.DIR = r'AFRAAS\resources\database\persons'
+        self.DIR = r'afraas_client\resources\database\persons'
         self.people = []
 
         for i in os.listdir(self.DIR):

@@ -42,18 +42,18 @@ class db:
     def doesExist(self, user_id):
 
         pass
-    def getUserId(self, name):
-        cursor = self.conn.cursor()
-        cursor.execute(f'''
-            SELECT user_id from Users where name like '{name}' ''')
+    # def getUserId(self, name):
+    #     cursor = self.conn.cursor()
+    #     cursor.execute(f'''
+    #         SELECT user_id from Users where name like '{name}' ''')
         
-        res = cursor.fetchall()
-        if 
+    #     res = cursor.fetchall()
+    #     if 
 
-        if res == None:
-            return -1
-        else:
-            return res[0]
+    #     if res == None:
+    #         return -1
+    #     else:
+    #         return res[0]
 
 
     def addNewDept(self, dept_name):
