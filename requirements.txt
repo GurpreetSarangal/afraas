@@ -1,6 +1,7 @@
 asgiref==3.6.0
 Django==4.1.7
 mysql-connector-python==8.0.32
+mysqlclient==2.1.1
 numpy==1.24.2
 opencv-contrib-python==4.7.0.72
 protobuf==3.20.3
