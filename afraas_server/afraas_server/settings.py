@@ -41,9 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'admin',
-    'staff',
-    'user',
+    'admin.apps.AdminConfig',
+    'staff.apps.StaffConfig',
+    'user.apps.UserConfig',
+    'reports.apps.ReportsConfig',
 ]
 
 MIDDLEWARE = [
@@ -131,6 +132,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+STATICFILES_DIRS = [
+   os.path.join(BASE_DIR, 'admin/static/'),
+   os.path.join(BASE_DIR, 'staff/static/'),
+   os.path.join(BASE_DIR, 'user/static/'),
+   os.path.join(BASE_DIR, 'reports/static/'),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

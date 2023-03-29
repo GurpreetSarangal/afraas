@@ -1,7 +1,8 @@
+from django.shortcuts import render
 from django.http import HttpResponse
 
 def landingPage(request):
-    return HttpResponse("this is landing page")
+    return render(request, "main/landing_page.html")
 
 def login(response):
     return HttpResponse("this is login page")
@@ -18,7 +19,7 @@ def credits(response):
 def contact_us(response):
     return HttpResponse("this is contact us page")
 
-def credits(response):
+def report_issue(response):
     return HttpResponse("this is report issue page")
 
 def about_us(response):

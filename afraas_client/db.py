@@ -107,6 +107,7 @@ class db:
             CREATE TABLE Shifts(
                 shift_id int,
                 time_in TIME, 
+                time_out TIME,
                 PRIMARY KEY(shift_id)
             ); ''')
         except:
