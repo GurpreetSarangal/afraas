@@ -1,0 +1,8 @@
+{
+    "python.autoComplete.extraPaths": [
+    
+    ],
+    "python.envFile": "${workspaceFolder}/.venv",
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.analysis.extraPaths": []
+}

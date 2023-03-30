@@ -19,6 +19,7 @@ dotenv.load_dotenv(r"user.env")
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -41,10 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'admin.apps.AdminConfig',
-    'staff.apps.StaffConfig',
-    'user.apps.UserConfig',
-    'reports.apps.ReportsConfig',
+    'admin',
+    'staff',
+    'user',
+    'reports',
+    'intro',
 ]
 
 MIDDLEWARE = [
@@ -62,7 +64,7 @@ ROOT_URLCONF = 'afraas_server.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(SETTINGS_PATH, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -136,10 +138,11 @@ STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_DIRS = [
-   os.path.join(BASE_DIR, 'admin/static/'),
-   os.path.join(BASE_DIR, 'staff/static/'),
-   os.path.join(BASE_DIR, 'user/static/'),
-   os.path.join(BASE_DIR, 'reports/static/'),
+   os.path.join(BASE_DIR, r'intro\static'),
+   os.path.join(BASE_DIR, r'admin\static'),
+   os.path.join(BASE_DIR, r'staff\static'),
+   os.path.join(BASE_DIR, r'user\static'),
+   os.path.join(BASE_DIR, r'reports\static'),
 ]
 
 # Default primary key field type
