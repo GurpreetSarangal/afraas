@@ -1,11 +1,135 @@
 {% extends 'intro/base.html' %}
 
-{% block form %}
-    <form action="" method="post">
-        {% csrf_token %}
-        <input type="text" name="old_password">
-        <input type="text" name="new_password">
-        <input type="text" name="confirm_password">
-        <button type="submit">submit</button>
-    </form>
-{% endblock form %}
+
+{% block container %} 
+
+
+
+
+<div class="container p-6 min-w-full">
+  <div class="flex items-center ">
+    <div class="self-start mt-1  ">
+        <img
+          class="w-16 h-12 self-start"
+          src="https://storage.googleapis.com/mixo-files/logos/faceCheck-1680424301859.svg"
+          alt="FaceCheck logo"
+        />
+    </div>
+    <div>
+        <div class="mx-3">
+            <p class="font-sans font-bold text-gray-900 text-3xl">AFRAAS</p>
+            <p class="font-sans w-72 text-gray-500 text-m">Automatic Face Recognition Attendance and Security System</p>
+    
+        </div>
+    </div>
+    <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+        <div class="text-m flex lg:flex-grow justify-end pr-16">
+          <a
+            href="{% url 'help' %}"
+            class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-black-900 mr-4"
+          >
+            Help
+          </a>
+          <a
+            href="{% url 'contact-us' %}"
+            class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-black-900 mr-4"
+          >
+            Contact
+          </a>
+          <a
+            href="{% url 'about-us' %}"
+            class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-black-900 mr-4"
+          >
+            About
+          </a>
+          <!-- <a
+            href="{% url 'report-issue' %}"
+            class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-black-900 mr-4"
+          >
+            Report Issue
+          </a>
+          <a
+            href="{% url 'developer-support' %}"
+            class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-black-900 mr-4"
+          >
+            Developer Support
+          </a> -->
+        </div>
+        
+      </div>
+  </div>
+  <div class="mt-10 flex flex-row lg:flex-nowrap flex-wrap">
+      
+    <div class="m-2 self-center w-1/2">
+        <img class="" src="../../static/pictures/landing-page.jpg" alt="" srcset="">
+    </div>
+    
+    <div class="mt-6 w-1/2 sm:max-w-xl flex-auto">
+        <div>
+            <h1
+                class="text-4xl font-black tracking-tight text-gray-900 sm:text-6xl md:text-7xl"
+            >
+                Streamline Your Attendance and Security Management<span
+                class="text-primary"
+                >.</span
+                >
+            </h1>
+            <h2 class="mt-6 text-lg text-gray-500 sm:text-xl">
+                Our innovative face recognition technology ensures accurate attendance
+                and secure premise access.
+            </h2>
+        </div>
+        <div class="self-end mt-2 ">
+            <a
+            href="{% url 'login' %}"
+            class="inline-block bg-gray-500 text-l px-12 py-4 leading-none border rounded text-white border-white hover:border-transparent duration-200 hover:text-gray-900 hover:bg-gray-100 mt-4 lg:mt-0"
+            >Login</a>
+        </div>
+    </div>
+    
+  </div>
+  <div class="flex min-h-96 mt-8 bg-gray-100 p-6  w-full">
+
+    <div class="flex flex-row flex-wrap w-1/2 ">
+
+        <div class="w-auto mx-8">
+            <a
+                href="{% url 'developer-support' %}"
+                class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-black-900 mr-4"
+              >
+                Developer Support
+              </a>
+        </div>
+        <div class="w-auto mx-8">
+            <a
+                href="{% url 'about-us' %}"
+                class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-black-900 mr-4"
+              >
+                About Us
+              </a>
+        </div>
+        <div class="w-auto mx-8">
+            <a
+                href="{% url 'report-issue' %}"
+                class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-black-900 mr-4"
+              >
+                Report Issue
+              </a>
+        </div>
+        <div class="w-auto mx-8">
+            <a
+                href="{% url 'credits' %}"
+                class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-black-900 mr-4"
+              >
+                Credits
+              </a>
+        </div>
+    </div>
+    <div class="self-center ml-auto">
+        <span class="mt-6 text-md text-gray-500 sm:text-x">
+            &copy; 2023. All rights reserved.
+        </span>
+    </div>
+  </div>
+</div>
+{% endblock container %}

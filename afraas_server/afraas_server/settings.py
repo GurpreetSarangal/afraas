@@ -14,7 +14,10 @@ from pathlib import Path
 import dotenv
 import os
 
-dotenv.load_dotenv(r"user.env")
+dotenv.load_dotenv(str(Path(__file__).resolve().parent)+r'\static\user.env')
+# print(str(Path(__file__).resolve().parent)+r'\static\user.env')
+# print(os.getenv('AFRAAS_USER'))
+# print(os.getenv('AFRAAS_PASSWORD'))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -91,8 +94,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'afraas',
-        'USER': "gurpreet_sarangal",
-        'PASSWORD': 'Gs17032003',
+        'USER': os.getenv('AFRAAS_USER'),
+        'PASSWORD': os.getenv('AFRAAS_PASSWORD'),
         'HOST':'localhost',
         'PORT':'3306',
     }
