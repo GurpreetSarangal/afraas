@@ -7,23 +7,26 @@ def landingPage(request):
     }
     return render(request, "intro/landing_page.html", context)
 
-def login(response):
-    return HttpResponse("this is login page")
+def login(request):
+    context={
+        "title": "Login | AFRAAS"
+    }
+    return render(request, "intro/login.html", context)
 
-def help(response):
+def help(request):
     return HttpResponse("this is help page")
 
-def developer_support(response):
+def developer_support(request):
     return HttpResponse("this is developer support page")
 
-def credits(response):
+def credits(request):
     return HttpResponse("this is credits page")
 
-def contact_us(response):
+def contact_us(request):
     return HttpResponse("this is contact us page")
 
-def report_issue(response):
+def report_issue(request):
     return HttpResponse("this is report issue page")
 
-def about_us(response):
+def about_us(request):
     return HttpResponse("this is about us page")
