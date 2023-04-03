@@ -14,8 +14,8 @@ from pathlib import Path
 import dotenv
 import os
 
-dotenv.load_dotenv(str(Path(__file__).resolve().parent)+r'\static\user.env')
-# print(str(Path(__file__).resolve().parent)+r'\static\user.env')
+dotenv.load_dotenv(str(Path(__file__).resolve().parent)+r'\user.env')
+# print(str(Path(__file__).resolve().parent)+r'\user.env')
 # print(os.getenv('AFRAAS_USER'))
 # print(os.getenv('AFRAAS_PASSWORD'))
 
