@@ -14,7 +14,7 @@ from pathlib import Path
 import dotenv
 import os
 
-dotenv.load_dotenv(str(Path(__file__).resolve().parent)+r'\user.env')
+dotenv.load_dotenv(str(Path(__file__).resolve().parent)+r'\static\user.env')
 # print(str(Path(__file__).resolve().parent)+r'\user.env')
 # print(os.getenv('AFRAAS_USER'))
 # print(os.getenv('AFRAAS_PASSWORD'))
@@ -28,7 +28,7 @@ SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-xtr$^k8woi)px9hg)mtoz7d=($0=%7kec7bfj0rm7bl+26nl7a'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -39,13 +39,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'admin',
+    'myadmin',
     'staff',
     'user',
     'reports',
@@ -55,6 +55,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -63,6 +64,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'afraas_server.urls'
+
+AUTH_USER_MODEL = 'user.User'
 
 TEMPLATES = [
     {
@@ -81,6 +84,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'afraas_server.wsgi.application'
+
+# CORS_ORIGIN_WHITELIST = [
+#     'http://127.0.0.1:8000',
+# ]
 
 
 # Database
@@ -142,7 +149,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_DIRS = [
    os.path.join(BASE_DIR, r'intro\static'),
-   os.path.join(BASE_DIR, r'admin\static'),
+#    os.path.join(BASE_DIR, r'admin\static'),
    os.path.join(BASE_DIR, r'staff\static'),
    os.path.join(BASE_DIR, r'user\static'),
    os.path.join(BASE_DIR, r'reports\static'),

@@ -1,4 +1,4 @@
-<div class="flex items-center space-x-2 text-white mr-6">
+{% comment %} <div class="flex items-center space-x-2  mr-6">
     <img
       class="w-auto h-8"
       src="https://storage.googleapis.com/mixo-files/logos/faceCheck-1680424301859.svg"
@@ -6,23 +6,7 @@
     />
     <p class="font-semibold text-xl tracking-tight">AFRAAS</p>
   </div>
-  <div class="block lg:hidden">
-    <button
-      class="flex items-center px-3 py-2 border rounded text-blue-200 border-blue-400 hover:text-white hover:border-white"
-    >
-      <svg
-        class="h-3 w-3"
-        viewBox="0 0 20 20"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <title>Menu</title>
-        <path
-          fill="currentColor"
-          d="M0 3a3 3 0 013-3h14a3 3 0 110 6H3a3 3 0 01-3-3zM17 9a3 3 0 11-6 0 3 3 0 016 0zm-6 6a3 3 0 100-6 3 3 0 000 6z"
-        />
-      </svg>
-    </button>
-  </div>
+  
   <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
     <div class="text-sm lg:flex-grow">
       <a
@@ -177,4 +161,56 @@
     >
   </div>
 </nav>
-{% endcomment %}
+{% endcomment %} 
+
+<div class="flex items-center relative z-20">
+  <div class="self-start mt-1 z-20 ">
+      <img
+        class="w-auto h-12 z-20 self-start"
+        src="../../static/pictures/logo.png"
+        alt="FaceCheck logo"
+      />
+  </div>
+  <div>
+      <div class="mx-3 z-20">
+          <p class="font-sans relative font-bold text-gray-900 text-3xl z-20">AFRAAS</p>
+          <p class="font-sans relative z-20 w-72 text-gray-500 text-m">Automatic Face Recognition Attendance and Security System</p>
+  
+      </div>
+  </div>
+  <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+      <div class="text-m flex lg:flex-grow justify-end pr-16">
+        <a
+          href="{% url 'help' %}"
+          class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-black-900 mr-4"
+        >
+          Help
+        </a>
+        <a
+          href="{% url 'contact-us' %}"
+          class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-black-900 mr-4"
+        >
+          Contact
+        </a>
+        <a
+          href="{% url 'about-us' %}"
+          class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-black-900 mr-4"
+        >
+          About
+        </a>
+        <!-- <a
+          href="{% url 'report-issue' %}"
+          class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-black-900 mr-4"
+        >
+          Report Issue
+        </a>
+        <a
+          href="{% url 'developer-support' %}"
+          class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-black-900 mr-4"
+        >
+          Developer Support
+        </a> -->
+      </div>
+      
+    </div>
+</div>

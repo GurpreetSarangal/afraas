@@ -1,4 +1,5 @@
 <!doctype html>
+{% load static %}
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -8,18 +9,17 @@
     <script src="https://kit.fontawesome.com/17951cbad8.js" crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <link rel="stylesheet" href="../static/css/{{ css }}">
-    <link rel="shortcut icon" href="../../static/pictures/edited-logo.png" type="image/x-icon">  
+    {% block css %}{% endblock css %}
+    <link rel="shortcut icon" href="{% static 'intro\pictures\edited-logo.png' %}" type="image/x-icon">  
     <title>{{title}}</title>
   </head>
-  <body class="m-0 p-0  w-screen ">
-
+  <body>
     {% block container %}{% endblock container %}
 
     
 
-    <script src="../../static/js/jquery-3.6.0.min.js"></script>
-    <script src="../../static/js/jquery.validate.js"></script>
+    <script src="{% static 'intro\scripts\jquery-3.6.4.min.js' %}"></script>
+    <script src="{% static 'intro\scripts\jquery.validate.min.js' %}"></script>
     {% block javascript %}{% endblock javascript %}
   </body>
 </html>

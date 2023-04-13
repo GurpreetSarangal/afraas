@@ -1,5 +1,5 @@
 {% extends 'intro/base.html' %}
-
+{% load static %}
 
 {% block container %} 
 
@@ -11,7 +11,7 @@
     <div class="self-start mt-1  ">
         <img
           class="w-auto h-12 self-start"
-          src="../../static/pictures/logo.png"
+          src="../../static/intro/pictures/logo.png"
           alt="FaceCheck logo"
         />
     </div>
@@ -58,13 +58,13 @@
         
       </div>
   </div>
-  <div class="mt-10 flex flex-row lg:flex-nowrap flex-wrap">
+  <div class="mt-8 flex flex-row lg:flex-nowrap flex-wrap">
       
-    <div class="m-2 self-center w-1/2">
-        <img class="" src="../../static/pictures/landing-page.jpg" alt="" srcset="">
+    <div class="m-2 self-start w-1/2">
+        <img class="" src="../../static/intro/pictures/landing-page.jpg" alt="" srcset="">
     </div>
     
-    <div class="mt-6 w-1/2 sm:max-w-xl flex-auto">
+    <div class="mt-4 w-1/2 sm:max-w-xl flex-auto">
         <div>
             <h1
                 class="text-4xl font-black tracking-tight text-gray-900 sm:text-6xl md:text-7xl"
@@ -79,12 +79,39 @@
                 and secure premise access.
             </h2>
         </div>
-        <div class="self-end mt-2 ">
-            <a
-            href="{% url 'login' %}"
-            class="inline-block bg-gray-500 text-l px-12 py-4 leading-none border rounded text-white border-white hover:border-transparent duration-200 hover:text-gray-900 hover:bg-gray-100 mt-4 lg:mt-0"
-            >Login</a>
-        </div>
+        <div class="self-end mt-2">
+          <form id="login-form" method="post" class=" hidden duration-300">
+            {% csrf_token %}
+            <div class="">
+              <div class="w-full mt-6">
+                <input type="email" class=" w-3/4 rounded-md border p-3 bg-gray-100" name="email" placeholder="yourmail@example.com">
+              </div>
+  
+              <div class=" mt-6 ">
+                <input type="password" name="password" class="w-3/4 rounded-md border p-3  bg-gray-100" placeholder="**********">
+              </div>
+
+            </div>
+
+            <div class="flex justify-start items-center mt-2 ">
+              
+              <span class="mr-2 w-6 arrow duration-100 no-underline overflow-hidden text-center p-1 ">&#10229;</span>
+              <div class=" mt-2 hide-login cursor-pointer text-lg mr-2 hover:underline duration-100 p-1 mr-1">Back
+              </div>
+              <div class="mt-2 ml-2 ">
+                <button type="submit" class="inline-block bg-gray-100 text-md px-12 py-4 leading-none border rounded text-gray-900 border-gray-500 hover:border-transparent duration-300 hover:text-white hover:bg-gray-700 mt-4 lg:mt-0 overflow-hidden"
+              >Login<span class="ml-2 w-0 overflow-hidden ">&#10230;</span></button>
+              </div>
+            </div>
+            
+          </form>
+          <div class="self-end mt-28 show-login">
+            <p
+            
+            class="inline-block bg-gray-100 text-md px-12 py-4 leading-none border rounded text-gray-900 border-gray-500 hover:border-transparent duration-300 hover:text-white hover:bg-gray-700 mt-4 lg:mt-0 overflow-hidden"
+          >Login</p>
+          </div>
+      </div>
     </div>
     
   </div>
@@ -133,3 +160,7 @@
   </div>
 </div>
 {% endblock container %}
+
+{% block javascript %}
+<script src=" {% static 'intro\scripts\landing_page.js' %} "></script>
+{% endblock javascript %}

@@ -4,9 +4,9 @@ from . import views
 
 
 urlpatterns = [
-    # path('django-admin/', admin.site.urls),
+    
     path("", views.landingPage, name="home"),
-    path("login/", views.login, name="login"),
+    path("login/", views._login, name="login"),
     path("help/", views.help, name="help"),
     path("developer-support/", views.developer_support, name="developer-support"),
     path("credits/", views.credits, name="credits"),
