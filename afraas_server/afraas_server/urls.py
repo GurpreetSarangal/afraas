@@ -21,8 +21,9 @@ from . import views
 
 urlpatterns = [
     path("", include("intro.urls")),
-    path('django-admin/', admin.site.urls),
-    path("admin/", include("myadmin.urls", namespace="myadmin"), name="myadmin"),
+    path('django-admin/', admin.site.urls, name="django-admin "),
+    path("myadmin/", include("myadmin.urls", namespace="myadmin"), name="myadmin"),
     path("staff/", include("staff.urls", namespace="staff"), name="staff"),
     path("user/", include("user.urls", namespace="user"), name="user"),
+    path("api/", include("reports.urls", namespace="reports")),
 ]

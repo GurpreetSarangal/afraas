@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.contrib.auth import  login
+from django.contrib.auth import  login, logout
 from django.http import JsonResponse
 from django.urls import reverse
 from django.shortcuts import redirect
@@ -12,10 +12,21 @@ def landingPage(request):
     context={
         "title": "Welcome | AFRAAS"
     }
+    curr_user = request.user
+    
+    if curr_user.is_superuser:
+        redirect( reverse('myadmin:dashboard'))
+            
+    elif curr_user.is_staff:
+        redirect( reverse('staff:dashboard'))
+
+    elif curr_user:
+        redirect( reverse('user:dashboard'))
     
     return render(request, "intro/landing_page.html", context)
 
 def _login(request):
+
     if request.method == 'POST':
         email = request.POST['email']
         # print(email)
@@ -41,6 +52,11 @@ def _login(request):
         else:
             print("invalid")
             return JsonResponse({'success': False, 'error': 'Invalid credentials'})
+
+
+def _logout(request):
+    logout(request)
+    return redirect("home")
 
 def help(request):
     return HttpResponse("this is help page")

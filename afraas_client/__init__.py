@@ -1,6 +1,9 @@
 from .Camera import *
 from .Project import *
 from .Recognizer import *
+import requests
+import datetime
+
 # from db import db
 
 import mysql.connector
@@ -64,12 +67,33 @@ def boot():
 
 def mark_attendance(label):
     print(label)
+    url = "http://localhost:8000/api/mark/"
+    now = datetime.datetime.now()
 
-def addNewFace(name):
+    data = {
+        "label": label, 
+        "time-stamp": now,
+        "status": "enter"
+    }
+
+    response = requests.post(url, data=data)
+    print(response.text)
+
+def addNewFace(id, name):
+    url = "http://localhost:8000/api/check_registered/"
+    data = {
+        "id" : id,
+    }
+    response = requests.post(url, data=data)
+    print(response.text)
+    if (response.text == "rejected"):
+        return
+    
+
     camera, rec = startUp()
     # db_conn = db()
     
-    camera.addNewFace(name.lower())
+    camera.addNewFace(str(id)+"|"+response.text)
 
 def removeFace(name):
     camera, rec = startUp()
