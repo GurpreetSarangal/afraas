@@ -10,9 +10,9 @@ class Camera:
     def __init__(self, cam):
         self.AllModes = [(0, cv.CAP_DSHOW), (1, None)]
         self.SelectedMode = self.AllModes[cam]
-        self.pathToCascade = r"AFRAAS\resources\models\haar_face.xml"
-        self.pathToRecognizer = r"AFRAAS\resources\models\face_trained.yml"
-        self.pathToDatabase = r"AFRAAS\resources\database\persons"
+        self.pathToCascade = r"afraas_client\resources\models\haar_face.xml"
+        self.pathToRecognizer = r"afraas_client\resources\models\face_trained.yml"
+        self.pathToDatabase = r"afraas_client\resources\database\persons"
         if cam==1:
             self.capture = cv.VideoCapture(self.SelectedMode[0])
         else:
@@ -78,9 +78,9 @@ class Camera:
             while True:
                 # print(threshold)
                 if threshold >= 100:
-                    message = "Person is not in frame"
-                    raise Exception(message)
-                    # break
+                    # message = "Person is not in frame"
+                    # raise Exception(message)
+                    print("not in frame")
                 
                 frame = self.getFrame()
                 if frame == []:
@@ -93,6 +93,7 @@ class Camera:
                 
 
                 if(face == [] ):
+                    print("not in frame")
                     if threshold >= 0:
                         threshold += 1
                     
