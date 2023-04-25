@@ -78,9 +78,9 @@ class Camera:
             while True:
                 # print(threshold)
                 if threshold >= 100:
-                    # message = "Person is not in frame"
-                    # raise Exception(message)
-                    print("not in frame")
+                    message = "Person is not in frame"
+                    raise Exception(message)
+                    # print("not in frame")
                 
                 frame = self.getFrame()
                 if frame == []:
@@ -93,7 +93,7 @@ class Camera:
                 
 
                 if(face == [] ):
-                    print("not in frame")
+                    # print("not in frame")
                     if threshold >= 0:
                         threshold += 1
                     
