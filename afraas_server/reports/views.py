@@ -23,7 +23,7 @@ def mark(request):
         now = datetime.datetime.now()
 
         label = label.split('_')[1]
-        label = label.split('|')
+        
 
         
   

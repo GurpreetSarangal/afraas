@@ -3,6 +3,7 @@ from .Project import *
 from .Recognizer import *
 import requests
 import datetime
+import json
 
 # from db import db
 
@@ -73,27 +74,37 @@ def mark_attendance(label):
     data = {
         "label": label, 
         "time-stamp": now,
-        "status": "enter"
+        "status": "exit"
     }
-
     response = requests.post(url, data=data)
-    print(response.text)
+    json_data = response.text
+    data = json.loads(json_data)
+    if data["error"] != "":
+        print("ERROR: ",data["error"])
+    
+    else:
+        print("User [",label,"] is marked present")
 
 def addNewFace(id, name):
     url = "http://localhost:8000/api/check_registered/"
     data = {
         "id" : id,
     }
+    # response = requests.post(url, data=data)
+    # print(response.text)
     response = requests.post(url, data=data)
-    print(response.text)
-    if (response.text == "rejected"):
+    json_data = response.text
+    data = json.loads(json_data)
+    if data["error"] != "":
+        print(data["error"])
         return
+        
     
 
     camera, rec = startUp()
     # db_conn = db()
     
-    camera.addNewFace(str(id)+"|"+response.text)
+    camera.addNewFace(str(id)+"_"+data["content"])
 
 def removeFace(name):
     camera, rec = startUp()
