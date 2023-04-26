@@ -13,15 +13,14 @@ def landingPage(request):
         "title": "Welcome | AFRAAS"
     }
     curr_user = request.user
-    
-    if curr_user.is_superuser:
-        redirect( reverse('myadmin:dashboard'))
-            
-    elif curr_user.is_staff:
-        redirect( reverse('staff:dashboard'))
+    print(curr_user)
 
-    elif curr_user:
-        redirect( reverse('user:dashboard'))
+            
+    if curr_user.is_staff:
+        return redirect( reverse('staff:dashboard'))
+
+    elif curr_user.is_authenticated:
+        return redirect( reverse('user:dashboard'))
     
     return render(request, "intro/landing_page.html", context)
 
@@ -41,7 +40,7 @@ def _login(request):
             # print("valid")
             # print(user)
             if user.is_superuser:
-                next = reverse('myadmin:dashboard')
+                next = "django-admin/"
             
             elif user.is_staff:
                 next = reverse('staff:dashboard')
@@ -55,7 +54,8 @@ def _login(request):
 
 
 def _logout(request):
-    logout(request)
+    if request.user:
+        logout(request)
     return redirect("home")
 
 def help(request):
