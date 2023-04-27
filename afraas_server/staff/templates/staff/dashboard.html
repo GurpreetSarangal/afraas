@@ -1,26 +1,102 @@
 {% extends 'staff/base.html' %}
 {% load static %}
 
+{% block css %}
+<link rel="stylesheet" href=" {% static 'staff\css\dashboard.css' %} ">
+
+<style>
+
+   @keyframes animtoday {
+      100%{
+            
+         stroke-dashoffset:{{ attendance_today_meter }};
+      }
+   }
+   @keyframes animyest {
+      100%{
+            
+         stroke-dashoffset:{{ attendance_yest_meter }};
+      }
+   }
+
+</style>
+{% endblock css %}
 
 {% block container %}
 {% include 'staff/sidebar.html' %}
 
 <div class="p-4 sm:ml-64" style="width: 50rem;">
     <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+      <div class="flex justify-start flex-col h-40 mb-4 rounded bg-gray-50 dark:bg-gray-800 flex-wrap ">
+         <div class="text-4xl text-gray-100 my-3 mx-2">
+            Dashboard
+         </div>
+         <div class="text-base text-gray-400 dark:text-gray-500  mx-2">
+            Hello, {{ user.name }}, Welcome to AFRAAS
+         </div>
+      </div>
        <div class="grid grid-cols-3 gap-4 mb-4">
-          <div class="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
-             <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
+          <div class="flex items-center justify-around h-24 rounded bg-gray-50 dark:bg-gray-800">
+            <div class="heading text-lg text-gray-100 w-24">
+               Today's Attendance 
+               <span class="text-gray-300 text-xs">
+                  {{ total_present }}/{{ total_users }}
+               </span>
+            </div>
+
+            <div class="meter">
+               <div class="outer">
+                 <div class="inner">
+                     <div id="number">
+                        {{ attendance_today_percent }}%
+                     </div>
+                 </div>
+               </div>
+               
+               <svg class="meter-svg" xmlns="http://www.w3.org/2000/svg" version="1.1" width="80px" height="80px">
+                  <defs>
+                     <linearGradient id="GradientColor">
+                        <stop offset="0%" stop-color="#e91e63" />
+                        <stop offset="100%" stop-color="#673ab7" />
+                     </linearGradient>
+                  </defs>
+                  <circle class="circle-today" cx="40" cy="40" r="30" stroke-linecap="round" />
+          </svg>
+            </div>
           </div>
           <div class="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
-             <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
+            <div class="heading text-lg text-gray-100 w-24">
+               Yesterday's Attendance 
+               <span class="text-gray-300 text-xs">
+                  {{ yest_present }}/{{ yest_users }}
+               </span>
+            </div>
+
+            <div class="meter">
+               <div class="outer">
+                 <div class="inner">
+                     <div id="number">
+                        {{ attendance_yest_percent }}%
+                     </div>
+                 </div>
+               </div>
+               
+               <svg class="meter-svg" xmlns="http://www.w3.org/2000/svg" version="1.1" width="80px" height="80px">
+                  <defs>
+                     <linearGradient id="GradientColor">
+                        <stop offset="0%" stop-color="#e91e63" />
+                        <stop offset="100%" stop-color="#673ab7" />
+                     </linearGradient>
+                  </defs>
+                  <circle class="circle-yest" cx="40" cy="40" r="30" stroke-linecap="round" />
+          </svg>
+            </div>
           </div>
           <div class="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
              <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
           </div>
        </div>
-       <div class="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800">
-          <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
-       </div>
+       
        <div class="grid grid-cols-2 gap-4 mb-4">
           <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
              <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
@@ -68,17 +144,18 @@
                     Staff 
                 {% endif %} </span>
      </a>
-       <ul class="space-y-1 font-medium">
+       <ul class="space-y-1 font-medium absentees">
           
           <li>
             
-             <a href=" {% url 'staff:dashboard' %} " class="flex items-center p-2 rounded-lg text-2xl    
-             
-             text-gray-900 dark:text-white 
+             <a href="#" class="flex items-center  p-2 rounded-lg text-2xl   justify-between 
+             reload-absent
+             text-gray-900 dark:text-white group
             
              ">
               
-                <span class="ml-3">Recent Absents</span>
+                <span class="ml-3 mt-1">Recent Absents</span>
+                  <i class="fi text-gray-400 transition-transform duration-200 fi-rs-refresh text-lg mr-2 mt-2 group-hover:text-gray-100"></i>
              </a>
           </li>
           {% if absentees|length > 0 %}
@@ -90,7 +167,7 @@
             ">
                <i class="ml-2 fi fi-rs-delete-user text-2xl"></i>
                <div class="flex justify-center flex-col">
-                   <span class="flex-1 ml-3 whitespace-nowrap text-sm">{{obj.name}}</span>
+                   <span class="flex-1 ml-3 whitespace-nowrap text-sm">#{{obj.id}} {{obj.name}}</span>
                    <span class="flex-1 ml-3 whitespace-nowrap text-xs">{{ obj.time_and_date}}</span>
 
                </div>
@@ -103,7 +180,7 @@
           {% else %}
 
           <li>
-             <a href="{% url 'staff:users' %}" class="flex items-center p-1  rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+             <a href="{% url 'staff:attendance' %}" class="flex items-center p-1  rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
              text-gray-900 dark:text-white    
              ">
                 <i class="ml-2 fi fi-rs-delete-user text-2xl"></i>
@@ -118,16 +195,17 @@
           
             
        </ul>
-       <ul class="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
+       <ul class="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700 entries">
         <li>
             
-            <a href=" {% url 'staff:dashboard' %} " class="flex items-center p-2 rounded-lg text-2xl    
-            
+            <a href="#" class="flex items-center p-2 rounded-lg text-2xl    
+            group reload-entries justify-between
             text-gray-900 dark:text-white 
             
             ">
             
             <span class="ml-3">Recent Entries</span>
+            <i class="fi text-gray-400 transition-transform duration-200 fi-rs-refresh text-lg mr-2 mt-2 group-hover:text-gray-100"></i>
         </a>
     </li>
     
@@ -140,10 +218,10 @@
         text-gray-900 dark:text-white 
         ">
         
-        <i class="ml-2 fi fi-rs-delete-user text-2xl"></i>
+        <i class="ml-2 fi  fi-rs-user-add text-2xl"></i>
 
         <div class="flex justify-center flex-col">
-                   <span class="flex-1 ml-3 whitespace-nowrap text-sm">{{obj.name}}</span>
+                   <span class="flex-1 ml-3 whitespace-nowrap text-sm">#{{obj.id}} {{obj.name}}</span>
                    <span class="flex-1 ml-3 whitespace-nowrap text-xs">{{ obj.time_and_date}}</span>
 
                </div>
@@ -171,3 +249,183 @@
     </div>
   </aside>
 {% endblock container %}
+
+{% block javascript %}
+
+<script>
+
+   $(".reload-absent").on("click", function(e) {
+
+
+
+      var req_data = {
+         
+      };
+      var init_html =  $(".absentees").html();
+
+      $(".absentees").empty();
+      $(".absentees").html(
+         `<li>
+           
+           <a href="#" class="flex items-center  p-2 rounded-lg text-2xl   justify-between 
+           reload-absent
+           text-gray-900 dark:text-white group
+          
+           ">
+            
+              <span class="ml-3 mt-1">Recent Absents</span>
+                <i class="fi text-gray-400 transition-transform duration-200 fi-rs-refresh text-lg mr-2 mt-2 group-hover:text-gray-100"></i>
+           </a>
+        </li>`
+      );
+
+      var data = JSON.stringify(req_data);
+        $.ajax({
+          url: '/api/recent-absent/',
+          method: 'POST',
+          data: data,
+          success: function(response) {
+             heading = `<li>
+           
+           <a href="#" class="flex items-center  p-2 rounded-lg text-2xl   justify-between 
+           reload-absent
+           text-gray-900 dark:text-white group
+          
+           ">
+            
+              <span class="ml-3 mt-1">Recent Absents</span>
+                <i class="fi text-gray-400 transition-transform duration-200 fi-rs-refresh text-lg mr-2 mt-2 group-hover:text-gray-100"></i>
+           </a>
+        </li>`;
+        new_list_of_absentees = heading
+            if (response.success) {
+              // login successful, do something
+            $(".absentees").empty();
+            for(var obj of response.content){
+               console.log(obj.name)
+               console.log(obj.time_and_date)
+               temp = `
+               <li>
+            <a href="{% url 'staff:users' %}" class="flex items-center p-1  rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+            text-gray-900 dark:text-white hover:text-gray-100  
+            ">
+               <i class="ml-2 fi fi-rs-delete-user text-2xl"></i>
+               <div class="flex justify-center flex-col">
+                   <span class="flex-1 ml-3 whitespace-nowrap text-sm">#`+obj.id+` `+obj.name+`</span>
+                   <span class="flex-1 ml-3 whitespace-nowrap text-xs">`+obj.time_and_date+`</span>
+
+               </div>
+              
+            </a>
+           </li>
+               `
+               new_list_of_absentees += temp
+            }
+            $(".absentees").html(new_list_of_absentees);
+            
+         } else {
+            new_list_of_absentees += `
+            <li>
+             <a href="{% url 'staff:attendance' %}" class="flex items-center p-1  rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+             text-gray-900 dark:text-white    
+             ">
+                <i class="ml-2 fi fi-rs-delete-user text-2xl"></i>
+                <span class="flex-1 ml-3 whitespace-nowrap text-sm">No Records to show</span>
+               
+             </a>
+            </li>
+            `
+               $(".absentees").html(new_list_of_absentees);
+            }
+          }
+        });
+
+   });
+
+   $(".reload-entries").on("click", function(e) { 
+      var req_data = {
+         
+      };
+      var init_html =  $(".absentees").html();
+
+      $(".entries").empty();
+      $(".entries").html(
+         `<li>
+            
+            <a href="#" class="flex items-center p-2 rounded-lg text-2xl    
+            group reload-entries justify-between
+            text-gray-900 dark:text-white 
+            
+            ">
+            
+            <span class="ml-3">Recent Entries</span>
+            <i class="fi text-gray-400 transition-transform duration-200 fi-rs-refresh text-lg mr-2 mt-2 group-hover:text-gray-100"></i>
+            </a>
+         </li>`
+      );
+      var data = JSON.stringify(req_data);
+        $.ajax({
+          url: '/api/recent-entries/',
+          method: 'POST',
+          data: data,
+          success: function(response) {
+            heading = `<li>
+            
+            <a href="#" class="flex items-center p-2 rounded-lg text-2xl    
+            group reload-entries justify-between
+            text-gray-900 dark:text-white 
+            
+            ">
+            
+            <span class="ml-3">Recent Entries</span>
+            <i class="fi text-gray-400 transition-transform duration-200 fi-rs-refresh text-lg mr-2 mt-2 group-hover:text-gray-100"></i>
+        </a>
+    </li>`;
+            if (response.success) {
+
+            $(".entries").empty();
+            new_list_of_entries = heading
+            for(var obj of response.content){
+               console.log(obj.name)
+               console.log(obj.time_and_date)
+               temp = `               <li>
+        <a href="{% url 'staff:reports' %}" class="flex items-center p-2 rounded-lg    
+        bg-gradient-to-r from-blue-500 via-green-400 to-blue-200
+        text-gray-900 dark:text-white 
+        ">
+        
+        <i class="ml-2 fi  fi-rs-user-add text-2xl"></i>
+
+        <div class="flex justify-center flex-col">
+                   <span class="flex-1 ml-3 whitespace-nowrap text-sm">#`+obj.id+` `+obj.name+`</span>
+                   <span class="flex-1 ml-3 whitespace-nowrap text-xs">`+ obj.time_and_date+`</span>
+
+               </div>
+        
+       </a>
+    </li>`
+               new_list_of_entries += temp
+            }
+            $(".entries").html(new_list_of_entries);
+            
+            } else {
+               new_list_of_entries = heading;
+               new_list_of_entries += `
+               <li>
+        <a href="{% url 'staff:attendance' %}" class="flex items-center p-1  rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+        text-gray-900 dark:text-white    
+        ">
+           <i class="ml-2 fi fi-rs-delete-user text-2xl"></i>
+           <span class="flex-1 ml-3 whitespace-nowrap text-sm">No Records to show</span>
+          
+        </a>
+       </li>
+               `;
+               $(".entries").html(new_list_of_entries);
+            }
+          }
+        });
+
+   });
+</script>
+{% endblock javascript %}

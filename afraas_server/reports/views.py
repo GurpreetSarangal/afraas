@@ -75,6 +75,8 @@ def mark(request):
         res["content"] = "accepted"
         json_data = json.dumps(res)
         return HttpResponse(json_data, content_type="application/json")
+    else:
+        return HttpResponse("not a post request")
 
 @csrf_exempt
 def check_registered(request):
@@ -119,10 +121,11 @@ def report(request):
             return HttpResponse(json_data, content_type="application/json") 
 
         elif type_of_report == "organization":
-            return
+            return HttpResponse()
         else:
-            return False
-    return False
+            return HttpResponse()
+    else:
+        return HttpResponse("not a post request")
 
 def get_user( time, u_id):
     u = User.objects.get(id=u_id)
@@ -180,52 +183,52 @@ def get_user( time, u_id):
         res["error"] = "weekly for user is not supported"
         return res
     
-    elif time=="monthly":
-        now = datetime.datetime.now()
+    # elif time=="monthly":
+    #     now = datetime.datetime.now()
 
-        filtered_objects = Attendance.objects.filter(time_stamp__month=now.month, time_stamp__year=now.year, user=u)
+    #     filtered_objects = Attendance.objects.filter(time_stamp__month=now.month, time_stamp__year=now.year, user=u)
 
-        time_in = u.shift.time_in
-        grouped_objects = filtered_objects.annotate(week=ExtractWeek('time_stamp')).order_by('week')
+    #     time_in = u.shift.time_in
+    #     grouped_objects = filtered_objects.annotate(week=ExtractWeek('time_stamp')).order_by('week')
         
-        res = {
-            "heading" : ["Week No", "Present Days", "Total Late", "Total Leave"],
-            "content" : [],
-            "error" : "",
-        }
+    #     res = {
+    #         "heading" : ["Week No", "Present Days", "Total Late", "Total Leave"],
+    #         "content" : [],
+    #         "error" : "",
+    #     }
 
-        present = late = absent = 0
-        init_week = grouped_objects[0].week
-        # print(grouped_objects)
-        for obj in grouped_objects:
-            # print(obj, obj.week)
-            if obj.week == init_week:
-                if obj.status == "enter":
-                    if obj.time_stamp.time() <= time_in:
-                        present += 1
-                    else:
-                        late +=1
-                if obj.status == "absent":
-                    absent += 1
-            else:
-                temp = [init_week, present, late, absent]
-                res["content"].append(temp)
-                present = late = absent = 0
+    #     present = late = absent = 0
+    #     init_week = grouped_objects[0].week
+    #     # print(grouped_objects)
+    #     for obj in grouped_objects:
+    #         # print(obj, obj.week)
+    #         if obj.week == init_week:
+    #             if obj.status == "enter":
+    #                 if obj.time_stamp.time() <= time_in:
+    #                     present += 1
+    #                 else:
+    #                     late +=1
+    #             if obj.status == "absent":
+    #                 absent += 1
+    #         else:
+    #             temp = [init_week, present, late, absent]
+    #             res["content"].append(temp)
+    #             present = late = absent = 0
 
-                init_week = obj.week
+    #             init_week = obj.week
 
-                if obj.status == "enter":
-                    if obj.time_stamp.time() <= time_in:
-                        present += 1
-                    else:
-                        late +=1
-                if obj.status == "absent":
-                    absent += 1
+    #             if obj.status == "enter":
+    #                 if obj.time_stamp.time() <= time_in:
+    #                     present += 1
+    #                 else:
+    #                     late +=1
+    #             if obj.status == "absent":
+    #                 absent += 1
             
-        temp = [init_week, present, late, absent]
-        res["content"].append(temp)
-        # print(res)
-        return res
+    #     temp = [init_week, present, late, absent]
+    #     res["content"].append(temp)
+    #     # print(res)
+    #     return res
     
     
     elif time=="yearly":
@@ -325,68 +328,68 @@ def get_dept( time, dept_id):
         }
         return res
 
-    elif time=="monthly":
-        now = datetime.datetime.now()
+    # elif time=="monthly":
+    #     now = datetime.datetime.now()
 
-        filtered_objects = Attendance.objects.filter(time_stamp__month=now.month, time_stamp__year=now.year, user__department__id=dept_id)
+    #     filtered_objects = Attendance.objects.filter(time_stamp__month=now.month, time_stamp__year=now.year, user__department__id=dept_id)
 
-        grouped_objects = filtered_objects.annotate(week=ExtractWeek('time_stamp')).order_by('week')
+    #     grouped_objects = filtered_objects.annotate(week=ExtractWeek('time_stamp')).order_by('week')
 
-        res = {
-            "heading" : ["Week No", "No of Employees", "Present", "Absent", "Leave", "Average Attendace"],
-            "content": [],
-            "error" : "",
+    #     res = {
+    #         "heading" : ["Week No", "No of Employees", "Present", "Absent", "Leave", "Average Attendace"],
+    #         "content": [],
+    #         "error" : "",
             
-        }
+    #     }
 
-        emp = len(User.objects.filter(department__id=dept_id))
+    #     emp = len(User.objects.filter(department__id=dept_id))
 
-        present = absent = leave = avg_attendance = 0
-        try:
-            init_week = grouped_objects[0].week
-        except:
-            res["error"] = "No User is listed in this Department"
-            return res
+    #     present = absent = leave = avg_attendance = 0
+    #     try:
+    #         init_week = grouped_objects[0].week
+    #     except:
+    #         res["error"] = "No User is listed in this Department"
+    #         return res
 
-        for obj in grouped_objects:
-            if obj.week == init_week:
-                # print(obj, obj.week)
-                if obj.status == "enter":
-                    present +=1
-                    # print("Present = ", present, "status = ", obj.status)
-                elif obj.status == "absent":
-                    leave +=1
-                    # print("Leave = ", leave, "status = ", obj.status)
-            else:
-                absent = (emp*7) - (present + leave)
-                avg_attendance = (present / (emp*7))*100
-                temp = [
-                    init_week,
-                    emp,
-                    present,
-                    absent,
-                    leave,
-                    avg_attendance,
-                ]
-                # print(temp)
-                res["content"].append(temp)
-                init_week = obj.week
-                present = absent = leave = avg_attendance = 0
+    #     for obj in grouped_objects:
+    #         if obj.week == init_week:
+    #             # print(obj, obj.week)
+    #             if obj.status == "enter":
+    #                 present +=1
+    #                 # print("Present = ", present, "status = ", obj.status)
+    #             elif obj.status == "absent":
+    #                 leave +=1
+    #                 # print("Leave = ", leave, "status = ", obj.status)
+    #         else:
+    #             absent = (emp*7) - (present + leave)
+    #             avg_attendance = (present / (emp*7))*100
+    #             temp = [
+    #                 init_week,
+    #                 emp,
+    #                 present,
+    #                 absent,
+    #                 leave,
+    #                 avg_attendance,
+    #             ]
+    #             # print(temp)
+    #             res["content"].append(temp)
+    #             init_week = obj.week
+    #             present = absent = leave = avg_attendance = 0
                 
                 
-        absent = emp - present - leave
-        avg_attendance = (present / emp)*100
-        temp = [
-            init_week,
-            emp,
-            present,
-            absent,
-            leave,
-            avg_attendance,
-        ]
-        res["content"].append(temp)
-        # print(res)
-        return res
+    #     absent = emp - present - leave
+    #     avg_attendance = (present / emp)*100
+    #     temp = [
+    #         init_week,
+    #         emp,
+    #         present,
+    #         absent,
+    #         leave,
+    #         avg_attendance,
+    #     ]
+    #     res["content"].append(temp)
+    #     # print(res)
+    #     return res
     
     elif time=="yearly":
         pass
@@ -397,3 +400,69 @@ def get_dept( time, dept_id):
 
 def get_org(request, time):
     pass
+
+@csrf_exempt
+def recent_absent(request):
+    context = {
+        "error":"",
+        "content": [],
+        "success":True,
+    }
+    if request.method == "POST":
+        max_len = 3
+        # print(request.GET)
+        a = Attendance.objects.filter(status="absent").order_by("-time_stamp")[0:max_len]
+
+        for obj in a:
+            time = str(obj.time_stamp.time())
+            time = time.split(".")[0]
+            date = str(obj.time_stamp.date()).split("-")
+            
+
+            temp = {
+                "id": obj.user.id,
+                "name" : obj.user.name,
+                "time_and_date": f"{date[2]}-{date[1]}-{date[0]} {time}"
+            }
+            context["content"].append(temp)
+        json_data = context
+        json_data = json.dumps(json_data)
+        return HttpResponse(json_data, content_type="application/json")
+        
+    else:
+        return HttpResponse("not a post request")
+    
+@csrf_exempt
+def recent_entries(request):
+    context = {
+        "error":"",
+        "content": [],
+        "success":True,
+    }
+    if request.method=='POST':
+        try:
+            a = Attendance.objects.filter(status="enter").order_by("-time_stamp")[0:3]
+        except:
+            context["success"] = False
+            json_data = context
+            json_data = json.dumps(json_data)
+            return HttpResponse(json_data, content_type="application/json")
+        for obj in a:
+            time = str(obj.time_stamp.time())
+            time = time.split(".")[0]
+            date = str(obj.time_stamp.date()).split("-")
+
+            temp = {
+                "id": obj.user.id,
+                "name" : obj.user.name,
+                "time_and_date": f"{date[2]}-{date[1]}-{date[0]} {time}"
+            }
+
+            context["content"].append(temp)
+        
+        json_data = context
+        json_data = json.dumps(json_data)
+        return HttpResponse(json_data, content_type="application/json")
+        
+    else:
+        return HttpResponse()

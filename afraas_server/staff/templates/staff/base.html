@@ -9,18 +9,20 @@
     <script src="https://kit.fontawesome.com/17951cbad8.js" crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
-    {% block css %}{% endblock css %}
     <link rel="shortcut icon" href="{% static 'intro\pictures\edited-logo.png' %}" type="image/x-icon"> 
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css'>
+    <script src="{% static 'intro\scripts\jquery-3.6.4.min.js' %}"></script>
+    <script src="{% static 'intro\scripts\jquery.validate.min.js' %}"></script>
     <title>{{title}}</title>
+    {% block css %}{% endblock css %}
   </head>
   <body>
     {% block container %}{% endblock container %}
 
     
 
-    <script src="{% static 'intro\scripts\jquery-3.6.4.min.js' %}"></script>
-    <script src="{% static 'intro\scripts\jquery.validate.min.js' %}"></script>
+    {% block sidebar_script %}{% endblock sidebar_script %}
     {% block javascript %}{% endblock javascript %}
+
   </body>
 </html>
