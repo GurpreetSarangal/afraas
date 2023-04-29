@@ -135,3 +135,4 @@ dmypy.json
 *testing.py
 
 afraas_server/static
+.vscode/
