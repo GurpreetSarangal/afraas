@@ -8,27 +8,41 @@ import json
 import datetime
 from datetime import date, timedelta
 from django.db.models import Q
+from pytz import timezone
+import pytz
 
 # Create your views here.
 @csrf_exempt
 def mark(request):
     if request.method == "POST":
         res = {
-            "content" : "",
-            "error" : "",
+                "content" : "",
+                "error" : "",
+                "success": False,
 
         }
-        label = request.POST["label"]
-        time = request.POST["time-stamp"]
-        now = datetime.datetime.now()
 
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            # print("the request is ajax")
+            data = json.loads(request.body.decode('utf-8'))
+            label = data.get('label')
+            st = data.get('status')
+            timestamp = str(data.get('timestamp'))
+            # date_string = timestamp.split(".")[0]
+            print(" original ", timestamp)
+            # Parse the string with a custom format string
+        else:
+            label = request.POST["label"]
+            st = request.POST["status"]
+            
+        # now = datetime.datetime.now()
+        time = datetime.datetime.now()
         label = label.split('_')[1]
         
-
         
-  
+        
 
-        st = request.POST["status"]
+
         u = User.objects.filter(id=label[0])
 
         if len(u) == 0:
@@ -36,43 +50,45 @@ def mark(request):
             json_data = json.dumps(res)
             return HttpResponse(json_data, content_type="application/json")
 
-        check = Attendance.objects.filter(user=u[0], time_stamp__year=now.year, time_stamp__month=now.month, time_stamp__day=now.day, status="absent")
+        check = Attendance.objects.filter(user=u[0], time_stamp__year=time.year, time_stamp__month=time.month, time_stamp__day=time.day, status="absent")
         if len(check) >= 1:
             res["error"] = "already marked absent rejected"
             json_data = json.dumps(res)
             return HttpResponse(json_data, content_type="application/json")
 
         if st == "exit":
-            check = Attendance.objects.filter(user=u[0], time_stamp__year=now.year, time_stamp__month=now.month, time_stamp__day=now.day, status="enter")
+            check = Attendance.objects.filter(user=u[0], time_stamp__year=time.year, time_stamp__month=time.month, time_stamp__day=time.day, status="enter")
             if len(check)==0:
                 res["error"] = "to exit first enter the user"
                 json_data = json.dumps(res)
                 return HttpResponse(json_data, content_type="application/json")
 
         if st=="absent":
-            check = Attendance.objects.filter(user=u[0], time_stamp__year=now.year, time_stamp__month=now.month, time_stamp__day=now.day, status="exit")
+            check = Attendance.objects.filter(user=u[0], time_stamp__year=time.year, time_stamp__month=time.month, time_stamp__day=time.day, status="exit")
             if len(check)==1:
                 res["error"] = "user has already left the office after work"
                 json_data = json.dumps(res)
                 return HttpResponse(json_data, content_type="application/json")
 
-            check = Attendance.objects.filter(user=u[0], time_stamp__year=now.year, time_stamp__month=now.month, time_stamp__day=now.day, status="enter")
+            check = Attendance.objects.filter(user=u[0], time_stamp__year=time.year, time_stamp__month=time.month, time_stamp__day=time.day, status="enter")
             if len(check)==1:
                 res["error"] = "user already in the office"
                 json_data = json.dumps(res)
                 return HttpResponse(json_data, content_type="application/json")
 
 
-        check = Attendance.objects.filter(user=u[0], time_stamp__year=now.year, time_stamp__month=now.month, time_stamp__day=now.day, status=st)
+        check = Attendance.objects.filter(user=u[0], time_stamp__year=time.year, time_stamp__month=time.month, time_stamp__day=time.day, status=st)
         if len(check) == 1:
             res["error"] = "same status already marked rejected"
             json_data = json.dumps(res)
             return HttpResponse(json_data, content_type="application/json")
-            
+        
+        
 
         att = Attendance(status=st, user=u[0], time_stamp = time)  
         att.save()
-        res["content"] = "accepted"
+        res["content"] = "accepted"+str(time)
+        res["success"] = True
         json_data = json.dumps(res)
         return HttpResponse(json_data, content_type="application/json")
     else:
@@ -417,12 +433,27 @@ def recent_absent(request):
             time = str(obj.time_stamp.time())
             time = time.split(".")[0]
             date = str(obj.time_stamp.date()).split("-")
-            
+
+            # input timestamp in string format
+            timestamp_str = str(obj.time_stamp)
+
+            # convert to datetime object and localize to UTC timezone
+            dt = datetime.datetime.fromisoformat(timestamp_str)
+            # utc_timezone = pytz.timezone('UTC')
+            # dt_utc = utc_timezone.localize(dt)
+
+            # convert to Indian Standard Time (IST) timezone
+            ist_timezone = pytz.timezone('UTC')
+            dt_ist = dt.astimezone(ist_timezone)
+
+            # format the datetime object to desired IST format with day and month name and AM/PM
+            formatted_time = dt_ist.strftime("%a %d %b %Y, %I:%M%p")
+            print(formatted_time)
 
             temp = {
                 "id": obj.user.id,
                 "name" : obj.user.name,
-                "time_and_date": f"{date[2]}-{date[1]}-{date[0]} {time}"
+                "time_and_date": formatted_time
             }
             context["content"].append(temp)
         json_data = context
@@ -451,11 +482,28 @@ def recent_entries(request):
             time = str(obj.time_stamp.time())
             time = time.split(".")[0]
             date = str(obj.time_stamp.date()).split("-")
+            # input timestamp in string format
+            # timestamp_str = str(obj.time_stamp)
 
+            # convert to datetime object and localize to UTC timezone
+            # dt = datetime.datetime.fromisoformat(timestamp_str)
+            # utc_timezone = pytz.timezone('UTC')
+            # dt_utc = utc_timezone.localize(dt)
+
+            # convert to Indian Standard Time (IST) timezone
+            # ist_timezone = pytz.timezone('UTC')
+            # dt_ist = dt.astimezone(ist_timezone)
+            # # print(formatted_time, "-")
+
+            # # format the datetime object to desired IST format with day and month name and AM/PM
+            # formatted_time = dt_ist.strftime("%a %d %b %Y, %I:%M%p")
+            # print(formatted_time, "--")
+            # print(obj.time_stamp.strftime('%a %d %b %Y, %I:%M%p'))
+            print(obj.time_stamp.strftime('%a %d %b %Y, %I:%M%p'))
             temp = {
                 "id": obj.user.id,
                 "name" : obj.user.name,
-                "time_and_date": f"{date[2]}-{date[1]}-{date[0]} {time}"
+                "time_and_date": obj.time_stamp.strftime('%a %d %b %Y, %I:%M%p'),
             }
 
             context["content"].append(temp)
