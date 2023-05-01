@@ -27,7 +27,7 @@
         
         <li>
           
-           <a href=" {% url 'staff:dashboard' %} " class="flex items-center p-2 rounded-lg    
+           <a href=" {% url 'user:dashboard' %} " class="flex items-center p-2 rounded-lg    
            {% if page == 'dashboard' %}
            bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%
            text-gray-900 dark:text-white 
@@ -40,70 +40,73 @@
            </a>
         </li>
         <li>
-           <a href="{% url 'staff:users' %}" class="flex items-center p-2 rounded-lg    
-           {% if page == 'users' %}
+           <a href="{% url 'user:profile' %}" class="flex items-center p-2 rounded-lg    
+           {% if page == 'profile' %}
            bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%
            text-gray-900 dark:text-white 
            {% else %}
            text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700
            {% endif %}">
               
-              <span class="flex-1 ml-3 whitespace-nowrap">Users</span>
+              <span class="flex-1 ml-3 whitespace-nowrap">Profile</span>
              
            </a>
           </li>
           <li>
-             <a href="{% url 'staff:attendance' %}" class="flex items-center p-2 rounded-lg    
-             {% if page == 'attendance' %}
+             <a href="{% url 'user:apply_leave' %}" class="flex items-center p-2 rounded-lg    
+             {% if page == 'apply_leave' %}
              bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%
            text-gray-900 dark:text-white 
              {% else %}
              text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700
              {% endif %}">
                 
-                <span class="flex-1 ml-3 whitespace-nowrap">Attendance</span>
+                <span class="flex-1 ml-3 whitespace-nowrap">Apply Leave</span>
              </a>
           </li>
           <li>
-            <a href="{% url 'staff:reports' %}" class="flex items-center p-2 rounded-lg    
-            {% if page == 'reports' %}
+            <a href="{% url 'user:yearly_data' %}" class="flex items-center p-2 rounded-lg    
+            {% if page == 'yearly_data' %}
             bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%
             text-gray-900 dark:text-white 
             {% else %}
             text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700
             {% endif %}">
                
-               <span class="ml-4">Reports</span>
+               <span class="ml-4">Yearly Report</span>
             </a>
          </li>
-        <li>
-           <a href="{% url 'staff:other-tables' %}" class="flex items-center p-2 rounded-lg    
-           {% if page == 'other-tables' %}
-           bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%
-           text-gray-900 dark:text-white 
-           {% else %}
-           text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700
-           {% endif %}">
-              
-              <span class="flex-1 ml-3 whitespace-nowrap">Other Tables</span>
-           </a>
-        </li>
+        
      </ul>
      <ul class="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
 
       {% if page == "dashboard" %}
-      {% if user.is_superuser %}
-      
-      <li>
-         <a href="{% url 'admin:index' %}" class="flex items-center p-2 rounded-lg    
-         
-         text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700
-         ">
+        {% if user.is_staff %}
+
+        <li>
+            <a href="{% url 'staff:dashboard' %}" class="flex items-center p-2 rounded-lg    
+            
+            text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700
+            ">
             <i class="fi ml-2 fi-rs-arrow-alt-circle-left text-2xl text-emerald-300"></i>
+            <span class="ml-3 ">Staff Dashboard</span>
+            </a>
+        </li>
+
+        {% endif %}
+        {% if user.is_superuser %}
+        
+        <li>
+            <a href="{% url 'admin:index' %}" class="flex items-center p-2 rounded-lg    
+            
+            text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700
+            ">
+            <i class="fi ml-2 fi-rs-chess-king text-2xl text-red-300"></i>
             <span class="ml-3">Back To Admin Panel</span>
-         </a>
-      </li>
-      {% endif %}
+            </a>
+        </li>
+        {% endif %}
+        
       <li>
         <button type="button" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 logout-button" >
             <i class="ml-2 fi fi-rs-log-out text-2xl text-pink-300"></i>

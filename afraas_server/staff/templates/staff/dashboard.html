@@ -100,7 +100,7 @@
 
             </div>
             <div class="heading text-sm text-gray-100 w-28 ">
-               Absent
+               On Leave
             </div>
          </div>
          <div
@@ -219,7 +219,7 @@
 
       </div>
    </div>
-   <div class="grid grid-cols-2 gap-4">
+   <div class="grid grid-cols-2 gap-4 mb-4">
       <div class="flex justify-center rounded bg-gray-50 h-28 dark:bg-gray-800 flex-col group">
          <div class="text-xl text-gray-100 dark:text-gray-300 ml-8">
 
@@ -249,13 +249,76 @@
          </a>
       </div>
    
-  
-   <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-      <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
    </div>
-   <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-      <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
-   </div>
+   <div class="grid grid-cols-1 gap-4 mb-4">
+      {% if user.is_superuser %}
+      <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+         
+         <div class="flex justify-center rounded bg-gray-50 h-28 dark:bg-gray-800 flex-col group">
+
+            <div class="text-xl text-gray-100 dark:text-gray-300 ">
+   
+               New Collegue Joined?? 
+               Welcome them with their registration.
+            </div>
+            <a href=" {% url 'staff:attendance' %} "
+               class="  dark:text-gray-500 text-gray-400 transition-transform duration-200 text-lg mt-2 flex flex-row w-fit group-hover:text-gray-100 hover:underline">
+               <div>
+                  Lets Begin
+   
+               </div>
+               <i class="fi ml-2 fi-rs-arrow-up-right-from-square hover:underline "></i>
+            </a>
+         </div>
+      </div>
+      {% endif %}
+      <div class="flex items-center justify-around flex-col  rounded bg-gray-50 h-40 dark:bg-gray-800">
+       
+
+            <div class="flex flex-row flex-nowrap w-full justify-evenly">
+        
+                <div class="w-auto ">
+                    <a
+                        href="{% url 'developer-support' %}"
+                        class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-gray-300 mr-4"
+                      >
+                        Developer Support
+                      </a>
+                </div>
+                <div class="w-auto ">
+                    <a
+                        href="{% url 'about-us' %}"
+                        class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-gray-300 mr-4"
+                      >
+                        About Us
+                      </a>
+                </div>
+                <div class="w-auto ">
+                    <a
+                        href="{% url 'report-issue' %}"
+                        class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-gray-300 mr-4"
+                      >
+                        Report Issue
+                      </a>
+                </div>
+                
+            </div>
+            
+                <div class=" flex justify-center align-center  text-md sm:text-x  text-gray-400 group">
+                    Made with 
+                    <i class="mx-2 fi fi-rs-heart text-red-500 "></i> 
+                    by 
+                    <a href="https://github.com/kaur-mannu" class="mx-2 group-hover:text-gray-300  group-hover:underline  ">
+                     Sandeep Kaur
+                  </a>
+                   & 
+                   <a href="https://github.com/GurpreetSarangal" class="mx-2 group-hover:text-gray-300 group-hover:underline ">
+                     Gurpreet Sarangal
+                  </a>
+                </div  >
+           
+          
+      </div>
 </div>
 </div>
 </div>
@@ -345,7 +408,7 @@
 
          {% for obj in entries %}
          <li>
-            <a href="{% url 'staff:reports' %}" class="flex items-center p-2 rounded-lg    
+            <a href="{% url 'staff:users' %}" class="flex items-center p-2 rounded-lg    
         bg-gradient-to-r from-blue-500 via-green-400 to-blue-200
         text-gray-900 dark:text-white 
         ">
@@ -454,6 +517,7 @@
          data.addColumn('number', 'Leave');
          data.addColumn('number', 'Late');
          data.addColumn('number', 'Present');
+         data.addColumn('number', 'Total Users');
 
          // data.addRows([
          //   [1,  37.8, 80.8, 41.8, 50],
@@ -544,7 +608,7 @@
             } else {
                new_list_of_absentees += `
             <li>
-             <a href="{% url 'staff:attendance' %}" class="flex items-center p-1  rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+             <a href="{% url 'staff:users' %}" class="flex items-center p-1  rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
              text-gray-900 dark:text-white    
              ">
                 <i class="ml-2 fi fi-rs-delete-user text-2xl"></i>
@@ -583,7 +647,7 @@
                   console.log(obj.name)
                   console.log(obj.time_and_date)
                   temp = `               <li>
-        <a href="{% url 'staff:reports' %}" class="flex items-center p-2 rounded-lg    
+        <a href="{% url 'staff:users' %}" class="flex items-center p-2 rounded-lg    
         bg-gradient-to-r from-blue-500 via-green-400 to-blue-200
         text-gray-900 dark:text-white 
         ">
@@ -606,7 +670,7 @@
                new_list_of_entries = heading;
                new_list_of_entries += `
                <li>
-        <a href="{% url 'staff:attendance' %}" class="flex items-center p-1  rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+        <a href="{% url 'staff:users' %}" class="flex items-center p-1  rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
         text-gray-900 dark:text-white    
         ">
            <i class="ml-2 fi fi-rs-delete-user text-2xl"></i>

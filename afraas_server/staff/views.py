@@ -75,10 +75,10 @@ def dashboard(request):
     # print(len(entries), len(all_users))
     
 
-    context["attendance_today_percent"] = percent
+    context["attendance_today_percent"] = truncate(percent,1) 
     context["total_present"] = len(entries)
     context["total_users"] = len(all_users)
-    context["attendance_today_meter"] = 190-(190*(percent/100))
+    context["attendance_today_meter"] = truncate(190-(190*(percent/100)), 2)
 
     today = datetime.date.today()
     yesterday = today - datetime.timedelta(days=1)
@@ -86,10 +86,10 @@ def dashboard(request):
     all_users = User.objects.all()
     percent = (len(entries) / len(all_users))*100
 
-    context["attendance_yest_percent"] = percent
+    context["attendance_yest_percent"] = truncate(percent,1) 
     context["yest_present"] = len(entries)
     context["yest_users"] = len(all_users)
-    context["attendance_yest_meter"] = 190-(190*(percent/100))
+    context["attendance_yest_meter"] = truncate(190-(190*(percent/100)), 2)
     # print(percent)
     # print(len(entries), len(all_users))
 
@@ -192,27 +192,33 @@ def monthly_on_daily_basis():
             if day == 0:
                 continue
             # Do something with the day
-            at = Attendance.objects.filter(time_stamp__day=day, time_stamp__month=month, time_stamp__year=year)
             present = 0
             leave = 0
             late = 0
-            for obj in at:
-                if obj.status == "enter":
-                    if obj.time_stamp.time() <= obj.user.shift.time_in:
-                        present +=1 
-                    else:
-                        late+=1
-                elif obj.status == "absent":
-                    leave += 1
-            
-            absent = total_users - (present + leave + late)
+            absent = 0
+            if day > now.day:
+                pass
+            else:
+                at = Attendance.objects.filter(time_stamp__day=day, time_stamp__month=month, time_stamp__year=year)
+                
+                for obj in at:
+                    if obj.status == "enter":
+                        if obj.time_stamp.time() <= obj.user.shift.time_in:
+                            present +=1 
+                        else:
+                            late+=1
+                    elif obj.status == "absent":
+                        leave += 1
+                
+                absent = total_users - (present + leave + late)
 
             temp = [
                 day,
                 absent,
                 leave,
                 late,
-                present
+                present,
+                total_users
             ]
             data.append(temp)
             
@@ -233,9 +239,14 @@ def users(request):
     context = {
         "title" : "Users | Staff",
         "page" : "users",
+        "error" : "",
         "content":[],
         "present_digits": [],
+        "all_departments": [],
+        "all_shifts": [],
     }
+    
+
     all_users = User.objects.all()
     now = datetime.datetime.now()
     for obj in all_users:
@@ -249,7 +260,7 @@ def users(request):
                 status = "Left the Premesis"
 
             elif st[0].status == "absent":
-                status = "Absent"
+                status = "Leave"
 
             else:
                 if st[0].time_stamp.time() < obj.shift.time_in:
@@ -278,8 +289,36 @@ def users(request):
             "status": status,
         }
         context["content"].append(temp)
+    # print(context["content"])
 
     
+
+    dept = Department.objects.all().order_by("id")
+    for obj in dept:
+        temp={
+            "id": obj.id,
+            "name": obj.name,
+        }
+
+        context["all_departments"].append(temp)
+    
+    shift = Shift.objects.all().order_by("id")
+    for obj in shift:
+        name = ""
+        if str(obj.time_in) == "07:00:00":
+            name = "Morning"
+        elif str(obj.time_in) == "15:00:00":
+            name = "Afternoon"
+        elif str(obj.time_in) == "23:00:00":
+            name = "Night"
+
+        temp = {
+            "id": obj.id,
+            "name": name,
+            "time_in": obj.time_in,
+            "time_out": obj.time_out,
+        }
+        context["all_shifts"].append(temp)
 
     return render(request, "staff/users.html", context)
 
@@ -287,21 +326,105 @@ def other_tables(request):
     context = {
         "title" : "Tables | Staff",
         "page" : "other-tables",
+        "shift_table": [],
+        "department_table": [],
     }
 
+    all_shifts = Shift.objects.all().order_by("id")
+    for obj in all_shifts:
+        u = User.objects.filter(shift=obj)
+        name = ""
+        if str(obj.time_in) == "07:00:00":
+            name = "Morning"
+        elif str(obj.time_in) == "15:00:00":
+            name = "Afternoon"
+        elif str(obj.time_in) == "23:00:00":
+            name = "Night"
+        temp = {
+            "id": obj.id,
+            "name": name,
+            "time_in": obj.time_in,
+            "time_out": obj.time_out,
+            "no_of_emp": len(u),
+        }
+        context["shift_table"].append(temp)
+    
+    all_depts = Department.objects.all().order_by("id")
+    for obj in all_depts:
+        u = User.objects.filter(department=obj)
+        temp = {
+            "id": obj.id,
+            "name": obj.name,
+            "no_of_emp": len(u),
+        }
+        context["department_table"].append(temp)
 
-    return HttpResponse("these are other tables")
+
+    return render(request, "staff/other_tables.html", context) 
+
+ 
 
 def attendance(request):
     context = {
         "title" : "Attendance | Staff",
         "page" : "attendance",
+        "content": [],
     }
-    return HttpResponse("attendance table")
+
+    all_recs=Attendance.objects.all().order_by("-id")
+
+    for obj in all_recs:
+        itself = ""
+        if request.user.id == obj.user.id:
+            itself = "true"
+        user_status = ""
+        if obj.status=="exit":
+            if obj.time_stamp.time() >= obj.user.shift.time_out:
+                user_status="left after time"
+            else:
+                user_status="left before time"
+        elif obj.status=="enter":
+            if obj.time_stamp.time() <= obj.user.shift.time_in:
+                user_status = "on time"
+            else:
+                user_status = "late"
+        
+        elif obj.status=="absent":
+            user_status="on leave"
+
+        temp = {
+            "id": obj.id,
+            "user" : {
+                "id": obj.user.id,
+                "name": obj.user.name,
+                "email": obj.user.email,
+                "is_superuser": obj.user.is_superuser,
+                "is_staff": obj.user.is_staff,
+                "itself": itself,
+                "status": user_status,
+                "time_in": obj.user.shift.time_in,
+                "time_out": obj.user.shift.time_out,
+            },
+            "time_stamp": obj.time_stamp,
+            "status": obj.status,
+
+        }
+        context["content"].append(temp)
+
+    return render(request, "staff/attendance.html", context) 
 
 def reports(request):
     context = {
         "title" : "Attendance | Staff",
         "page" : "reports",
     }
+
     return HttpResponse("reports")
+
+def truncate(f, n):
+    '''Truncates/pads a float f to n decimal places without rounding'''
+    s = '{}'.format(f)
+    if 'e' in s or 'E' in s:
+        return '{0:.{1}f}'.format(f, n)
+    i, p, d = s.partition('.')
+    return '.'.join([i, (d+'0'*n)[:n]])

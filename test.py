@@ -2,13 +2,13 @@ import datetime
 import requests
 import json
 
-# url = "http://localhost:8000/api/mark/"
-# now = datetime.datetime.now()
-# data = {
-#     "label": "3_3|ksjfjsf", 
-#     "status": "absent",
-#     "time-stamp" : now
-# }
+url = "http://localhost:8000/api/mark/"
+now = datetime.datetime.now()
+data = {
+    "label": "3_5_ksjfjsf", 
+    "status": "enter",
+    "time-stamp" : now
+}
 
 # url = "http://localhost:8000/api/report/"
 # now = datetime.datetime.now()
@@ -17,13 +17,13 @@ import json
 #     "time" : "monthly",
 #     "u_id" : 3,
 # }
-url = "http://localhost:8000/api/report/"
-now = datetime.datetime.now()
-data = {
-    "type" : "department",
-    "time" : "daily",
-    "dept_id" : 2,
-}
+# url = "http://localhost:8000/api/report/"
+# now = datetime.datetime.now()
+# data = {
+#     "type" : "department",
+#     "time" : "daily",
+#     "dept_id" : 2,
+# }
 
 
 # url = "http://localhost:8000/api/check_registered/"

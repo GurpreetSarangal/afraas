@@ -3,6 +3,7 @@ from user.models import *
 
 # Create your models here.
 class Attendance(models.Model):
+    id = models.AutoField(primary_key=True)
     time_stamp = models.DateTimeField()
     STATUS_CHOICES = [
     ("enter", "enter"),
@@ -14,5 +15,5 @@ class Attendance(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.user.id} | {self.user.name} - {self.time_stamp.day}/{self.time_stamp.month}/{self.time_stamp.year} - {self.status}"
+        return f"{self.id} | {self.user.name} - {self.time_stamp.day}/{self.time_stamp.month}/{self.time_stamp.year} - {self.status}"
     

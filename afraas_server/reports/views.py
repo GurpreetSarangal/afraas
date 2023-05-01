@@ -482,23 +482,7 @@ def recent_entries(request):
             time = str(obj.time_stamp.time())
             time = time.split(".")[0]
             date = str(obj.time_stamp.date()).split("-")
-            # input timestamp in string format
-            # timestamp_str = str(obj.time_stamp)
-
-            # convert to datetime object and localize to UTC timezone
-            # dt = datetime.datetime.fromisoformat(timestamp_str)
-            # utc_timezone = pytz.timezone('UTC')
-            # dt_utc = utc_timezone.localize(dt)
-
-            # convert to Indian Standard Time (IST) timezone
-            # ist_timezone = pytz.timezone('UTC')
-            # dt_ist = dt.astimezone(ist_timezone)
-            # # print(formatted_time, "-")
-
-            # # format the datetime object to desired IST format with day and month name and AM/PM
-            # formatted_time = dt_ist.strftime("%a %d %b %Y, %I:%M%p")
-            # print(formatted_time, "--")
-            # print(obj.time_stamp.strftime('%a %d %b %Y, %I:%M%p'))
+            
             print(obj.time_stamp.strftime('%a %d %b %Y, %I:%M%p'))
             temp = {
                 "id": obj.user.id,
@@ -514,3 +498,98 @@ def recent_entries(request):
         
     else:
         return HttpResponse()
+
+
+@csrf_exempt
+def add_user(request):
+    res = {
+            "error" : '',
+            "success": False,
+    }
+
+    if request.method == "POST" and request.user.is_staff:
+        
+        name = request.POST["name"]
+        email = request.POST["email"]
+        shift = request.POST["shift"]
+        department = request.POST["department"]
+        psw = request.POST["new_password"]
+        confirm_psw = request.POST["confirm_new_password"]
+        type_of_user = request.POST["type_of_user"]
+        is_unique_mail = True
+        print(name)
+        print(email)
+        print(shift)
+        print(department)
+        print(psw)
+        print(confirm_psw)
+        print(type_of_user)
+
+        if not request.user.is_superuser and type_of_user!="gen_user":
+            res["error"] = "A Staff member is not allowed to create "+type_of_user+" type of users"
+        
+        else:
+
+            all_users = User.objects.all().order_by("id")
+            for obj in all_users:
+                print(obj)
+                if email == obj.email:
+                    is_unique_mail = False
+                    break
+            
+            if not is_unique_mail:
+                res["error"] = f"Email [{email}] is already registred"
+            
+            if not psw==confirm_psw:
+                res["error"]= "Passwords are not same. Try Again"
+
+            else:
+                res["success"] = True
+            try:
+                dept = Department.objects.get(id=department)
+                sh = Shift.objects.get(id=shift)
+                
+                if type_of_user == "gen_user":
+                    u = User.objects.create_user(
+                        email= email,
+                        
+                        password= psw,
+                        name= name,
+                        department=dept,
+                        shift=sh,
+                    )
+                    u.save()
+
+                elif type_of_user == "staff":
+                    u = User.objects.create_staffuser(
+                        email=email,
+                        
+                        password=psw,
+                        name= name,
+                        department=dept,
+                        shift=sh,
+                    )
+                    u.save()
+
+                elif type_of_user == "superuser":
+                    u = User.objects.create_superuser(
+                        email=email,
+                        
+                        password=psw,
+                        name= name,
+                        department=dept,
+                        shift=sh,
+                    )
+                    u.save()
+                
+            except Exception as e:
+                print(e)
+                res["error"]= "There is some internal server error"
+                res["success"] = False
+       
+    else:
+        res["error"]="Either this is not a POST request Or You are not a authorized user"
+    
+    json_data = res
+    json_data = json.dumps(json_data)
+    return HttpResponse(json_data, content_type="application/json")

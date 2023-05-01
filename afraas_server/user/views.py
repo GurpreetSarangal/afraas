@@ -3,7 +3,13 @@ from django.http import HttpResponse
 
 # Create your views here.
 def dashboard(request):
-    return HttpResponse("this is user dashboard")
+    context = {
+        "title" : "AFRAAS | Staff",
+        "page" : "dashboard",
+        "absentees" : [],
+        "entries":[],
+    }
+    return render(request, "user/dashboard.html", context)
 
 def apply_leave(request):
     return HttpResponse("apply leave here")
