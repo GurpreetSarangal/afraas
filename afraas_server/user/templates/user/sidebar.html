@@ -1,0 +1,177 @@
+
+
+{% load static %}
+<button data-drawer-target="separator-sidebar" data-drawer-toggle="separator-sidebar" aria-controls="separator-sidebar" type="button" class="inline-flex items-center p-2 mt-2 ml-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+  <span class="sr-only">Open sidebar</span>
+  <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+     <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
+  </svg>
+</button>
+
+<aside id="separator-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
+  <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+    <a href="{% url 'staff:dashboard' %} " class="flex items-center pl-2.5 mb-5">
+      <img src=" {% static 'intro/pictures/edited-logo.png' %} " class="h-8 mr-3 sm:h-7 rounded" alt="Flowbite Logo" />
+      <!-- <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">AFRAAS</span> -->
+      <span class="font-sans font-bold text-gray-100 text-3xl">AFRAAS</span>
+
+      <!-- <div>
+        <div class="mx-3 color-">
+            <p class="font-sans font-bold text-gray-100 text-3xl">AFRAAS</p>
+            <p class="font-sans text-gray-300 text-base">Automatic Face Recognition Attendance and Security System</p>
+    
+        </div>
+    </div> -->
+   </a>
+     <ul class="space-y-4 font-medium">
+        
+        <li>
+          
+           <a href=" {% url 'user:dashboard' %} " class="flex items-center p-2 rounded-lg    
+           {% if page == 'dashboard' %}
+           bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%
+           text-gray-900 dark:text-white 
+           {% else %}
+           text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700
+           {% endif %}
+           ">
+            
+              <span class="ml-3">Dashboard</span>
+           </a>
+        </li>
+        <li>
+           <a href="{% url 'user:profile' %}" class="flex items-center p-2 rounded-lg    
+           {% if page == 'profile' %}
+           bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%
+           text-gray-900 dark:text-white 
+           {% else %}
+           text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700
+           {% endif %}">
+              
+              <span class="flex-1 ml-3 whitespace-nowrap">Profile</span>
+             
+           </a>
+          </li>
+          <li>
+             <a href="{% url 'user:apply_leave' %}" class="flex items-center p-2 rounded-lg    
+             {% if page == 'apply_leave' %}
+             bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%
+           text-gray-900 dark:text-white 
+             {% else %}
+             text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700
+             {% endif %}">
+                
+                <span class="flex-1 ml-3 whitespace-nowrap">Apply Leave</span>
+             </a>
+          </li>
+          <li>
+            <a href="{% url 'user:yearly_data' %}" class="flex items-center p-2 rounded-lg    
+            {% if page == 'yearly_data' %}
+            bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%
+            text-gray-900 dark:text-white 
+            {% else %}
+            text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700
+            {% endif %}">
+               
+               <span class="ml-4">Yearly Report</span>
+            </a>
+         </li>
+        
+     </ul>
+     <ul class="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
+
+      {% if page == "dashboard" %}
+        {% if user.is_staff %}
+
+        <li>
+            <a href="{% url 'staff:dashboard' %}" class="flex items-center p-2 rounded-lg    
+            
+            text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700
+            ">
+            <i class="fi ml-2 fi-rs-arrow-alt-circle-left text-2xl text-emerald-300"></i>
+            <span class="ml-3 ">Staff Dashboard</span>
+            </a>
+        </li>
+
+        {% endif %}
+        {% if user.is_superuser %}
+        
+        <li>
+            <a href="{% url 'admin:index' %}" class="flex items-center p-2 rounded-lg    
+            
+            text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700
+            ">
+            <i class="fi ml-2 fi-rs-chess-king text-2xl text-red-300"></i>
+            <span class="ml-3">Back To Admin Panel</span>
+            </a>
+        </li>
+        {% endif %}
+        
+      <li>
+        <button type="button" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 logout-button" >
+            <i class="ml-2 fi fi-rs-log-out text-2xl text-pink-300"></i>
+            <span class="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item>Logout</span>
+            <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+        </button>
+        <ul id="logout-dropdown" class="hidden py-2 space-y-1">
+              <li>
+                <a href=" {% url 'logout' %} " class=" flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800
+                    ">
+                    <span class="relative  transition-all ease-in duration-75 bg-white dark:bg-gray-900 w-auto  rounded-md group-hover:bg-opacity-0 flex items-center text-pink-200 group-hover:text-gray-100" style="
+                    padding-left: 3.5rem;
+                    padding-right: 5.2rem;
+                    padding-top: 0.625rem;    padding-bottom: 0.625rem;">
+                     
+                                    
+                  <i class=" fi fi-rs-face-fearful text-2xl font-extralight text-pink-200"></i>
+                  
+              <span class="flex-1 ml-3 whitespace-nowrap text-sm ">Really??</span>
+                      
+                  
+                      
+                  
+                </a>
+                  </li>
+                  <li>
+                    <a href="#" class=" flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 nevermind
+                    ">
+                    <span class="relative py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0 flex items-center text-green-200 group-hover:text-gray-100 " style="    
+                    padding-left: 3.4rem;
+                    padding-right: 3.9rem;
+                    padding-top: 0.625rem;
+                    padding-bottom: 0.625rem;">
+                     
+                      <i class=" fi font-extralight fi-rs-face-relieved text-2xl text-emerald-300" ></i>
+                      <span class="flex-1 ml-3 whitespace-nowrap text-sm">Nevermind</span>
+                  </span>
+                      
+                  
+                </a>
+              </li>
+            
+            </ul>
+      </li>
+
+      
+
+      {% endif %}
+        
+        
+     </ul>
+  </div>
+</aside>
+
+
+{% block sidebar_script %}
+
+
+<script>
+  $(".logout-button").on("click", function (e) {
+    $("#logout-dropdown").toggle();
+});
+$(".nevermind").on("click", function(e) {
+  $("#logout-dropdown").toggle();
+});
+
+</script>
+  {% endblock sidebar_script %}

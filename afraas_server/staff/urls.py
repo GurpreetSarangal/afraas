@@ -5,7 +5,9 @@ app_name = "staff"
 
 urlpatterns = [
     path('', views.dashboard, name="dashboard"),
-    path('users/', views.users),
-    path('other-tables/', views.other_tables),
+    path('users/', views.users, name="users"),
+    path('other-tables/', views.other_tables, name="other-tables"),
+    path('attendance/', views.attendance, name="attendance"),
+    path('reports/', views.reports, name="reports"),
    
 ]

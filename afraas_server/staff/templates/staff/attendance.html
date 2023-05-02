@@ -1,0 +1,152 @@
+{% extends 'staff/base.html' %}
+{% load static %}
+
+
+{% block container %}
+{% include 'staff/sidebar.html' %}
+<div class="p-4 sm:ml-64">
+    <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+        <div class="flex justify-start flex-col h-40 mb-4 rounded bg-gray-50 dark:bg-gray-800 flex-wrap ">
+            <div class="text-4xl text-gray-100 my-3 mx-2">
+                Attendance Table
+            </div>
+            <div class="text-base text-gray-400 dark:text-gray-400  mx-3">
+                You can view records here
+            </div>
+        </div>
+        
+        <div class="flex items-center justify-center  mb-4 rounded bg-gray-50 dark:bg-gray-800">
+           
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="p-4">
+                                ID
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                User
+                            </th>
+                            <th scope="col" class="px-4 py-3">
+                                Time Stamp
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Status
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Were they on time?
+                            </th>
+                            {% if user.is_superuser %}
+                            <th scope="col" class="px-6 py-3">
+                                Action
+                            </th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for obj in content %}
+                        
+                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                            <td class="w-4 p-4">
+                                {{ obj.id }}
+                            </td>
+                            <th scope="row"
+                            class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                            {% if obj.user.is_superuser %}
+
+                            <i class="w-10 h-10 rounded-full fi text-2xl fi-rs-chess-king text-pink-200"></i>
+
+                            {% elif obj.user.is_staff %}
+
+                            <i class="w-10 h-10 rounded-full fi text-2xl fi-rs-badge-check text-indigo-200"></i>
+
+                            {% else %}
+
+                            <i class="w-10 h-10 rounded-full fi text-2xl  fi-rs-circle-user text-emerald-200"></i>
+
+                            {% endif %}
+                            <div class="pl-3">
+                                <div>
+
+                                    <span class="text-base font-semibold">
+                                        #{{ obj.user.id }} {{ obj.user.name }}
+                                        
+                                        {% if obj.user.itself == "true" %}
+                                        <span class=" text-sm text-gray-400 ">
+                                            (you)
+                                        </span>
+                                        {% endif %}
+                                    </span>
+
+                                </div>
+                                <div class="font-normal text-gray-500">
+                                    {{ obj.user.email}}
+                                </div>
+                            </div>
+                        </th>
+                            <td class="px-4 py-4 w-max">
+                                {{ obj.time_stamp|date:"D j, N Y g:i A " }}
+                            </td>
+                            <td class="px-6 py-4 flex items-center">
+                                <div class="mt-1">
+
+                                {% if obj.status == "enter" %}
+                                <i class="h-2.5 w-2.5 fi fi-rs-enter text-green-500 text-lg mr-2"></i>
+                                {% elif obj.status == "exit" %}
+                                <i class="h-2.5 w-2.5 fi fi-rs-exit text-blue-500 text-lg mr-2"></i>
+                                {% elif obj.status == "absent" %}
+                                <i class="h-2.5 w-2.5 fi fi-rs-circle-cross text-red-500 text-lg mr-2"></i>
+                                
+                                
+                                {% endif %}
+                            </div>
+                                <div>
+                                    {{ obj.status|capfirst }}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center flex-wrap">
+                                    <div class="w-full flex items-center">
+
+                                        {% if obj.user.status == "on time" %}
+                                        <div class="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
+                                        {% elif obj.user.status == "on leave" %}
+                                        <div class="h-2.5 w-2.5 rounded-full bg-yellow-500 mr-2"></div>
+                                        {% elif obj.user.status == "late" or obj.user.status == "left before time" %}
+                                        <div class="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>
+                                        {% elif obj.user.status == "left after time" %}
+                                        <div class="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
+                                        {% endif %}
+                                        <div>
+                                            {{ obj.user.status }}
+                                        </div>
+                                    </div>
+                                    
+    
+                                    
+                                    <div class="text-gray-500">
+                                        [{{ obj.user.time_in|time:"P" }} - {{ obj.user.time_out|time:"P" }}]
+
+                                    </div>
+                                    
+                                   
+                                    
+    
+                                </div>
+                            </td>
+                            {% if user.is_superuser %}
+                            <td class="px-6 py-4">
+                                <a href=" {% url 'admin:reports_attendance_change' obj.id %} " class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                        
+                    </tbody>
+                </table>
+            
+         </div>
+         
+         
+    </div>
+ </div>
+{% endblock container %}

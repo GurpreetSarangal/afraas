@@ -4,5 +4,6 @@
     ],
     "python.envFile": "${workspaceFolder}/.venv",
     "python.terminal.activateEnvInCurrentTerminal": true,
-    "python.analysis.extraPaths": []
+    "python.analysis.extraPaths": [],
+    "python.analysis.typeCheckingMode": "basic"
 }

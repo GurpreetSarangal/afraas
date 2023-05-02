@@ -3,7 +3,7 @@ from django.contrib.auth.base_user import BaseUserManager
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
-    def create_user(self, email, password, is_staff=False, **extra_fields):
+    def create_user(self, email, password=None, is_staff=False, **extra_fields):
         if not email:
             ValueError("email is required")
 

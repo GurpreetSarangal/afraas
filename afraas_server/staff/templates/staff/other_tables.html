@@ -1,0 +1,131 @@
+{% extends 'staff/base.html' %}
+{% load static %}
+
+
+{% block container %}
+{% include 'staff/sidebar.html' %}
+
+<div class="p-4 sm:ml-64">
+    <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+        <div class="flex justify-start flex-col h-40 mb-4 rounded bg-gray-50 dark:bg-gray-800 flex-wrap ">
+            <div class="text-4xl text-gray-100 my-3 mx-2">
+                Shifts and Departments Table
+            </div>
+            <div class="text-base text-gray-400 dark:text-gray-400  mx-3">
+                You can view records here
+            </div>
+        </div>
+
+       <div class="grid grid-cols-2 gap-4 mb-4">
+          <div class="flex items-center justify-center  rounded bg-gray-50 dark:bg-gray-800 flex-wrap">
+            <div class="flex w-full justify-between rounded bg-gray-50 h-20 dark:bg-gray-800 items-center group">
+                <div class="text-3xl text-gray-100 dark:text-gray-300 ml-8">
+       
+                   Shifts Table
+                </div>
+                {% if user.is_superuser %}
+                <a href=" {% url 'admin:user_shift_changelist' %} "
+                   class="  dark:text-gray-500 text-gray-400 transition-transform duration-200 text-lg mt-2 flex flex-row mr-8 w-fit group-hover:text-gray-100 hover:underline">
+                   <div>
+                      Edit
+       
+                   </div>
+                   <i class="fi ml-2 fi-rs-arrow-up-right-from-square"></i>
+                </a>
+                {% endif %}
+            </div>
+            <div class="relative overflow-x-auto w-full">
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-4 py-5">
+                                Shift
+                            </th>
+                            <th scope="col" class="px-4 py-5">
+                                Time In
+                            </th>
+                            <th scope="col" class="px-6 py-5">
+                                Time Out
+                            </th>
+                            <th scope="col" class="px-6 py-5">
+                                No of Employees
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for obj in shift_table %}
+                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                            <th scope="row" class="px-4 py-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                #{{ obj.id }} {{ obj.name }}
+                            </th>
+                            <td class="px-4 py-6">
+                                {{ obj.time_in|time:"P" }}
+                            </td>
+                            <td class="px-6 py-6">
+                                {{ obj.time_out|time:"P" }}
+                            </td>
+                            <td class="px-6 py-6">
+                                {{ obj.no_of_emp }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        
+                    </tbody>
+                </table>
+            </div>
+          </div>
+          <div class="flex items-center justify-center  rounded bg-gray-50 dark:bg-gray-800 flex-wrap">
+            <div class="flex w-full justify-between rounded bg-gray-50 h-20 dark:bg-gray-800 items-center group">
+                <div class="text-3xl text-gray-100 dark:text-gray-300 ml-8">
+       
+                   Departments Table
+                </div>
+                {% if user.is_superuser %}
+                <a href=" {% url 'admin:user_department_changelist' %} "
+                   class="  dark:text-gray-500 text-gray-400 transition-transform duration-200 text-lg mt-2 flex flex-row mr-8 w-fit group-hover:text-gray-100 hover:underline">
+                   <div>
+                      Edit
+       
+                   </div>
+                   <i class="fi ml-2 fi-rs-arrow-up-right-from-square"></i>
+                </a>
+                {% endif %}
+            </div>
+            <div class="relative overflow-x-auto w-full">
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-6 py-5">
+                                Department
+                            </th>
+                            <th scope="col" class="px-6 py-5">
+                                No of User
+                            </th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for obj  in department_table %}
+                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                            <th scope="row" class="px-6 py-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                               #{{ obj.id }} {{ obj.name }}
+                            </th>
+                            <td class="px-6 py-6">
+                                {{ obj.no_of_emp }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        
+                    </tbody>
+                </table>
+            </div>
+          </div>
+          
+          
+       </div>
+       
+       
+    </div>
+ </div>
+
+{% endblock container %}

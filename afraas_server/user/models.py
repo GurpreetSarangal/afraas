@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser,  PermissionsMixin, Group, Permission
 from .manager import UserManager
+from django.contrib.auth.hashers import make_password
 
 # Create your models here.
 class Department(models.Model):
@@ -28,7 +29,7 @@ class User(AbstractUser, PermissionsMixin):
     name = models.CharField(max_length=255)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     shift = models.ForeignKey(Shift, on_delete=models.CASCADE)
-    password = models.CharField(('password'), max_length=128, default='root')
+    
     
     USERNAME_FIELD = 'email'
 
@@ -50,3 +51,4 @@ class User(AbstractUser, PermissionsMixin):
         related_name='myuser_set',
         related_query_name='user',
     )
+    

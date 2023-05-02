@@ -1,0 +1,29 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://kit.fontawesome.com/17951cbad8.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="shortcut icon" href="{% static 'intro\pictures\edited-logo.png' %}" type="image/x-icon"> 
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css'>
+    <script src="{% static 'intro\scripts\jquery-3.6.4.min.js' %}"></script>
+    <script src="{% static 'intro\scripts\jquery.validate.min.js' %}"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <title>{{title}}</title>
+    {% block css %}{% endblock css %}
+  </head>
+  <body>
+    {% block container %}{% endblock container %}
+
+    
+
+    {% block sidebar_script %}{% endblock sidebar_script %}
+    {% block javascript %}{% endblock javascript %}
+
+  </body>
+</html>
