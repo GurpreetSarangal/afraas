@@ -21,8 +21,8 @@ url = "http://localhost:8000/api/report/"
 now = datetime.datetime.now()
 data = {
     "type" : "department",
-    "time" : "daily",
-    "dept_id" : 2,
+    "time" : "weekly",
+    "dept_id" : 1,
 }
 
 
