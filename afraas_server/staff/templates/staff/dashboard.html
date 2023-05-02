@@ -42,11 +42,11 @@
             class="flex items-center justify-center flex-col h-24 rounded bg-gray-50 dark:bg-gray-800 text-center flex-wrap ">
             <div class="num w-full flex justify-center  ">
                {% comment %} {{ present_digits}} {% endcomment %}
-               {% comment %} {% for dig in present_digits %} {% endcomment %}
+               {% for dig in all_users_digits %}
 
-               <i class="fi fi-rs-5 text-indigo-300 text-3xl "></i>
+               <i class="fi fi-rs-{{ dig }} text-indigo-300 text-3xl "></i>
 
-               {% comment %} {% endfor %} {% endcomment %}
+               {% endfor %}
 
 
             </div>

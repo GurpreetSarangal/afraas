@@ -158,6 +158,18 @@ def dashboard(request):
 
             context["not_marked_digits"].append(dig)
             print("not_marked dig - ", dig)
+
+    context["all_users_digits"] = []
+    all_users = context["total_users"]
+    if all_users == 0:
+        context["all_users_digits"].append(0)
+    else:
+        while(all_users > 0):
+            dig = all_users%10
+            all_users = all_users//10
+
+            context["all_users_digits"].append(dig)
+            print("all_users dig - ", dig)
     
 
     # print(context["total_present"])   
@@ -263,7 +275,7 @@ def users(request):
                 status = "Leave"
 
             else:
-                if st[0].time_stamp.time() < obj.shift.time_in:
+                if st[0].time_stamp.time() <= obj.shift.time_in:
                     status = "Present"
                 else:
                     status = "Late"
