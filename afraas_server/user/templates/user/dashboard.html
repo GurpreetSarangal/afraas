@@ -4,7 +4,7 @@
 {% block container %}
 {% include "user/sidebar.html" %}
 
-<div class="p-4 sm:ml-64">
+<div class="p-4 sm:ml-64" style="width: 50rem;">
     <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
         <div class="flex justify-start flex-col h-40 mb-4 rounded bg-gray-50 dark:bg-gray-800 flex-wrap ">
             <div class="text-4xl text-gray-100 my-3 mx-2">
@@ -16,17 +16,88 @@
             </div>
         </div>
        <div class="grid grid-cols-3 gap-4 mb-4">
-          <div class="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
-             <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
+          <div class="flex col-span-2 items-center justify-between h-28 rounded bg-gray-50 dark:bg-gray-800">
+            <div class=" ml-4">
+                <div class="num w-full flex justify-center  ">
+
+                    {% comment %} {% for dig in present_digits %} {% endcomment %}
+     
+                    {% comment %} <i class="fi fi-rs-{{ dig }} text-emerald-300 text-3xl "></i> {% endcomment %}
+                    <i class="fi fi-rs-9 text-emerald-300 text-3xl "></i>
+                    <i class="fi fi-rs-9 text-emerald-300 text-3xl "></i>
+                    <i class="fi fi-rs-9 text-emerald-300 text-3xl "></i>
+     
+                    {% comment %} {% endfor %} {% endcomment %}
+                    
+                    
+                 </div>
+                 <div class="heading text-sm text-gray-100 w-28 text-center ">
+                    Working Days
+                 </div>
+            </div>
+            <div>
+                <div class="num w-full flex justify-center  ">
+
+                    {% comment %} {% for dig in present_digits %} {% endcomment %}
+     
+                    {% comment %} <i class="fi fi-rs-{{ dig }} text-emerald-300 text-3xl "></i> {% endcomment %}
+                    <i class="fi fi-rs-5 text-emerald-300 text-3xl "></i>
+                    <i class="fi fi-rs-5 text-emerald-300 text-3xl "></i>
+                    <i class="fi fi-rs-5 text-emerald-300 text-3xl "></i>
+     
+                    {% comment %} {% endfor %} {% endcomment %}
+                    {% comment %} <i class="fi fi-rs-{{ total_present }} text-emerald-300 text-3xl "></i> {% endcomment %}
+                    <!-- <i class=" fi fi-rs-5 text-emerald-300 text-3xl "></i> -->
+     
+                 </div>
+                 <div class="heading text-sm text-gray-100 w-28 text-center ">
+                    On Time
+                 </div>
+            </div>
+            <div class="mr-4">
+                <div class="num w-full flex justify-center  ">
+
+                    {% comment %} {% for dig in present_digits %} {% endcomment %}
+     
+                    {% comment %} <i class="fi fi-rs-{{ dig }} text-emerald-300 text-3xl "></i> {% endcomment %}
+                    <i class="fi fi-rs-6 text-emerald-300 text-3xl "></i>
+                    <i class="fi fi-rs-6 text-emerald-300 text-3xl "></i>
+                    <i class="fi fi-rs-6 text-emerald-300 text-3xl "></i>
+     
+                    {% comment %} {% endfor %} {% endcomment %}
+                    {% comment %} <i class="fi fi-rs-{{ total_present }} text-emerald-300 text-3xl "></i> {% endcomment %}
+                    <!-- <i class=" fi fi-rs-5 text-emerald-300 text-3xl "></i> -->
+     
+                 </div>
+                 <div class="heading text-sm text-gray-100 w-28 text-center ">
+                    Late
+                 </div>
+            </div>
           </div>
-          <div class="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
-             <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
-          </div>
+          <div class="flex  justify-center rounded bg-gray-50 h-28 dark:bg-gray-800 flex-col group">
+            <div class="text-xl text-gray-100 dark:text-gray-300 ml-6">
+   
+               On a leave today??
+            </div>
+            <a href=" {% url 'staff:users' %} "
+               class="  dark:text-gray-500 text-gray-400 transition-transform duration-200 text-lg mt-2 flex flex-row ml-6 w-fit group-hover:text-gray-100 hover:underline">
+               <div>
+                  Mark Here
+   
+               </div>
+               <i class="fi ml-2 fi-rs-arrow-up-right-from-square"></i>
+            </a>
+         </div>
           
        </div>
        
        <div class="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800">
-          <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
+        <div class="text-xl text-gray-400 dark:text-gray-200  mx-2 my-2">
+            Monthly report - {{ chart_data.month }} {{ chart_data.year }}
+         </div>
+         <div id="myChart2">
+   
+         </div>
        </div>
        <div class="grid grid-cols-2 gap-4 mb-4">
           <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
@@ -61,5 +132,195 @@
        </div>
     </div>
  </div>
+ <aside id="separator-sidebar"
+ class="fixed top-0 right-0 z-40 w-72 h-screen transition-transform -translate-x-full sm:translate-x-0"
+ aria-label="Sidebar">
+ <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+    <a href="{% url 'user:dashboard' %} " class="flex items-center pl-2.5 mb-5 justify-center flex-wrap flex-col">
 
+       <img src=" {% static 'pictures\hacker.png' %} " class="h-8 mr-3 sm:h-28" alt="Flowbite Logo" />
+       <span class=" mt-2 font-sans font-bold text-gray-100 text-base"> {{ user.name }} </span>
+       <span class=" mt-1 font-sans font-bold text-gray-100 text-xs">{% if user.is_superuser %}
+          Admin
+          {% else %}
+          Staff
+          {% endif %} </span>
+    </a>
+    <div href="" class="flex items-center  p-2 rounded-lg text-2xl   justify-between 
+           reload-absent
+           text-gray-900 dark:text-white group
+          
+           ">
+
+       <span class="ml-3 mt-1">Recent Absents</span>
+       <i
+          class="fi text-gray-400 transition-transform duration-200 fi-rs-refresh text-lg mr-2 mt-2 group-hover:text-gray-100"></i>
+    </div>
+    <ul class="space-y-1 font-medium absentees">
+
+
+       {% if absentees|length > 0 %}
+
+       {% for obj in absentees %}
+       <li>
+          <a href="{% url 'staff:users' %}" class="flex items-center p-1  rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+          text-gray-900 dark:text-white hover:text-gray-100  
+          ">
+             <i class="ml-2 fi fi-rs-delete-user text-2xl"></i>
+             <div class="flex justify-center flex-col">
+                <span class="flex-1 ml-3 whitespace-nowrap text-sm">#{{obj.id}} {{obj.name}}</span>
+                <span class="flex-1 ml-3 whitespace-nowrap text-xs">{{ obj.time_and_date|date:"D d M Y" }}
+                   {{ obj.time_and_date|time:"h:i A"}}</span>
+                {% comment %} <span class="flex-1 ml-3 whitespace-nowrap text-xs">{{ obj.time_and_date }}</span>
+                {% endcomment %}
+
+             </div>
+
+          </a>
+       </li>
+
+       {% endfor %}
+
+       {% else %}
+
+       <li>
+          <a href="{% url 'staff:attendance' %}" class="flex items-center p-1  rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+           text-gray-900 dark:text-white    
+           ">
+             <i class="ml-2 fi fi-rs-delete-user text-2xl"></i>
+             <span class="flex-1 ml-3 whitespace-nowrap text-sm">No Records to show</span>
+
+          </a>
+       </li>
+
+       {% endif %}
+
+
+
+
+    </ul>
+    <div href="" class="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700 flex items-center p-2 rounded-lg text-2xl    
+          group reload-entries justify-between
+          text-gray-900 dark:text-white 
+          
+          ">
+
+       <span class="ml-3">Recent Entries</span>
+       <i
+          class="fi text-gray-400 transition-transform duration-200 fi-rs-refresh text-lg mr-2 mt-2 group-hover:text-gray-100"></i>
+    </div>
+    <ul class="space-y-1 font-medium  entries">
+
+
+       {% if entries|length > 0 %}
+
+       {% for obj in entries %}
+       <li>
+          <a href="{% url 'staff:users' %}" class="flex items-center p-2 rounded-lg    
+      bg-gradient-to-r from-blue-500 via-green-400 to-blue-200
+      text-gray-900 dark:text-white 
+      ">
+
+             <i class="ml-2 fi  fi-rs-user-add text-2xl"></i>
+
+             <div class="flex justify-center flex-col">
+                <span class="flex-1 ml-3 whitespace-nowrap text-sm">#{{obj.id}} {{obj.name}}</span>
+                <span class="flex-1 ml-3 whitespace-nowrap text-xs">
+                   {% comment %} {{ obj.time_and_date|date:"D d M Y" }} {{ obj.time_and_date|time:"H:i"}}
+                   {% endcomment %}
+                   {{ obj.time_and_date|date:"D d M Y" }} {{ obj.time_and_date|time:"h:i A"}}
+                </span>
+
+             </div>
+
+          </a>
+       </li>
+       {% endfor %}
+
+
+       {% else %}
+       <li>
+          <a href="{% url 'staff:users' %}" class="flex items-center p-1  rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+      text-gray-900 dark:text-white    
+      ">
+             <i class="ml-2 fi fi-rs-delete-user text-2xl"></i>
+             <span class="flex-1 ml-3 whitespace-nowrap text-sm">No Records to show</span>
+
+          </a>
+       </li>
+       {% endif %}
+
+
+
+    </ul>
+ </div>
+</aside>
+
+{{ content|json_script:"content" }}
+{{ chart_data|json_script:"chart_data" }}
 {% endblock container %}
+
+{% block javascript %}
+<script>
+
+    const content = JSON.parse(document.getElementById('content').textContent);
+    const chart_data = JSON.parse(document.getElementById('chart_data').textContent);
+
+    $(document).ready(function () {
+        google.charts.load('current', { 'packages': ['line'] });
+      google.charts.setOnLoadCallback(drawChartMonthly);
+
+      function drawChartMonthly() {
+
+         var data = new google.visualization.DataTable();
+         data.addColumn('number', 'Day');
+         data.addColumn('timeofday', 'Time In');
+         data.addColumn('timeofday', 'Time Out');
+         data.addColumn('timeofday', 'Marked Leave');
+         data.addColumn('timeofday', 'Absent');
+         data.addColumn('timeofday', 'Shift Time Out');
+
+         // data.addRows([
+         //   [1,  37.8, 80.8, 41.8, 50],
+         //   [2,  30.9, 69.5, 32.4, 50],
+         //   [3,  25.4,   57, 25.7, 50],
+         //   [4,  11.7, 18.8, 10.5, 50],
+         //   [5,  11.9, 17.6, 10.4, 50],
+         //   [6,   8.8, 13.6,  7.7, 50],
+         //   [7,   7.6, 12.3,  9.6, 50],
+         //   [8,  12.3, 29.2, 10.6, 50],
+         //   [9,  16.9, 42.9, 14.8, 50],
+         //   [10, 12.8, 30.9, 11.6, 50],
+         //   [11,  5.3,  7.9,  4.7, 50],
+         //   [12,  6.6,  8.4,  5.2, 50],
+         //   [13,  4.8,  6.3,  3.6, 50],
+         //   [14,  4.2,  6.2,  3.4, 50]
+         // ]);
+         console.log(chart_data)
+         data.addRows(chart_data.data);
+
+         var options = {
+            chart: {
+               title: chart_data.month+" "+chart_data.year,
+               subtitle: 'Daily report for a month'
+            },
+            colors: ['black', 'blue', 'red', 'green', 'yellow'],
+            axes: {
+               x: {
+                  0: { side: 'top' }
+               }
+            },
+            width: 720,
+            height: 400,
+            curveType: 'function',
+         };
+
+         var chart = new google.charts.Line(document.getElementById('myChart2'));
+
+         chart.draw(data, google.charts.Line.convertOptions(options));
+      }
+
+    });
+
+</script>
+{% endblock javascript %}
