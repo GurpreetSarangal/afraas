@@ -10,7 +10,7 @@ import calendar
 # Create your views here.
 def dashboard(request):
     context = {
-        "title" : "AFRAAS | Staff",
+        "title" : "AFRAAS | User",
         "page" : "dashboard",
         "working_day_digits":[0],
         "on_time_digits":[0],
