@@ -74,7 +74,7 @@ def mark_attendance(label):
     data = {
         "label": label, 
         "time-stamp": now,
-        "status": "exit"
+        "status": "enter"
     }
     response = requests.post(url, data=data)
     json_data = response.text

@@ -16,7 +16,7 @@ class Camera:
         if cam==1:
             self.capture = cv.VideoCapture(self.SelectedMode[0])
         else:
-            self.capture = cv.VideoCapture(self.SelectedMode[0], self.SelectedMode[1])
+            self.capture = cv.VideoCapture(self.SelectedMode[0])
         
         self.absPath = os.path.abspath('')
         
