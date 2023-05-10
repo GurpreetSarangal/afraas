@@ -134,5 +134,5 @@ dmypy.json
 #testing files
 *testing.py
 
-afraas_server/static
+
 .vscode/

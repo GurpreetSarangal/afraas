@@ -1,5 +1,24 @@
 {% extends 'intro/base.html' %}
 {% load static %}
+{% block css %}
+
+<style>
+
+.gradient-button {
+  background-image: linear-gradient(to right, #37cfae, #00c9cb, #00c1e5, #00b5f9, #00a5ff, #6b95fc, #9f81ee, #c76ad3, #e557a9, #ee517d, #e75953, #d2692d);
+  background-size: 400%;
+  color: #fff;
+  border: none;
+  
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-position 0.5s ease;
+}
+  .gradient-button:hover {
+  background-position: 100%;
+}
+</style>
+{% endblock css %}
 
 {% block container %} 
 
@@ -95,17 +114,19 @@
 
             <div class="flex justify-start items-center mt-2 ">
               
-              <span class="mr-2 w-6 arrow duration-100 no-underline overflow-hidden text-center p-1 ">&#10229;</span>
-              <div class=" mt-2 hide-login cursor-pointer text-lg mr-2 hover:underline duration-100 p-1 mr-1">Back
+              
+              <div class=" mt-2 hide-login cursor-pointer text-lg mr-2 duration-100 p-1 mr-1">
+                
+                <i class="fi fi-rs-angle-circle-left text-gray-500 text-2xl hover:text-gray-600 " ></i>
               </div>
               <div class="mt-2 ml-2 ">
-                <button type="submit" class="inline-block bg-gray-100 text-md px-12 py-4 leading-none border rounded text-gray-900 border-gray-500 hover:border-transparent duration-300 hover:text-white hover:bg-gray-700 mt-4 lg:mt-0 overflow-hidden"
+                <button  class="inline-block  text-md px-12 py-4 leading-none border rounded hover:border-transparent duration-300  mt-4 lg:mt-0 overflow-hidden gradient-button "
               >Login<span class="ml-2 w-0 overflow-hidden ">&#10230;</span></button>
               </div>
             </div>
             
           </form>
-          <div class="self-end mt-28 show-login">
+          <div class="self-end mt-4 show-login">
             <p
             
             class="inline-block bg-gray-100 text-md px-12 py-4 leading-none border rounded text-gray-900 border-gray-500 hover:border-transparent duration-300 hover:text-white hover:bg-gray-700 mt-4 lg:mt-0 overflow-hidden"
