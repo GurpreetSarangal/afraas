@@ -593,3 +593,48 @@ def add_user(request):
     json_data = res
     json_data = json.dumps(json_data)
     return HttpResponse(json_data, content_type="application/json")
+
+@csrf_exempt
+def mark_absent(request):
+    id = int(request.POST["id"])
+    
+    print(type(id))
+    print(type(request.user.id))
+    print(id, request.user.id)
+    res = {
+        "error": "",
+        "success": False,
+    }
+    if request.method == "POST":
+        if request.user.id == id:
+            try:
+                now = datetime.datetime.now()
+                u = User.objects.get(id=id)
+                ch = Attendance.objects.filter(user=u,
+                time_stamp__date=now.date() ).order_by("-id")
+                if len(ch)>0:
+                    if ch[0].status == "exit":
+                        res["error"]="You have already left the premesis"
+                    elif ch[0].status == "enter":
+                        res["error"] = "You are already in the office"
+                    elif ch[0].status == "absent":
+                        res["error"] = "You already marked on leave"
+                else:
+
+                    att = Attendance(
+                        user=u,
+                        time_stamp = datetime.datetime.now.time(),
+                        status="absent",
+                    )
+                    att.save()
+                    res["success"] = True
+            except:
+                res["error"] = "Not Marked due to internal error"
+        else:
+            res["error"] = "ID Sent and user logged in don't match"
+    else:
+        
+        res["error"] = "Not a POST Request"
+    json_data = res
+    json_data = json.dumps(json_data)
+    return HttpResponse(json_data, content_type="application/json")
