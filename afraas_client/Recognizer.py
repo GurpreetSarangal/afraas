@@ -19,9 +19,11 @@ class Recognizer:
             
             l = np.load(self.pathToLabels)
             self.labels = l.tolist()
+            # print(self.labels)
 
             f = np.load(self.pathToFeatures, allow_pickle=True)
             self.features = f.tolist()
+            # print(self.features)
 
         except:
             message = "haar cascade or model is not found on the path provided"
@@ -35,8 +37,10 @@ class Recognizer:
         
     def whoIs(self, Face_roi):
         Face_roi = cv.cvtColor(Face_roi, cv.COLOR_BGR2GRAY)
+        # cv.imshow("test", Face_roi)
         label, confidence = self.model.predict(Face_roi)
-        if confidence >= 50:
+        print(label, confidence)
+        if confidence >= 60:
             return self.people[label], confidence
         else:
             return "", False
@@ -111,9 +115,11 @@ class Recognizer:
                 people.append(i)
                 pathToUser = os.path.join(self.DIR, i)
                 label = people.index(i)
-
+                print(self.DIR, i , label)
                 for img in os.listdir(pathToUser):
+                    print(" - - -  ", img)
                     imgPath = os.path.join(pathToUser, img)
+                    
                     img_arr = cv.imread(imgPath)
                     img_arr = cv.cvtColor(img_arr, cv.COLOR_BGR2GRAY)
                     features.append(img_arr)

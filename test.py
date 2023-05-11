@@ -17,13 +17,13 @@ data = {
 #     "time" : "monthly",
 #     "u_id" : 3,
 # }
-url = "http://localhost:8000/api/report/"
-now = datetime.datetime.now()
-data = {
-    "type" : "department",
-    "time" : "weekly",
-    "dept_id" : 1,
-}
+# url = "http://localhost:8000/api/report/"
+# now = datetime.datetime.now()
+# data = {
+#     "type" : "department",
+#     "time" : "weekly",
+#     "dept_id" : 1,
+# }
 
 
 # url = "http://localhost:8000/api/check_registered/"
