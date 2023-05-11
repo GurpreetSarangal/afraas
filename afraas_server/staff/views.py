@@ -158,6 +158,18 @@ def dashboard(request):
 
             context["not_marked_digits"].append(dig)
             print("not_marked dig - ", dig)
+
+    context["all_users_digits"] = []
+    all_users = context["total_users"]
+    if all_users == 0:
+        context["all_users_digits"].append(0)
+    else:
+        while(all_users > 0):
+            dig = all_users%10
+            all_users = all_users//10
+
+            context["all_users_digits"].append(dig)
+            print("all_users dig - ", dig)
     
 
     # print(context["total_present"])   
@@ -263,7 +275,7 @@ def users(request):
                 status = "Leave"
 
             else:
-                if st[0].time_stamp.time() < obj.shift.time_in:
+                if st[0].time_stamp.time() <= obj.shift.time_in:
                     status = "Present"
                 else:
                     status = "Late"
@@ -413,13 +425,69 @@ def attendance(request):
 
     return render(request, "staff/attendance.html", context) 
 
+
 def reports(request):
     context = {
-        "title" : "Attendance | Staff",
+        "title" : "Reports | Staff",
         "page" : "reports",
+        "users_table_content":[],
+        "department_table_content": [],
     }
+    all_users = User.objects.all()
+    now = datetime.datetime.now()
+    for obj in all_users:
+        status = ""
+        print(obj)
+        st = Attendance.objects.filter(user=obj, time_stamp__date=now.date()).order_by("-id")
+        if len(st) >= 1:
+            print(st[0])
+            # print(st[1])
+            if st[0].status == "exit":
+                status = "Left the Premesis"
 
-    return HttpResponse("reports")
+            elif st[0].status == "absent":
+                status = "Leave"
+
+            else:
+                if st[0].time_stamp.time() <= obj.shift.time_in:
+                    status = "Present"
+                else:
+                    status = "Late"
+        else:
+            status = "Not Marked Yet"
+        
+        itself = "false"
+        if request.user == obj:
+            itself = "true"
+
+        temp = {
+            "id": obj.id,
+            "itself": itself,
+            "is_superuser":obj.is_superuser,
+            "is_staff":obj.is_staff,
+            "name": obj.name,
+            "email": obj.email,
+            "department": obj.department.name,
+            "timings": {
+                    "in": obj.shift.time_in,
+                    "out": obj.shift.time_out,
+            },
+            "status": status,
+        }
+        context["users_table_content"].append(temp)
+
+    all_depts = Department.objects.all().order_by("id")
+    for obj in all_depts:
+        u = User.objects.filter(department=obj)
+        temp = {
+            "id": obj.id,
+            "name": obj.name,
+            "no_of_emp": len(u),
+        }
+        context["department_table_content"].append(temp)
+
+    # print(context["content"])
+    return render(request, "staff/reports.html", context)
 
 def truncate(f, n):
     '''Truncates/pads a float f to n decimal places without rounding'''

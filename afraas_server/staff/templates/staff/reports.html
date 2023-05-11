@@ -1,0 +1,405 @@
+{% extends 'staff/base.html' %} 
+
+{% load static %} 
+
+{% block css %}
+<style>
+    #reports_wrapper{
+        margin: 2;
+        width: 100%;
+    }
+    #reports thead tr{
+        background: #384955 ;
+        border-radius: 0.125rem;
+        color: #EEFBFF;
+        
+    }
+
+</style>
+{% endblock css %}
+
+{% block container %} 
+{%include "staff/sidebar.html" %}
+
+<div class="p-4 sm:ml-64">
+    <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+        <div class="flex justify-start flex-col h-40 mb-4 rounded bg-gray-50 dark:bg-gray-800 flex-wrap ">
+            <div class="text-4xl text-gray-100 my-3 mx-2">
+                Reports
+            </div>
+            <div class="text-base text-gray-400 dark:text-gray-500  mx-2">
+                Generate different reports for official use.
+            </div>
+            <div id="desc" class="text-xl text-gray-200 dark:text-gray-200  mt-8 mb-2 ml-5">
+                
+            </div>
+        </div>
+       <div class="grid grid-cols-3 gap-4 mb-4">
+        
+          <div class="flex justify-center  h-28 rounded bg-gray-50 dark:bg-gray-800 flex-wrap flex-col ">
+            
+            <div class="text-xl text-gray-100 dark:text-gray-300 ml-4 mb-2">
+                Select the type of report
+            </div>
+            <div class="w-52 ml-3">
+
+                <select id="type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                
+                <option value="user" selected>User</option>
+                <option value="dept">Department</option>
+                <option value="org">Organization</option>
+                </select>
+            </div>
+          </div>
+          <div class="flex justify-center  h-28 rounded bg-gray-50 dark:bg-gray-800 flex-wrap flex-col ">
+            <div class="text-xl text-gray-100 dark:text-gray-300 ml-4 mb-2">
+                Select time period
+            </div>
+            <div class="w-52 ml-3">
+
+                <select id="time" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                
+                <option value="daily" selected>Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+                </select>
+            </div>
+            
+          </div>
+          <div class="flex items-center justify-center h-28 rounded bg-gray-50 dark:bg-gray-800">
+            <button id="generate" class="flex items-center items-center py-3 px-6  w-44 justify-between rounded-lg 
+            bg-gradient-to-r from-purple-600 via-pink-400 to-orange-300
+            text-gray-900 dark:text-white hover:text-gray-100  
+            ">
+                <i class="ml-2 fi fi-rs-database text-2xl"></i>
+                <div class="flex justify-center flex-col mr-4 ">
+                    <span class="flex-1 ml-3 whitespace-nowrap text-lg">
+                        Generate
+
+                    </span>                
+
+                </div>
+
+            </button>
+            <button id="reset" class="flex items-center items-center py-3 px-6  justify-center rounded-lg 
+            text-gray-900 dark:text-white  
+            text-gray-900 dark:text-white hover:text-gray-100  
+            ">
+                
+                <div class="flex justify-center flex-col mr-4 ">
+                    <i
+                    class="fi text-gray-400 transition-transform duration-200 fi-rs-refresh text-lg  group-hover:text-gray-100"></i>               
+
+                </div>
+
+            </button>
+          </div>
+       </div>
+       <div id="table-container" class="flex items-center justify-center py-2 px-2 mb-4 rounded bg-gray-50 dark:bg-gray-800 text-gray-300">
+        <table id="reports" class="hidden order-column display text-gray-300 w-full">
+            
+        </table>
+        
+        <table id="users_table" class=" w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <caption class="p-5 text-lg font-semibold text-left text-gray-900 bg-white dark:text-white dark:bg-gray-800">
+                All Users
+                <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+                    Browse the list of Users and select a department to generate report for them.
+                </p>
+            </caption>
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="p-4">
+                        <div class="flex items-center">
+                            <input id="checkbox-all-search" type="radio"
+                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500  focus:ring-2 " disabled>
+                            <label for="checkbox-all-search" class="sr-only">checkbox</label>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Name
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Department
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Timings
+                    </th>
+                   
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in users_table_content %}
+
+                <tr
+                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <td class="w-4 p-4">
+                        <div class="flex items-center">
+                            <input id="checkbox-user-{{ obj.id }}" type="radio" name="selected_id" value="{{ obj.id }}"
+                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" 
+
+                                {% if obj.status == "Not Marked Yet" %}
+
+                                {% else %}
+                                 {% comment %} disabled {% endcomment %}
+
+                                {% endif %}
+                                >
+                            <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+                        </div>
+                    </td>
+                    <th scope="row"
+                        class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                        {% if obj.is_superuser %}
+
+                        <i class="w-10 h-10 rounded-full fi text-2xl fi-rs-chess-king text-pink-200"></i>
+
+                        {% elif obj.is_staff %}
+
+                        <i class="w-10 h-10 rounded-full fi text-2xl fi-rs-badge-check text-indigo-200"></i>
+
+                        {% else %}
+
+                        <i class="w-10 h-10 rounded-full fi text-2xl  fi-rs-circle-user text-emerald-200"></i>
+
+                        {% endif %}
+                        <div class="pl-3">
+                            <div>
+
+                                <span class="text-base font-semibold">
+                                    #{{ obj.id }} {{ obj.name }}
+
+                                    {% if obj.itself == "true" %}
+                                    <span class=" text-sm text-gray-400 ">
+                                        (you)
+                                    </span>
+                                    {% endif %}
+                                </span>
+
+                            </div>
+                            <div class="font-normal text-gray-500">
+                                {{ obj.email}}
+                            </div>
+                        </div>
+                    </th>
+
+                    <td class="px-6 py-4">
+                        {{ obj.department }}
+                    </td>
+
+                    <td class="px-6 py-4">
+                        {{ obj.timings.in|time:"P" }}-{{ obj.timings.out|time:"P" }}
+                    </td>
+
+
+                </tr>
+                {% endfor %}
+
+
+            </tbody>
+        </table> 
+        <table id="departments_table" class=" hidden  w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <caption class="p-5 text-lg font-semibold text-left text-gray-900 bg-white dark:text-white dark:bg-gray-800">
+                All Departments
+                <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+                    Browse the list of Departments and select a department to generate report for it.
+                </p>
+            </caption>
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-5">
+                        <div class="flex items-center">
+                            <input id="" type="radio"
+                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500  focus:ring-2 " disabled>
+                            <label for="checkbox-all-search" class="sr-only">checkbox</label>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-5">
+                        Department
+                    </th>
+                    <th scope="col" class="px-6 py-5">
+                        No of User
+                    </th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj  in department_table_content %}
+                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <td class="w-4 p-4">
+                        <div class="flex items-center">
+                            <input id="checkbox-dept-{{ obj.id }}" type="radio" name="selected_id" value="{{ obj.id }}"
+                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" 
+
+                                 
+
+                                
+                                >
+                            <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+                        </div>
+                    </td>
+                    <th scope="row" class="px-6 py-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                       #{{ obj.id }} {{ obj.name }}
+                    </th>
+                    <td class="px-6 py-6">
+                        {{ obj.no_of_emp }}
+                    </td>
+                </tr>
+                {% endfor %}
+                
+            </tbody>
+        </table>
+       
+    </div>
+ </div>
+{% endblock container %}
+
+{% block javascript %}
+<script>
+    $(document).ready(function(e) {
+        $("#type_button").on("click", function(e) {
+            $("#type_dropdown").toggle();
+        });
+
+        $("#reset").on("click", function(e) {
+            value = $("#type").val();
+            $("#reports_wrapper").hide();
+
+            if (value == "user"){
+                $("#users_table").show();
+                $("#departments_table").hide();
+            }
+            else if (value == "dept"){
+                $("#users_table").hide();
+                $("#departments_table").show();
+            }
+            else if(value == "org"){
+                $("#users_table").hide();
+                $("#departments_table").hide();
+            }
+        });
+
+        $("#type").on("change", function(e) {
+            value = $("#type").val();
+            console.log(value);
+            if(value == "user"){
+                $("#departments_table").hide();
+                $("#reports_wrapper").hide();
+                $("#table-container").removeClass("h-64");
+                $("#users_table").show();
+            }
+            else if(value == "dept"){
+                $("#users_table").hide();
+                $("#reports_wrapper").hide();
+                $("#table-container").removeClass("h-64");
+                $("#departments_table").show();
+               
+            }
+            else if(value == "org"){
+            $("#reports_wrapper").hide();
+                $("#users_table").hide();
+                $("#departments_table").hide();
+                $("#table-container").addClass("h-64");
+            }
+        });
+
+        
+
+        $("#time_button").on("click", function(e) {
+            $("#time_dropdown").toggle();
+        });
+
+        $(document).on('click', function (event) {
+            if (!$(event.target).closest('#type_button, #type_dropdown').length) {
+                $('#type_dropdown').hide();
+            }
+        });
+
+        $(document).on('click', function (event) {
+            if (!$(event.target).closest('#time_button, #time_dropdown').length) {
+                $('#time_dropdown').hide();
+            }
+        });
+
+        $("#generate").on("click", function(e){
+            type_val = $("#type").val();
+            $("#table-container").removeClass("h-64");
+            time_val = $("#time").val();
+            id_val = $("input[type=radio][name=selected_id]:checked").val();
+            console.log(id_val)
+            if ( id_val === undefined){
+                if (type_val != "org"){
+                    alert("Please select an user or a department");
+                    return
+                }
+            }
+            data = {
+                type: type_val,
+                time: time_val,
+                id: id_val,
+            }
+            console.log(data)
+
+            url = `http://localhost:8000{% url 'reports:reports' %}`
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: data,
+                success: function(response) {        
+                if (response.success) {
+                    
+                    $("#users_table").hide();
+                    $("#departments_table").hide();
+                    console.log(response.content)
+                    
+                    fill_table(response.content);
+                    
+                    $("#reports").show();
+                    $("#reports_wrapper").show();
+                } else {
+                    
+                   alert(response.error)
+                }
+                }
+            });
+            
+        });
+
+        function fill_table(data){
+            $("#desc").html(data.title);
+            table = `
+            <thead>
+                <tr>
+            `;
+            console.log(data.heading)
+            console.log(data.data)
+            
+            data.heading.forEach(function(h) {
+                console.log(h)
+                table += `<th>`+h+`</th>`;
+            }); 
+            table += `</tr>
+            </thead> 
+            <tbody> `;
+            for( row of data.data){
+                table += ` <tr> `;
+                    for(col of row){
+                        table+=`<td>`+col+`</td>`;
+                    }
+                table += `</tr>`;
+            }
+            table += `</tbody>`
+            $("#reports").html(table);
+            console.log($("#reports").html());
+            $("#reports").DataTable();
+            // $("#reports").show();
+            
+        }
+
+        
+    });
+     
+
+</script>
+{% endblock javascript %}

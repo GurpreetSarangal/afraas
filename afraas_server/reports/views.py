@@ -10,6 +10,7 @@ from datetime import date, timedelta
 from django.db.models import Q
 from pytz import timezone
 import pytz
+import calendar
 
 # Create your views here.
 @csrf_exempt
@@ -96,6 +97,10 @@ def mark(request):
 
 @csrf_exempt
 def check_registered(request):
+    res = {
+            "error" : "",
+            "content" : [],
+        }
     if request.method == "POST":
         id = request.POST['id']
         u = User.objects.filter(id=id)
@@ -116,172 +121,112 @@ def check_registered(request):
             json_data = json.dumps(res)
             return HttpResponse(json_data, content_type="application/json")
             
-    
-    return HttpResponse("Not a post request")
+    else:
+        res["error"]= "Not a post request"
+        json_data = json.dumps(res)
+        return HttpResponse(json_data, content_type="application/json")
 
 @csrf_exempt
 def report(request):
-    if request.method == "POST":
-        type_of_report = request.POST['type']
-        time = request.POST['time']
+    res = {
+        "error" : "",
+        "success": False,
+        "content" : [],
+    }
+    if request.user.is_staff:
 
-        if type_of_report == "user":
-            # print(request.POST["u_id"])
-            json_data = get_user(time, request.POST["u_id"])
-            json_data = json.dumps(json_data)
-            return HttpResponse(json_data, content_type="application/json") 
+        if request.method == "POST":
+            type_of_report = request.POST['type']
+            time = request.POST['time']
 
-        elif type_of_report == "department":
-            json_data = get_dept(time, request.POST["dept_id"])
-            json_data = json.dumps(json_data)
-            return HttpResponse(json_data, content_type="application/json") 
 
-        elif type_of_report == "organization":
-            return HttpResponse()
+
+            if type_of_report == "user":
+                # print(request.POST["u_id"])
+                if time not in ["daily", "monthly"]:
+                    res["error"]="Unsupported Time Period"
+                else:
+                    
+                    try:
+                        u_id = int(request.POST['id'])   
+                        res["content"] = get_user(time, u_id)
+                        res["success"] = True
+                    except:
+                        res["error"] = "No User is selected"
+                        res["success"]=False
+                    
+                 
+
+            elif type_of_report == "dept":
+                if time not in ["daily",  "monthly"]:
+                    res["error"] = "Unsupported Time Period"
+                else:
+                    try:
+                        dept_id = int(request.POST["id"])
+                    except:
+                        res["error"]= "department was not selected"
+                        res["success"] = False
+                    
+                    users = User.objects.filter(department__id=request.POST["id"])
+                    if len(users)>0:
+                        res["content"] = get_dept(time, request.POST["id"])
+                        res["success"] = True
+                    else:
+                        res["error"] = "No user is listed in Department"
+                        
+                
+
+            elif type_of_report == "org":
+                if time not in ["daily","monthly"]:
+                    res["error"] = "Unsupported Time Period"
+                else:
+                    res["content"] = get_org(time)
+                    res["success"] = True
+                    # res["error"]="Reports for Organization are under development right now."
+                
+            else:
+                res["error"]="Unsupported type of report"
+                return HttpResponse()
         else:
-            return HttpResponse()
+            res["error"]="Not a post request"
+            
     else:
-        return HttpResponse("not a post request")
+        res["error"]="You are not authorized"
+    json_data = json.dumps(
+                    res,
+                    sort_keys=True,
+                    indent=1,
+                    default=default
+                )
+    return HttpResponse(json_data, content_type="application/json")
+
+        
 
 def get_user( time, u_id):
     u = User.objects.get(id=u_id)
     res = {
-            "heading" : [],
-            "content" : [],
-            "error" : "",
-
+        "heading" : [],
+        "data" : [],
     }
 
     if time == "daily":
-        now = datetime.datetime.now()
-        res = {
-            "heading" : ["Date", "In Time", "Out Time", "Shift", "Leave"],
-            "content" : [],
-            "error" : "",
-
-        }
-        try:
-            att_check = Attendance.objects.get(time_stamp__year=now.year, time_stamp__month=now.month, time_stamp__day=now.day, user__id=u.id, status="absent")
-            print(att_check)
-            res["content"].append( [
-                f"{now.day}/{now.month}/{now.year}",
-                "-",
-                "-",
-                f"{u.shift.time_in.hour}-{u.shift.time_in.minute} to {u.shift.time_out.hour}-{u.shift.time_out.minute}",
-                "yes",
-            ] )
-        except:
-
-            att_enter = Attendance.objects.filter(time_stamp__year=now.year, time_stamp__month=now.month, time_stamp__day=now.day, user__id=u.id, status="enter")
-
-            att_exit = Attendance.objects.filter(time_stamp__year=now.year, time_stamp__month=now.month, time_stamp__day=now.day, user__id=u.id, status="exit")
-            if len(att_exit)==0:
-                res["content" ].append([
-                    f"{now.day}/{now.month}/{now.year}",
-                    f"{att_enter[0].time_stamp.hour}-{att_enter[0].time_stamp.minute}",
-                    # f"{att_exit[0].time_stamp.hour}-{att_enter[0].time_stamp.minute}",
-                    f"-",
-                    f"{u.shift.time_in.hour}-{u.shift.time_in.minute} to {u.shift.time_out.hour}-{u.shift.time_out.minute}", 
-                    f"-"               
-                ])
-            else:
-                res["content" ].append([
-                    f"{now.day}/{now.month}/{now.year}",
-                    f"{att_enter[0].time_stamp.hour}-{att_enter[0].time_stamp.minute}",
-                    f"{att_exit[0].time_stamp.hour}-{att_enter[0].time_stamp.minute}",
-                    # f"-",
-                    f"{u.shift.time_in.hour}-{u.shift.time_in.minute} to {u.shift.time_out.hour}-{u.shift.time_out.minute}", 
-                    f"-"               
-                ])
-        return res
-
-    elif time=="weekly":
-        res["error"] = "weekly for user is not supported"
-        return res
+        res = get_user_daily(u)    
     
-    # elif time=="monthly":
-    #     now = datetime.datetime.now()
+    elif time=="monthly":
+        res = get_user_monthly(u)
 
-    #     filtered_objects = Attendance.objects.filter(time_stamp__month=now.month, time_stamp__year=now.year, user=u)
-
-    #     time_in = u.shift.time_in
-    #     grouped_objects = filtered_objects.annotate(week=ExtractWeek('time_stamp')).order_by('week')
-        
-    #     res = {
-    #         "heading" : ["Week No", "Present Days", "Total Late", "Total Leave"],
-    #         "content" : [],
-    #         "error" : "",
-    #     }
-
-    #     present = late = absent = 0
-    #     init_week = grouped_objects[0].week
-    #     # print(grouped_objects)
-    #     for obj in grouped_objects:
-    #         # print(obj, obj.week)
-    #         if obj.week == init_week:
-    #             if obj.status == "enter":
-    #                 if obj.time_stamp.time() <= time_in:
-    #                     present += 1
-    #                 else:
-    #                     late +=1
-    #             if obj.status == "absent":
-    #                 absent += 1
-    #         else:
-    #             temp = [init_week, present, late, absent]
-    #             res["content"].append(temp)
-    #             present = late = absent = 0
-
-    #             init_week = obj.week
-
-    #             if obj.status == "enter":
-    #                 if obj.time_stamp.time() <= time_in:
-    #                     present += 1
-    #                 else:
-    #                     late +=1
-    #             if obj.status == "absent":
-    #                 absent += 1
-            
-    #     temp = [init_week, present, late, absent]
-    #     res["content"].append(temp)
-    #     # print(res)
-    #     return res
     
     
     elif time=="yearly":
-        res["error"] = "Yearly not supported yet"
-        return res
+        res = "Yearly not supported yet"
+    
+    return res
 
-def get_dept( time, dept_id):
-    res = {
-            "heading" : [],
-            "content" : [],
-            "error" : "",
-    }
+def get_dept(time, dept_id):
 
     if time=="daily":
-        now = datetime.datetime.now()
-        user_set = User.objects.filter(department__id=dept_id)
-        if(len(user_set) == 0):
-            res["error"] = "No User is listed in this Department"
-            return res
-
-        present = Attendance.objects.filter(user__department__id=dept_id, time_stamp__date=now.date(), status="enter")
-        leave = Attendance.objects.filter(user__department__id=dept_id, time_stamp__date=now.date(), status="absent")
-
-        absent = len(user_set) - len(present) - len(leave)
-
-
-        res = {
-            "heading" : ["Date", "No of Employee", "Present", "Absent", "Leave"],
-            "content" : [
-                f"{now.day}/{now.month}/{now.year}",
-                f"{len(user_set)}",
-                f"{len(present)}",
-                f"{absent}",
-                f"{len(leave)}",
-            ],
-        }
-        return res
+        return get_dept_daily(dept_id)
+                
         
     
     elif time=="weekly":
@@ -344,78 +289,19 @@ def get_dept( time, dept_id):
         }
         return res
 
-    # elif time=="monthly":
-    #     now = datetime.datetime.now()
-
-    #     filtered_objects = Attendance.objects.filter(time_stamp__month=now.month, time_stamp__year=now.year, user__department__id=dept_id)
-
-    #     grouped_objects = filtered_objects.annotate(week=ExtractWeek('time_stamp')).order_by('week')
-
-    #     res = {
-    #         "heading" : ["Week No", "No of Employees", "Present", "Absent", "Leave", "Average Attendace"],
-    #         "content": [],
-    #         "error" : "",
-            
-    #     }
-
-    #     emp = len(User.objects.filter(department__id=dept_id))
-
-    #     present = absent = leave = avg_attendance = 0
-    #     try:
-    #         init_week = grouped_objects[0].week
-    #     except:
-    #         res["error"] = "No User is listed in this Department"
-    #         return res
-
-    #     for obj in grouped_objects:
-    #         if obj.week == init_week:
-    #             # print(obj, obj.week)
-    #             if obj.status == "enter":
-    #                 present +=1
-    #                 # print("Present = ", present, "status = ", obj.status)
-    #             elif obj.status == "absent":
-    #                 leave +=1
-    #                 # print("Leave = ", leave, "status = ", obj.status)
-    #         else:
-    #             absent = (emp*7) - (present + leave)
-    #             avg_attendance = (present / (emp*7))*100
-    #             temp = [
-    #                 init_week,
-    #                 emp,
-    #                 present,
-    #                 absent,
-    #                 leave,
-    #                 avg_attendance,
-    #             ]
-    #             # print(temp)
-    #             res["content"].append(temp)
-    #             init_week = obj.week
-    #             present = absent = leave = avg_attendance = 0
-                
-                
-    #     absent = emp - present - leave
-    #     avg_attendance = (present / emp)*100
-    #     temp = [
-    #         init_week,
-    #         emp,
-    #         present,
-    #         absent,
-    #         leave,
-    #         avg_attendance,
-    #     ]
-    #     res["content"].append(temp)
-    #     # print(res)
-    #     return res
+    elif time=="monthly":
+        return get_dept_monthly(dept_id)
     
     elif time=="yearly":
         pass
     
-    else:
 
-        pass
-
-def get_org(request, time):
-    pass
+def get_org(time):
+    if time=="daily":
+        return get_org_daily()
+    if time=="monthly":
+        return get_org_monthly()
+    
 
 @csrf_exempt
 def recent_absent(request):
@@ -593,3 +479,381 @@ def add_user(request):
     json_data = res
     json_data = json.dumps(json_data)
     return HttpResponse(json_data, content_type="application/json")
+
+@csrf_exempt
+def mark_absent(request):
+    id = int(request.POST["id"])
+
+    print(type(id))
+    print(type(request.user.id))
+    print(id, request.user.id)
+    res = {
+        "error": "",
+        "success": False,
+    }
+    if request.method == "POST":
+        if request.user.id == id:
+            try:
+                now = datetime.datetime.now()
+                u = User.objects.get(id=id)
+                ch = Attendance.objects.filter(user=u,
+                time_stamp__date=now.date() ).order_by("-id")
+                if len(ch)>0:
+                    if ch[0].status == "exit":
+                        res["error"]="You have already left the premesis"
+                    elif ch[0].status == "enter":
+                        res["error"] = "You are already in the office"
+                    elif ch[0].status == "absent":
+                        res["error"] = "You already marked on leave"
+                else:
+
+                    att = Attendance(
+                        user=u,
+                        time_stamp = datetime.datetime.now.time(),
+                        status="absent",
+                    )
+                    att.save()
+                    res["success"] = True
+            except:
+                res["error"] = "Not Marked due to internal error"
+        else:
+            res["error"] = "ID Sent and user logged in don't match"
+    else:
+        
+        res["error"] = "Not a POST Request"
+    json_data = res
+    json_data = json.dumps(json_data)
+    return HttpResponse(json_data, content_type="application/json")
+
+def get_user_daily(user, now = datetime.datetime.now()):
+    res = {
+        "title": "#"+str(user.id)+" "+user.name+"'s today's report",
+        "heading": [
+            "User",
+            "Date",
+            "Status",
+            "Time In",
+            "Time Out",
+            "Shift Time In",
+            "Shift Time Out",
+        ],
+        "data":[],
+    }
+
+    date = now.strftime("%a,%d %b, %Y")
+    time_in = datetime.time(0)
+    time_out = datetime.time(0)
+    status = ""
+    att = Attendance.objects.filter(user = user, time_stamp__date = now.date()).order_by("-id")
+    print(att)
+    if len(att) == 2:
+        time_out = att[0].time_stamp.time()
+        time_in = att[1].time_stamp.time()
+        status = "left the premesis"
+    elif len(att) == 1:
+        status = att[0].status
+        if status == "enter":
+            time_in = att[0].time_stamp
+        elif status == "absent":
+            status = "on leave"
+    elif len(att) == 0:
+        status = "not marked yet"
+    
+    
+    uname = "# "+str(user.id)+" "+user.name
+
+    res["data"] = [
+        [
+            uname,
+            date,
+            status,
+            time_in.strftime("%H.%M %p"),
+            time_out.strftime("%H.%M %p"),
+            user.shift.time_in.strftime("%H.%M %p"),
+            user.shift.time_out.strftime("%H.%M %p")
+        ]
+    ]
+    return res
+
+def get_user_monthly(user):
+    res = {
+        "title": "#"+str(user.id)+" "+user.name+"'s monthly report",
+        "heading": [
+            "Week No",
+            "Days On Time",
+            "Days Late",
+            "Days Leave",
+            "Days Absent",
+        ],
+        "data": [],
+    }
+    now = datetime.datetime.now()
+    year = now.year
+    month = now.month
+    cal = calendar.monthcalendar(year, month)
+    days_on_time_month = 0
+    days_late_month = 0
+    days_leave_month = 0
+    days_absent_month = 0
+    week_no = 0
+    # Iterate over each week
+
+    for week in cal:
+        # Iterate over each day in the week
+        week_no += 1
+        days_on_time_week = 0
+        days_late_week = 0
+        days_leave_week = 0
+        days_absent_week = 0
+
+        for day in week:
+            # If the day is 0, it means it's a day from the previous or next month
+
+            if day == 0:
+                continue
+            # Do something with the day
+
+            att = Attendance.objects.filter(
+                time_stamp__day = day,
+                time_stamp__month=month,
+                time_stamp__year=year,
+                user = user).order_by("-id")
+            
+            if len(att) == 2:
+                if att[0].time_stamp.time() <= user.shift.time_in:
+                    days_on_time_week +=1
+                else:
+                    
+                    days_late_week +=1
+                
+            elif len(att) == 1:
+                if att[0].status=="absent":
+                    days_leave_week+=1
+                else:
+                    days_on_time_week +=1
+            
+            elif len(att) == 0:
+                days_absent_week += 1
+
+        days_on_time_month += days_on_time_week
+        days_late_month += days_late_week
+        days_leave_month += days_leave_week
+        days_absent_month += days_absent_week
+
+        temp = [
+            week_no,
+            days_on_time_week,
+            days_late_week,
+            days_leave_week,
+            days_absent_week,
+        ]
+        res["data"].append(temp)
+
+    temp = [
+        "total",
+        days_on_time_month,
+        days_late_month,
+        days_leave_month,
+        days_absent_month,
+    ]
+    res["data"].append(temp)
+    return res
+
+def get_org_daily():
+    res = {
+        "title": "An organisational report on daily basis",
+        "heading":[
+            "Date",
+            "User",
+            "Dept",
+            "Status",
+            "Time In",
+            "Time Out", 
+            "Shift",
+        ],
+        "data" : [],
+    }
+    all_users = User.objects.all().order_by("id")
+    for user in all_users:
+        temp = get_user_daily(user)
+        u_data = [
+            temp["data"][0][1],
+            temp["data"][0][0],
+            user.department.name,
+            temp["data"][0][2],
+            temp["data"][0][3],
+            temp["data"][0][4],
+            temp["data"][0][5]+ " - "+temp["data"][0][6],            
+        ]
+        res["data"].append(u_data)
+    return res
+
+
+def get_org_monthly():
+    res = {
+        "title": "An organisational report for a month",
+        "heading": [
+            "User",
+            "Dept",
+            "On Time Days",
+            "Days On Leave",
+            "Days Absent",
+            "Days Present",
+        ],
+        "data":[],
+    }
+    now = datetime.datetime.now()
+    year = now.year
+    month = now.month
+    cal = calendar.monthcalendar(year, month) 
+
+    all_user = User.objects.all().order_by("id")
+    for user in all_user:
+        uname = "#"+str(user.id)+" "+user.name
+        dept = user.department.name
+        on_time_days = 0
+        days_on_leave = 0
+        days_absent = 0
+        days_present = 0
+
+
+        for week in cal:
+            for day in week:
+                if day == 0:
+                    continue
+                print(day)
+                date = datetime.datetime(year, month, day)
+                print(date)
+                att = Attendance.objects.filter(time_stamp__date = date, user=user).order_by("-id")
+                if len(att) == 2:
+                    time_in = att[1].time_stamp.time()
+                    time_out = att[0].time_stamp.time()
+
+                    if time_in < user.shift.time_in:
+                        days_present += 1
+                        on_time_days += 1
+                    else:
+                        days_present +=1
+
+                elif len(att) == 1:
+                    if att[0].status=="absent":
+                        days_on_leave += 1
+                
+                elif len(att) == 0:
+                    days_absent += 1
+
+        temp = [
+            uname,
+            dept,
+            on_time_days,
+            days_on_leave,
+            days_absent,
+            days_present,
+        ]
+
+        res["data"].append(temp)
+    return res
+
+def get_dept_daily(dept_id):
+    res = {
+        "title": "An organisational report on daily basis",
+        "heading":[
+            "Date",
+            "User",
+            "Dept",
+            "Status",
+            "Time In",
+            "Time Out", 
+            "Shift",
+        ],
+        "data" : [],
+    }
+    dept = Department.objects.get(id=dept_id)
+    all_users = User.objects.filter(department=dept).order_by("id")
+    
+
+    for user in all_users:
+        temp = get_user_daily(user)
+        u_data = [
+            temp["data"][0][1],
+            temp["data"][0][0],
+            user.department.name,
+            temp["data"][0][2],
+            temp["data"][0][3],
+            temp["data"][0][4],
+            temp["data"][0][5]+ " - "+temp["data"][0][6],            
+        ]
+        res["data"].append(u_data)
+    return res
+
+def get_dept_monthly(dept_id):
+    res = {
+        "title": "An organisational report for a month",
+        "heading": [
+            "User",
+            "Dept",
+            "On Time Days",
+            "Days On Leave",
+            "Days Absent",
+            "Days Present",
+        ],
+        "data":[],
+    }
+    now = datetime.datetime.now()
+    year = now.year
+    month = now.month
+    cal = calendar.monthcalendar(year, month) 
+
+    dept = Department.objects.get(id=dept_id)
+    all_user = User.objects.filter(department=dept).order_by("id")
+    for user in all_user:
+        uname = "#"+str(user.id)+" "+user.name
+        dept = user.department.name
+        on_time_days = 0
+        days_on_leave = 0
+        days_absent = 0
+        days_present = 0
+
+
+        for week in cal:
+            for day in week:
+                if day == 0:
+                    continue
+                print(day)
+                date = datetime.datetime(year, month, day)
+                print(date)
+                att = Attendance.objects.filter(time_stamp__date = date, user=user).order_by("-id")
+                if len(att) == 2:
+                    time_in = att[1].time_stamp.time()
+                    time_out = att[0].time_stamp.time()
+
+                    if time_in < user.shift.time_in:
+                        days_present += 1
+                        on_time_days += 1
+                    else:
+                        days_present +=1
+
+                elif len(att) == 1:
+                    if att[0].status=="absent":
+                        days_on_leave += 1
+                
+                elif len(att) == 0:
+                    days_absent += 1
+
+        temp = [
+            uname,
+            dept,
+            on_time_days,
+            days_on_leave,
+            days_absent,
+            days_present,
+        ]
+
+        res["data"].append(temp)
+    return res
+
+
+def default(o):
+    if isinstance(o, (datetime.date, datetime.datetime, datetime.time)):
+        return o.isoformat()
+
