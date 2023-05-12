@@ -14,29 +14,51 @@ class Recognizer:
         self.pathToFeatures = r"afraas_client\resources\models\features.npy"
         try:
             self.cascade = cv.CascadeClassifier(self.pathToCascade)
+            
+            
+            
+
+        except:
+            message = "haar cascade is not found on the path provided"
+            raise Exception(message)
+        
+        try:
             self.model = cv.face.LBPHFaceRecognizer_create()
             self.model.read(model)
-            
             l = np.load(self.pathToLabels)
             self.labels = l.tolist()
+            # print(self.labels)
 
             f = np.load(self.pathToFeatures, allow_pickle=True)
             self.features = f.tolist()
-
+            # print(self.features)
         except:
-            message = "haar cascade or model is not found on the path provided"
-            raise Exception(message)
-        
+            rec = Recognizer()
+            rec.recompileDataSet()
+            self.model = cv.face.LBPHFaceRecognizer_create()
+            self.model.read(model)
+            l = np.load(self.pathToLabels)
+            self.labels = l.tolist()
+            # print(self.labels)
+
+            f = np.load(self.pathToFeatures, allow_pickle=True)
+            self.features = f.tolist()
+            # print(self.features)
+
         self.DIR = r'afraas_client\resources\database\persons'
         self.people = []
 
         for i in os.listdir(self.DIR):
+            # print(i)
             self.people.append(i)
         
     def whoIs(self, Face_roi):
         Face_roi = cv.cvtColor(Face_roi, cv.COLOR_BGR2GRAY)
+        # cv.imshow("test", Face_roi)
         label, confidence = self.model.predict(Face_roi)
-        if confidence >= 50:
+        print(label, confidence)
+        if confidence >= 60 and confidence <= 100:
+            print(self.people[label], confidence)
             return self.people[label], confidence
         else:
             return "", False
@@ -60,6 +82,7 @@ class Recognizer:
         if name not in self.people:
             self.people.append(name)
             self.people.sort()
+            print(self.people)
 
         label = self.people.index(name)
 
@@ -100,6 +123,7 @@ class Recognizer:
         new_trained_model.train(feat_array, label_array)
 
         self.model = new_trained_model
+        print(self.pathToModel)
         self.model.save(self.pathToModel)
         
     def recompileDataSet(self):
@@ -109,16 +133,21 @@ class Recognizer:
             labels = []
             for i in os.listdir(self.DIR):
                 people.append(i)
+                people.sort()
                 pathToUser = os.path.join(self.DIR, i)
                 label = people.index(i)
-
+                print(self.DIR, i , label)
                 for img in os.listdir(pathToUser):
+                    print(" - - -  ", img)
                     imgPath = os.path.join(pathToUser, img)
+                    
                     img_arr = cv.imread(imgPath)
                     img_arr = cv.cvtColor(img_arr, cv.COLOR_BGR2GRAY)
+                    img_arr = np.array(img_arr,'uint8')
                     features.append(img_arr)
                     labels.append(label)
             
+            print(people, labels)
             self.people = people        
             self.features = features
             self.labels = labels

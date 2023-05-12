@@ -11,6 +11,7 @@ import mysql.connector
 import cv2 as cv
 
 
+
 # def initiate():
 #     project = Project()
 #     project.
@@ -33,7 +34,7 @@ def startUp():
 
 
 
-def standBy(camera, recognizer):
+def standBy(camera, recognizer, status):
     window = Project()
     prev_label = ''
     count = 0
@@ -44,13 +45,15 @@ def standBy(camera, recognizer):
         face = recognizer.cropToFace(frame)
         if len(face) > 0:
             # cv.imshow("face", face)
+            # print("face dected")
             label, confidence = recognizer.whoIs(face)
+            # print(label, confidence)
             if confidence:
                 camera.mark(frame, label, recognizer.x,recognizer.y,recognizer.w,recognizer.h)
                 if label == prev_label:
                     count += 1
                     if count >= 3:
-                        mark_attendance(label)
+                        mark_attendance(label, status=status)
                         count = 0
                 else:
                     count = 0
@@ -61,31 +64,43 @@ def standBy(camera, recognizer):
         
 
 def boot():
-    
-    cam, rec = startUp()
-    standBy(camera= cam, recognizer= rec)
-
-
-def mark_attendance(label):
-    print(label)
-    url = "http://localhost:8000/api/mark/"
-    now = datetime.datetime.now()
-
-    data = {
-        "label": label, 
-        "time-stamp": now,
-        "status": "enter"
-    }
-    response = requests.post(url, data=data)
-    json_data = response.text
-    data = json.loads(json_data)
-    if data["error"] != "":
-        print("ERROR: ",data["error"])
-    
+    print("please specify the status to be marked: ")
+    print("1: enter")
+    print("2: exit")
+    ch = int(input())
+    if ch==1:
+        status = "enter"
+    elif ch==2:
+        status = "exit"
     else:
-        print("User [",label,"] is marked present")
+        print("wrong selection")
+        return
+    cam, rec = startUp()
+    standBy(camera= cam, recognizer= rec, status=status)
 
-def addNewFace(id, name):
+    
+
+def mark_attendance(label, status):
+    print(label)
+    
+    # url = "http://localhost:8000/api/mark/"
+    # now = datetime.datetime.now()
+
+    # data = {
+    #     "label": label, 
+    #     "time-stamp": now,
+    #     "status": status,
+    # }
+    # response = requests.post(url, data=data)
+    # json_data = response.text
+    # data = json.loads(json_data)
+    # if data["error"] != "":
+    #     print("ERROR: ",data["error"])
+    
+    # else:
+    #     print("User [",label,f"] is marked {status}")
+
+def addNewFace(id):
     url = "http://localhost:8000/api/check_registered/"
     data = {
         "id" : id,
