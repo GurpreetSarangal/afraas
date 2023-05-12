@@ -100,7 +100,7 @@ def mark_attendance(label, status):
     # else:
     #     print("User [",label,f"] is marked {status}")
 
-def addNewFace(id, name):
+def addNewFace(id):
     url = "http://localhost:8000/api/check_registered/"
     data = {
         "id" : id,

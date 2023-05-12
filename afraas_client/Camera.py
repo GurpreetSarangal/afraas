@@ -113,6 +113,7 @@ class Camera:
                 if tempId >= 100 or cv.waitKey(20) == ord('e') :
                     break
             os.chdir(self.absPath)
+            
             recognizer.saveChangedDataset()
         except Exception as e:  
             os.chdir(self.absPath)
@@ -125,16 +126,24 @@ class Camera:
         
     def test_Cam(self):
         # self.connect()
+        rec = Recognizer()
+        print(rec.labels)
+        print(rec.people)
+        
         while(True):
             frame = self.getFrame()
             cv.imshow("test", frame)
-            rec = Recognizer()
+            
             # rec.cropToFace(frame)
+            
             cropped = rec.cropToFace(frame)
             if cropped != []:
                 cv.imshow("face", cropped)
+                who, conf = rec.whoIs(cropped)
+                    
             if cv.waitKey(20) == ord('e'):
                 break
+        cv.destroyAllWindows()
 
     def updateFace(self, name):
 
