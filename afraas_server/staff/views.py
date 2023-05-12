@@ -286,9 +286,11 @@ def users(request):
         if request.user == obj:
             itself = "true"
 
+        is_registered = obj.is_registered
         temp = {
             "id": obj.id,
             "itself": itself,
+            "is_registered": is_registered,
             "is_superuser":obj.is_superuser,
             "is_staff":obj.is_staff,
             "name": obj.name,

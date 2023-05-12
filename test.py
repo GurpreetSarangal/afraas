@@ -2,12 +2,22 @@ import datetime
 import requests
 import json
 
-url = "http://localhost:8000/api/mark/"
+# url = "http://localhost:8000/api/check_registered/"
+# now = datetime.datetime.now()
+# data = {
+#    "id" : 7
+# }
+
+# url = "http://localhost:8000/api/mark_face_registered/"
+# now = datetime.datetime.now()
+# data = {
+#    "id" : 7
+# }
+
+url = "http://localhost:8000/api/mark_face_unregistered/"
 now = datetime.datetime.now()
 data = {
-    "label": "3_5_ksjfjsf", 
-    "status": "enter",
-    "time-stamp" : now
+   "id" : 7
 }
 
 # url = "http://localhost:8000/api/report/"
@@ -41,6 +51,6 @@ json_data = response.text
     
 print(json_data) 
 data = json.loads(json_data)
-if data["error"] != "":
+if data["success"]:
     print(data["error"])
 print(data)

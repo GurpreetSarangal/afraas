@@ -149,8 +149,23 @@ class Camera:
 
         pass
 
-    def removeFace(self, name):
+    def removeFace(self, id):
+        name = ''
+        rec = Recognizer()
+        for i in rec.people:
+            temp = i
+            # print(temp)
+            check = i.split("_")[1]
+            # print(i, check)
+            
+            if int(check) == id:
+                name = temp
+                break
+
+       
+        print(name)
         pathForNewFace = os.path.join(self.pathToDatabase, name)
+        # print(pathForNewFace)
         shutil.rmtree(pathForNewFace)
         rec = Recognizer()
         rec.recompileDataSet()

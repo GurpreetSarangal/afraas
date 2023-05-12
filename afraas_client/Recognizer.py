@@ -56,9 +56,9 @@ class Recognizer:
         Face_roi = cv.cvtColor(Face_roi, cv.COLOR_BGR2GRAY)
         # cv.imshow("test", Face_roi)
         label, confidence = self.model.predict(Face_roi)
-        print(label, confidence)
-        if confidence >= 60 and confidence <= 100:
-            print(self.people[label], confidence)
+        # print(label, confidence)
+        if confidence >= 55 and confidence <= 95:
+            # print(self.people[label], confidence)
             return self.people[label], confidence
         else:
             return "", False
@@ -123,7 +123,7 @@ class Recognizer:
         new_trained_model.train(feat_array, label_array)
 
         self.model = new_trained_model
-        print(self.pathToModel)
+        # print(self.pathToModel)
         self.model.save(self.pathToModel)
         
     def recompileDataSet(self):
@@ -136,9 +136,9 @@ class Recognizer:
                 people.sort()
                 pathToUser = os.path.join(self.DIR, i)
                 label = people.index(i)
-                print(self.DIR, i , label)
+                # print(self.DIR, i , label)
                 for img in os.listdir(pathToUser):
-                    print(" - - -  ", img)
+                    # print(" - - -  ", img)
                     imgPath = os.path.join(pathToUser, img)
                     
                     img_arr = cv.imread(imgPath)
@@ -147,7 +147,7 @@ class Recognizer:
                     features.append(img_arr)
                     labels.append(label)
             
-            print(people, labels)
+            # print(people, labels)
             self.people = people        
             self.features = features
             self.labels = labels
