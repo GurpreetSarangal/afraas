@@ -144,18 +144,18 @@
                             </div>
                         </td>
                         <th scope="row"
-                            class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                            class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white" >
                             {% if obj.is_superuser %}
 
-                            <i class="w-10 h-10 rounded-full fi text-2xl fi-rs-chess-king text-pink-200"></i>
+                            <i class="w-10 h-10 rounded-full fi text-2xl fi-rs-chess-king text-pink-200" title="Admin"></i>
 
                             {% elif obj.is_staff %}
 
-                            <i class="w-10 h-10 rounded-full fi text-2xl fi-rs-badge-check text-indigo-200"></i>
+                            <i class="w-10 h-10 rounded-full fi text-2xl fi-rs-badge-check text-indigo-200" title="Staff"></i>
 
                             {% else %}
 
-                            <i class="w-10 h-10 rounded-full fi text-2xl  fi-rs-circle-user text-emerald-200"></i>
+                            <i class="w-10 h-10 rounded-full fi text-2xl  fi-rs-circle-user text-emerald-200" title="General User"></i>
 
                             {% endif %}
                             <div class="pl-3">
@@ -169,6 +169,12 @@
                                             (you)
                                         </span>
                                         {% endif %}
+                                        {% if not obj.is_registered %}
+                                        <i class="fi  fi-rs-exclamation text-red-300 text-lg" title="Not Registred">
+
+                                        </i>
+                                        
+                                        {% endif %}
                                     </span>
 
                                 </div>
@@ -179,11 +185,11 @@
                         </th>
 
                         <td class="px-6 py-4">
-                            {{ obj.department }}
+                            {{ obj.department|title }}
                         </td>
 
                         <td class="px-6 py-4">
-                            {{ obj.timings.in|time:"P" }}-{{ obj.timings.out|time:"P" }}
+                            {{ obj.timings.in|time:"P"|capfirst}} - {{ obj.timings.out|time:"P"|capfirst }}
                         </td>
 
                         <td class="px-6 py-4">

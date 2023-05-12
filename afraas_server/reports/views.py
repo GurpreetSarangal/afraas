@@ -100,31 +100,29 @@ def check_registered(request):
     res = {
             "error" : "",
             "content" : [],
+            "success": False,
         }
     if request.method == "POST":
         id = request.POST['id']
         u = User.objects.filter(id=id)
-        res = {
-            "error" : "",
-            "content" : [],
-        }
+        
         if len(u) == 0:
-            res["error"] = "rejected"
-            json_data = json.dumps(res)
-            return HttpResponse(json_data, content_type="application/json")
-           
-        
-        
-        
+            res["error"] = f"Not a valid id #{id}"        
+              
         else:
-            res["content"] = u[0].name
-            json_data = json.dumps(res)
-            return HttpResponse(json_data, content_type="application/json")
+            user = u[0]
+            if user.is_registered ==  True:
+                res["error"] = f"User #{user.id} {user.name} is already registered"
+            else:
+                res["success"] = True
+                res["content"] = u[0].name
             
     else:
         res["error"]= "Not a post request"
-        json_data = json.dumps(res)
-        return HttpResponse(json_data, content_type="application/json")
+
+
+    json_data = json.dumps(res)
+    return HttpResponse(json_data, content_type="application/json")
 
 @csrf_exempt
 def report(request):
@@ -224,70 +222,14 @@ def get_user( time, u_id):
 
 def get_dept(time, dept_id):
 
+
     if time=="daily":
         return get_dept_daily(dept_id)
                 
         
     
     elif time=="weekly":
-        today = date.today()
-        start_of_week = today - timedelta(days=today.weekday())
-        end_of_week = start_of_week + timedelta(days=6)
-
-        user_set = User.objects.filter(department__id=dept_id)  
-
-        
-        if(len(user_set) == 0):
-            res["error"] = "No User is listed in this Department"
-            return res
-
-        # filter records for the current week
-        user_set_week = Attendance.objects.filter(
-            Q(time_stamp__gte=start_of_week) &
-            Q(time_stamp__lte=end_of_week),
-            user__department__id=dept_id
-        )
-
-        present = Attendance.objects.filter(
-            Q(time_stamp__gte=start_of_week) &
-            Q(time_stamp__lte=end_of_week),
-            user__department__id=dept_id,
-            status="enter",
-        )
-
-        leave = Attendance.objects.filter(
-            Q(time_stamp__gte=start_of_week) &
-            Q(time_stamp__lte=end_of_week),
-            user__department__id=dept_id,
-            status="absent",
-        )
-
-        absent = len(user_set) - len(present) - len(leave)
-
-        avg_attendance = ((len(user_set) - len(leave) - absent) / len(user_set)) * 100
-
-
-        late_entries = 0
-        for user in user_set_week:
-            time_in = user.user.shift.time_in
-            if user.time_stamp.time() > time_in:
-                late_entries += 1 
-
-        res = {
-            "heading" : ["Week Start", "Week End", "No of Employees", "Total Present", "Total Absent", "Total Leave", "Total Late", "Avg Attendance"],
-            "content" : [
-                str(start_of_week),
-                str(end_of_week),
-                len(user_set),
-                absent,
-                len(leave),
-                late_entries,
-                avg_attendance,
-            ],
-            "error" : "",           
-
-        }
-        return res
+       pass
 
     elif time=="monthly":
         return get_dept_monthly(dept_id)
@@ -851,6 +793,65 @@ def get_dept_monthly(dept_id):
 
         res["data"].append(temp)
     return res
+
+@csrf_exempt
+def mark_face_registered(request):
+    res = {
+        "error" : "",
+        "content" : [],
+        "success" : False,
+    }
+    if request.method == "POST":
+        id = request.POST["id"]
+        user = User.objects.filter(id=id)
+        if len(user) != 0:
+            user = user[0] 
+            if user.is_registered:
+                res["error"] = f"#{user.id} {user.name} is already registered"
+            else:
+                user.is_registered = True
+                user.save()
+                res["success"]= True
+
+        else:
+            res["error"] = f"No User exist with ID {id}"
+
+    else:
+        res["error"] = "Not a post request"
+
+    json_data = res
+    json_data = json.dumps(json_data)
+    return HttpResponse(json_data, content_type="application/json")
+
+@csrf_exempt
+def mark_face_unregistered(request):
+    res = {
+        "success": False,
+        "error": "",
+        "content": "",
+    }
+
+    if request.method == "POST":
+        id = request.POST["id"]
+        user = User.objects.filter(id=id)
+        if len(user) == 0:
+            res["error"]= f"#{id} not a valid ID"
+        else:
+            user = user[0]
+            if not user.is_registered:
+                res["error"]= f"User #{id} {user.name} is already Unregistred"
+            else:
+                user.is_registered = False
+                user.save()
+                res["success"] = True
+
+    else:
+        res["error"] = "Not a POST request"
+
+    json_data = res
+    json_data = json.dumps(json_data)
+    return HttpResponse(json_data, content_type="application/json")
+
 
 
 def default(o):
