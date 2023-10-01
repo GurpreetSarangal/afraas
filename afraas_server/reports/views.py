@@ -1,14 +1,11 @@
-from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from user.models import *
 from .models import *
-from django.db.models.functions import ExtractWeek
+
 import json
 import datetime
-from datetime import date, timedelta
-from django.db.models import Q
-from pytz import timezone
+
 import pytz
 import calendar
 

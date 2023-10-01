@@ -4,7 +4,7 @@ from django.contrib.auth import  login, logout
 from django.http import JsonResponse
 from django.urls import reverse
 from django.shortcuts import redirect
-
+import json
 from user.my_backend import EmailBackend
 
 
@@ -26,31 +26,54 @@ def landingPage(request):
 
 def _login(request):
 
-    if request.method == 'POST':
-        email = request.POST['email']
-        # print(email)
-        password = request.POST['password']
-        # print(password)
-        eb = EmailBackend()
-        user = eb.authenticate(request, email=email, password=password)
-        # print(user)
+    if request.method == "POST":
+        res = {
+                "content" : "",
+                "error" : "",
+                "success": False,
+
+        }
+
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
     
-        if user is not None:
-            login(request, user)
-            # print("valid")
+            email = request.POST['email']
+            # print(email)
+            password = request.POST['password']
+            # print(password)
+            eb = EmailBackend()
+            user = eb.authenticate(request, email=email, password=password)
             # print(user)
-            if user.is_superuser:
-                next = "django-admin/"
-            
-            elif user.is_staff:
-                next = reverse('staff:dashboard')
+        
+            if user is not None:
+                login(request, user)
+                # print("valid")
+                # print(user)
+                if user.is_superuser:
+                    next = "django-admin/"
+                
+                elif user.is_staff:
+                    next = reverse('staff:dashboard')
+                else:
+                    next = reverse('user:dashboard')
+                
+                res = {'success': True, 'next': next}
+                json_data = json.dumps(res)
+                return HttpResponse(json_data, content_type="application/json")
+                return JsonResponse({'success': True, 'next': next})
             else:
-                next = reverse('user:dashboard')
-            
-            return JsonResponse({'success': True, 'next': next})
+                print("invalid")
+                res = {'success': False, }
+                json_data = json.dumps(res)
+                return HttpResponse(json_data, content_type="application/json")
+
+                return JsonResponse({'success': False, 'error': 'Invalid credentials'})
         else:
-            print("invalid")
-            return JsonResponse({'success': False, 'error': 'Invalid credentials'})
+            return HttpResponse("not an ajax request")
+
+
+    else:
+
+        return HttpResponse("not a post request")
 
 
 def _logout(request):
