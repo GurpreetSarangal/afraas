@@ -1,0 +1,61 @@
+.meter{
+    width: 80px;
+    height: 80px;
+    position: relative;
+    /* background-color: aquamarine; */
+}
+.outer{
+    height: 75px;
+    width: 75px;
+    border-radius: 50%;
+    /* border: 1px solid red; */
+    padding: 13px;
+    box-shadow: 6px 6px 10px -1px rgba(0,0,0,0.15),
+                -6px -6px 10px -1px rgba(225, 225, 225, 0.7);
+}
+.inner{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    /* border: 1px solid red; */
+    box-shadow: inset 4px 4px 6px -1px rgba(0,0,0,0.2),
+                inset -4px -4px 6px -1px rgba(225,225,225,0.7),
+                 -0.5px -0.5px 0px  rgba(225,225,225,1),
+                 0.5px 0.5px 0px  rgba(0,0,0,0.15),
+                 0px 12px 10px -10px   rgba(0,0,0,0.05);
+
+    display: flex;
+    justify-content: center;
+    align-items: center ;
+}
+
+#number{
+    font-weight: 600px;
+    color: rgb(228, 228, 228);
+
+}
+
+.circle-today{
+    fill: none;
+    stroke: url(#GradientColor);
+    stroke-width: 13px;
+    stroke-dasharray: 184;
+    stroke-dashoffset: 184;
+    animation: animtoday 4s linear forwards;
+}
+.circle-yest{
+    fill: none;
+    stroke: url(#GradientColor);
+    stroke-width: 13px;
+    stroke-dasharray: 184;
+    stroke-dashoffset: 184;
+    animation: animyest 4s linear forwards;
+}
+
+.meter-svg{
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    /* z-index: 10; */
+}
+

@@ -1,0 +1,149 @@
+{% extends 'myadmin/base.html' %}
+
+{% block navbar %}
+{% include 'myadmin/navbar.html' %}
+{% endblock navbar %}
+
+{% block sidebar %}
+{% include "myadmin/sidebar.html" %}
+{% endblock sidebar %}
+
+{% block footer %}
+{% include 'myadmin/footer.html' %}
+{% endblock footer %}
+
+
+{% block css %}
+
+{% endblock css %}
+
+{% block container %}
+
+<div class="p-4  ">
+    <div class="p-4 rounded-lg dark:border-gray-700">
+        <div class="flex items-center justify-start h-auto mb-4 rounded bg-gray-100 p-2">
+           <p class="text-2xl text-gray-400 dark:text-gray-500">All Departments</p>
+
+        </div>
+        <div class=" h-auto mb-4 rounded  p-2">
+            <div class="hidden w-full new-dept">
+                <form action="" method="post">
+                    {% csrf_token %}    
+                    <div class="flex items-center justify-end ">
+                        <div class="inline-flex mx-2 ">  
+                                <input name="department_name" type="text" id="department_name" class="w-40 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-200 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Department Name" required>
+                            
+                        </div>
+        
+                    
+        
+                        <div class="text-2xl text-gray-400 dark:text-gray-500 mx-2">
+                            
+                            <button type="submit" class="relative inline-flex items-center justify-center p-0.5 my-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                                <span class="relative p-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-800 rounded-md group-hover:bg-opacity-0">
+                                Save
+                                </span>
+                            </button>
+            
+                            
+                            <button class="hide-form relative inline-flex items-center justify-center p-0.5 mx-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800">
+                                <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-800 rounded-md group-hover:bg-opacity-0">
+                                    Cancle
+                                </span>
+                              </button>
+            
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+                <div class="w-full flex items-center justify-end text-2xl text-gray-400 dark:text-gray-500 mx-2">
+                    <button class="show-form relative inline-flex items-center justify-center p-0.5 mx-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                        <span class="relative pr-5 pl-2 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-800 rounded-md group-hover:bg-opacity-0">
+                            + New
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+            <div class="grid grid-cols-3 gap-4 mb-4 w-full">
+               <div class="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
+                  <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
+               </div>
+               <div class="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
+                  <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
+               </div>
+               <div class="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
+                  <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
+               </div>
+               {% for dept in depts %}
+               <div class="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
+                  <p class="text-2xl text-gray-400 dark:text-gray-500">{{dept.id}} {{ dept.name }} </p>
+               </div>
+               
+               {% endfor %}
+            </div>
+            
+       <div class="grid grid-cols-2 gap-4 mb-4">
+          <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+             <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
+          </div>
+          <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+             <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
+          </div>
+          <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+             <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
+          </div>
+          <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+             <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
+          </div>
+       </div>
+       <div class="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800">
+          <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
+       </div>
+       <div class="grid grid-cols-2 gap-4">
+          <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+             <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
+          </div>
+          <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+             <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
+          </div>
+          <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+             <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
+          </div>
+          <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+             <p class="text-2xl text-gray-400 dark:text-gray-500">+</p>
+          </div>
+       </div>
+    </div>
+ </div>
+ 
+{% endblock container %}
+
+{% block javascript %}
+
+<script>
+
+    $(".menu").on("click", function(event) {
+        $("#sidebar-multi-level-sidebar").toggle();
+    });
+   $("#drop").on("click", function (event) {
+       $("#dropdown-example").toggle();
+   });
+   $(".user-menu").on("click", function (event) {
+       $("#dropdown-user").toggle();
+   });
+   $(".show-form").on("click", function (event) {
+        $(this).toggle();
+       $(".new-dept").toggle();
+   });
+   $(".hide-form").on("click", function (event) {
+        $(".show-form").toggle();
+       $(".new-dept").toggle();
+   });
+   
+</script>
+
+{% endblock javascript %}

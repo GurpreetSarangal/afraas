@@ -1,0 +1,298 @@
+{% extends 'user/base.html' %} {% load static %} {% block container %} 
+{%include "user/sidebar.html" %}
+
+<div class="p-4 sm:ml-64 sm:mr-72">
+  <div
+    class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+    <div
+      class="flex justify-start flex-col h-40 mb-4 rounded bg-gray-50 dark:bg-gray-800 flex-wrap"
+    >
+      <div class="text-4xl text-gray-100 my-3 mx-2">User Dashboard</div>
+      <div class="text-base text-gray-400 dark:text-gray-500 mx-2">
+        You can view and edit your profile here. <br />
+        You can also apply for leave.
+      </div>
+    </div>
+    <div class="grid grid-cols-3 gap-4 mb-4">
+      <div
+        class="flex col-span-2 items-center justify-between h-28 rounded bg-gray-50 dark:bg-gray-800"
+      >
+        <div class="">
+          <div class="num w-full flex justify-center">
+            {% for dig in working_day_digits %}
+
+            <i class="fi fi-rs-{{ dig }} text-blue-300 text-3xl "></i>
+            {% endfor %}
+          </div>
+          <div class="heading text-sm text-gray-100 w-28 text-center">
+            Working Days
+          </div>
+        </div>
+        <div>
+          <div class="num w-full flex justify-center">
+            {% for dig in on_time_digits %}
+
+            <i class="fi fi-rs-{{ dig }} text-emerald-300 text-3xl "></i>
+
+            {% endfor %}
+          </div>
+          <div class="heading text-sm text-gray-100 w-20 text-center">
+            On Time
+          </div>
+        </div>
+        <div class="">
+          <div class="num w-full flex justify-center">
+            {% for dig in late_digits %}
+
+            <i class="fi fi-rs-{{ dig }} text-red-300 text-3xl "></i>
+
+            {% endfor %}
+          </div>
+          <div class="heading text-sm text-gray-100 w-20 text-center">Late</div>
+        </div>
+        <div class="">
+          <div class="num w-full flex justify-center">
+            {% for dig in leave_digits %}
+
+            <i class="fi fi-rs-{{ dig }} text-yellow-300 text-3xl "></i>
+            {% endfor %}
+          </div>
+          <div class="heading text-sm text-gray-100 w-20 text-center">
+            On Leave
+          </div>
+        </div>
+        <div class="">
+          <div class="num w-full flex justify-center">
+            {% for dig in absent_digits %}
+
+            <i class="fi fi-rs-{{ dig }} text-purple-300 text-3xl "></i>
+            {% endfor %}
+          </div>
+          <div class="heading text-sm text-gray-100 w-20 text-center">
+            Absent
+          </div>
+        </div>
+      </div>
+      <div
+        class="flex justify-center rounded bg-gray-50 h-28 dark:bg-gray-800 flex-col group"
+      >
+        <div class="text-xl text-gray-100 dark:text-gray-300 ml-6">
+          On a leave today??
+        </div>
+        <span
+          class="showApplyLeave dark:text-gray-500 text-gray-400 transition-transform duration-200 text-lg mt-2 flex flex-row ml-6 w-fit group-hover:text-gray-100 hover:underline cursor-pointer"
+        >
+          <div>Mark Here</div>
+          <i class="fi ml-2 fi-rs-arrow-up-right-from-square"></i>
+        </span>
+      </div>
+    </div>
+
+    <div
+      class="flex items-center justify-center mb-4 rounded bg-gray-50 dark:bg-gray-800 flex-wrap pb-2">
+      <div class="text-xl text-gray-400 dark:text-gray-200 mx-2 my-2 w-full">
+        Monthly report - {{ chart_data.month }} {{ chart_data.year }}
+      </div>
+      <div id="myChart2">
+
+      </div>
+    </div>
+
+    <div
+      class="flex items-center justify-around flex-col rounded bg-gray-50 h-40 dark:bg-gray-800">
+      <div class="flex flex-row flex-nowrap w-full justify-evenly">
+        <div class="w-auto">
+          <a
+            href="{% url 'developer-support' %}"
+            class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-gray-300 mr-4"
+          >
+            Developer Support
+          </a>
+        </div>
+        <div class="w-auto">
+          <a
+            href="{% url 'about-us' %}"
+            class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-gray-300 mr-4"
+          >
+            About Us
+          </a>
+        </div>
+        <div class="w-auto">
+          <a
+            href="{% url 'report-issue' %}"
+            class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-gray-300 mr-4"
+          >
+            Report Issue
+          </a>
+        </div>
+      </div>
+
+      <div
+        class="flex justify-center align-center text-md sm:text-x text-gray-400 group"
+      >
+        Made with
+        <i class="mx-2 fi fi-rs-heart text-red-500"></i>
+        by
+        <a
+          href="https://github.com/kaur-mannu"
+          class="mx-2 group-hover:text-gray-300 group-hover:underline"
+        >
+          Sandeep Kaur
+        </a>
+        &
+        <a
+          href="https://github.com/GurpreetSarangal"
+          class="mx-2 group-hover:text-gray-300 group-hover:underline"
+        >
+          Gurpreet Sarangal
+        </a>
+      </div>
+    </div>
+  </div>
+  <div id="addUserModal"
+    tabindex="-1"
+    aria-hidden="true"
+    class="fixed top-0 backdrop-blur-sm left-28 right-28 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-full max-h-full">
+    <div
+      class="bg-gray-800 w-96 rounded-lg mx-auto p-4 my-10 flex justify-center flex-col"
+    >
+      <div class="relative mx-auto mt-4 mb-4 border-b border-gray-600">
+        <!-- Modal content -->
+        <div class="text-xl text-gray-200">
+          Do you really want to take a leave??
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <a
+          id="confirm-leave"
+          href="#"
+          class="flex items-center p-2 rounded-lg bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% text-gray-900 dark:text-white"
+        >
+          <span class="flex-1 ml-3 whitespace-nowrap">Yes, Confirm it</span>
+        </a>
+        <a
+          id="abort-leave"
+          href="#"
+          class="flex items-center p-2 rounded-lg bg-gradient-to-r from-red-500 via-purple-500 to-pink-500 text-gray-900 dark:text-white"
+        >
+          <span class="flex-1 ml-3 whitespace-nowrap">No, Take me back</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+  <aside
+    id="separator-sidebar"
+    class="fixed top-0 right-0 z-40 w-72 h-screen transition-transform -translate-x-full sm:translate-x-0"
+    aria-label="Sidebar">
+    <div
+      class="h-full border-b px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+    >
+      <a
+        href="{% url 'user:dashboard' %} "
+        class="flex items-center pl-2.5 mb-5 justify-center flex-wrap flex-col"
+      >
+        <img
+          src=" {% static 'pictures\hacker.png' %} "
+          class="h-8 mr-3 sm:h-28"
+          alt="Flowbite Logo"
+        />
+        <span class="mt-2 font-sans font-bold text-gray-100 text-base">
+          {{ user.name }}
+        </span>
+        <span class="mt-1 font-sans font-bold text-gray-100 text-xs"
+          >{% if user.is_superuser %} Admin {% else %} Staff {% endif %}
+        </span>
+      </a>
+    </div>
+  </aside>
+
+  {{ content|json_script:"content" }} {{ chart_data|json_script:"chart_data" }}
+  {%endblock container %} {% block javascript %}
+  <script>
+    const content = JSON.parse(document.getElementById("content").textContent);
+    const chart_data = JSON.parse(
+      document.getElementById("chart_data").textContent
+    );
+
+    $(document).ready(function () {
+      google.charts.load("current", { packages: ["line"] });
+      google.charts.setOnLoadCallback(drawChartMonthly);
+
+      function drawChartMonthly() {
+        var data = new google.visualization.DataTable();
+        data.addColumn("number", "Day");
+        data.addColumn("timeofday", "Time In");
+        data.addColumn("timeofday", "Time Out");
+        //data.addColumn('timeofday', 'Marked Leave');
+        //data.addColumn('timeofday', 'Absent');
+        data.addColumn("timeofday", "Shift Time Out");
+        data.addColumn("timeofday", "Shift Time In");
+
+        //data.addRows(
+        //
+        //);
+        console.log(chart_data);
+        data.addRows(chart_data.data);
+
+        var options = {
+          chart: {
+            title: chart_data.month + " " + chart_data.year,
+            subtitle: "Daily report for a month",
+          },
+          colors: ["black", "blue", "red", "green", "yellow"],
+          axes: {
+            x: {
+              0: { side: "top" },
+            },
+          },
+          width: 720,
+          height: 400,
+          curveType: "function",
+        };
+
+        var chart = new google.charts.Line(document.getElementById("myChart2"));
+
+        chart.draw(data, google.charts.Line.convertOptions(options));
+      }
+
+      $(".showApplyLeave").on("click", function(e){
+          $("#addUserModal").show();
+      });
+      $("#abort-leave").on("click", function(e) {
+
+          $("#addUserModal").hide();
+      });
+      $("#confirm-leave").on("click", function(e) {
+          data={
+              id: {{ user.id }}
+          };
+          console.log(data);
+          url = 'http://localhost:8000{% url 'reports:mark_absent' %}'
+          $.ajax({
+                  url: url,
+                  method: 'POST',
+                  data: data,
+                  success: function(response) {
+                  if (response.success) {
+                      $('#addUserModal').hide();
+                      console.log("Successfully marked");
+                      console.log(response.content);
+                      window.location.reload();
+
+
+                  } else {
+
+                      $('#addUserModal').hide();
+                      console.log("Not marked");
+                      alert(response.error);
+                  }
+                  }
+              });
+
+      });
+    });
+  </script>
+  {% endblock javascript %}

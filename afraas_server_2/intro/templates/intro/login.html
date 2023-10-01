@@ -1,0 +1,76 @@
+{% extends 'intro/base.html' %}
+
+
+{% block container %}
+<div>
+
+    {% include 'intro/navbar.html' %}
+</div>
+
+<div class="flex flex-nowrap justify-center w-full    ">
+    <div class=" w-auto z-0 absolute inset-0 h-screen">
+        <img class="h-screen w-auto" src="../../static/pictures/login_image_option2.jpg" alt="" srcset="">
+    </div>
+    
+            <div class="w-max min-w-16 z-10  rounded">                
+                <div class="flex flex-col items-center justify-center sm:px-6 lg:px-8">
+                    <div class="max-w-md w-full space-y-8 backdrop-blur bg-opacity-10 bg-gray-800 p-8 rounded-xl ">
+                        <div class="w-full">
+                            <img class="mx-auto w-auto h-36" src="../../static/pictures/avatar.jpg" alt="" srcset="">
+                        </div>
+
+                      <div>
+
+                        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Login to Attendance System</h2>
+                      </div>
+                      <form class="mt-8 space-y-6" action="#" method="POST">
+                        <div class="rounded-md shadow-sm -space-y-px">
+                          <div>
+                            <label for="email-address" class="sr-only">Email address</label>
+                            <input id="email-address" name="email" type="email" autocomplete="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Email address">
+                          </div>
+                          <div>
+                            <label for="password" class="sr-only">Password</label>
+                            <input id="password" name="password" type="password" autocomplete="current-password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Password">
+                          </div>
+                        </div>
+                  
+                        <div class="flex items-center justify-between">
+                          <div class="flex items-center">
+                            <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                            <label for="remember-me" class="ml-2 block text-sm text-gray-900">
+                              Remember me
+                            </label>
+                          </div>
+                  
+                          <div class="text-sm">
+                            <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
+                              Forgot your password?
+                            </a>
+                          </div>
+                        </div>
+                  
+                        <div>
+
+                            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                <span class="inline-block mr-2">
+                                  <svg class="fill-current w-4 h-4" viewBox="0 0 20 20">
+                                    <path d="M14.707 10.293a1 1 0 0 0-1.414 0l-3.5 3.5a1 1 0 1 0 1.414 1.414l3.5-3.5a1 1 0 0 0 0-1.414l-3.5-3.5a1 1 0 1 0-1.414 1.414l3.5 3.5z"/>
+                                  </svg>
+                                </span>
+                                <span>Submit</span>
+                              </button>
+                        </div>
+                        <button class="flex items-center text-gray-700 hover:text-gray-900" onclick="history.go(-1)">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 000 1.414l7 7a1 1 0 001.414-1.414L4.414 10H16a1 1 0 000-2H4.414l6.293-6.293a1 1 0 000-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                            Back
+                          </button>
+                  
+            </div>
+
+        </div>
+
+{% endblock container %}
+    

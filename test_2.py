@@ -6,7 +6,8 @@ import afraas_client
 # obj = Recognizer()
 # obj.recompileDataSet()
 
-afraas_client.boot()
+# afraas_client.boot()
+
 
 
 
