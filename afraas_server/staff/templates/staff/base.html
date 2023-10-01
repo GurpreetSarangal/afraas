@@ -28,11 +28,14 @@
     {% block css %}{% endblock css %}
   </head>
   <body>
-    {% block container %}{% endblock container %}
+    {% block container %}
+    
+    {% block sidebar_script %}
+    {% endblock sidebar_script %}
+    {% endblock container %}
     
     
     
-    {% block sidebar_script %}{% endblock sidebar_script %}
     {% block javascript %}{% endblock javascript %}
   </body>
 </html>

@@ -8,16 +8,26 @@
    @keyframes animtoday {
       100% {
 
-         stroke-dashoffset: 
-         {{ attendance_today_meter }};
+         stroke-dashoffset: {
+               {
+               attendance_today_meter
+            }
+         }
+
+         ;
       }
    }
 
    @keyframes animyest {
       100% {
 
-         stroke-dashoffset: 
-         {{ attendance_yest_meter }};
+         stroke-dashoffset: {
+               {
+               attendance_yest_meter
+            }
+         }
+
+         ;
       }
    }
 </style>
@@ -26,7 +36,9 @@
 {% block container %}
 {% include 'staff/sidebar.html' %}
 
-<div class="p-4 sm:ml-64" style="width: 50rem;">
+
+
+<div class=" p-4 sm:ml-64 sm:mr-72" syle="">
    <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
       <div class="flex justify-start flex-col h-40 mb-4 rounded bg-gray-50 dark:bg-gray-800 flex-wrap ">
          <div class="text-4xl text-gray-100 my-3 mx-2">
@@ -63,7 +75,8 @@
                <i class="fi fi-rs-{{ dig }} text-emerald-300 text-3xl "></i>
 
                {% endfor %}
-               {% comment %} <i class="fi fi-rs-{{ total_present }} text-emerald-300 text-3xl "></i> {% endcomment %}
+               {% comment %} <i class="fi fi-rs-{{ total_present }} text-emerald-300 text-3xl "></i>
+               {% endcomment %}
                <!-- <i class=" fi fi-rs-5 text-emerald-300 text-3xl "></i> -->
 
             </div>
@@ -126,208 +139,204 @@
 
       <div class="grid grid-cols-2 gap-4 mb-4">
          <div class="flex items-center justify-evenly rounded bg-gray-50 h-28 dark:bg-gray-800">
-            <<div class="heading text-lg text-gray-100 w-48">
+            <div class="heading text-lg text-gray-100 w-48">
                Today's Attendance
                <div class="text-gray-300 text-xs">
                   {{ total_present }}/{{ total_users }}
                </div>
-         </div>
+            </div>
 
-         <div class="meter">
-            <div class="outer">
-               <div class="inner">
-                  <div id="number">
-                     {{ attendance_today_percent }}%
+            <div class="meter">
+               <div class="outer">
+                  <div class="inner">
+                     <div id="number">
+                        {{ attendance_today_percent }}%
+                     </div>
                   </div>
                </div>
+
+               <svg class="meter-svg" xmlns="http://www.w3.org/2000/svg" version="1.1" width="80px" height="80px">
+                  <defs>
+                     <linearGradient id="GradientColor">
+                        <stop offset="0%" stop-color="#e91e63" />
+                        <stop offset="100%" stop-color="#673ab7" />
+                     </linearGradient>
+                  </defs>
+                  <circle class="circle-today" cx="40" cy="40" r="30" stroke-linecap="round" />
+               </svg>
+            </div>
+         </div>
+         <div class="flex items-center justify-around rounded bg-gray-50 h-28 dark:bg-gray-800">
+            <div class="heading text-lg text-gray-100 w-48">
+               Yesterday's Attendance
+               <span class="text-gray-300 text-xs">
+                  {{ yest_present }}/{{ yest_users }}
+               </span>
             </div>
 
-            <svg class="meter-svg" xmlns="http://www.w3.org/2000/svg" version="1.1" width="80px" height="80px">
-               <defs>
-                  <linearGradient id="GradientColor">
-                     <stop offset="0%" stop-color="#e91e63" />
-                     <stop offset="100%" stop-color="#673ab7" />
-                  </linearGradient>
-               </defs>
-               <circle class="circle-today" cx="40" cy="40" r="30" stroke-linecap="round" />
-            </svg>
-         </div>
-      </div>
-      <div class="flex items-center justify-around rounded bg-gray-50 h-28 dark:bg-gray-800">
-         <div class="heading text-lg text-gray-100 w-48">
-            Yesterday's Attendance
-            <span class="text-gray-300 text-xs">
-               {{ yest_present }}/{{ yest_users }}
-            </span>
-         </div>
-
-         <div class="meter">
-            <div class="outer">
-               <div class="inner">
-                  <div id="number">
-                     {{ attendance_yest_percent }}%
+            <div class="meter">
+               <div class="outer">
+                  <div class="inner">
+                     <div id="number">
+                        {{ attendance_yest_percent }}%
+                     </div>
                   </div>
                </div>
-            </div>
 
-            <svg class="meter-svg" xmlns="http://www.w3.org/2000/svg" version="1.1" width="80px" height="80px">
-               <defs>
-                  <linearGradient id="GradientColor">
-                     <stop offset="0%" stop-color="#e91e63" />
-                     <stop offset="100%" stop-color="#673ab7" />
-                  </linearGradient>
-               </defs>
-               <circle class="circle-yest" cx="40" cy="40" r="30" stroke-linecap="round" />
-            </svg>
+               <svg class="meter-svg" xmlns="http://www.w3.org/2000/svg" version="1.1" width="80px" height="80px">
+                  <defs>
+                     <linearGradient id="GradientColor">
+                        <stop offset="0%" stop-color="#e91e63" />
+                        <stop offset="100%" stop-color="#673ab7" />
+                     </linearGradient>
+                  </defs>
+                  <circle class="circle-yest" cx="40" cy="40" r="30" stroke-linecap="round" />
+               </svg>
+            </div>
          </div>
-      </div>
-      <div class="flex  justify-center rounded bg-gray-50 h-28 dark:bg-gray-800 flex-col group">
-         <div class="text-xl text-gray-100 dark:text-gray-300 ml-11">
+         <div class="flex  justify-center rounded bg-gray-50 h-28 dark:bg-gray-800 flex-col group">
+            <div class="text-xl text-gray-100 dark:text-gray-300 ml-11">
 
-            Face Recognition not working??
-         </div>
-         <a href=" {% url 'staff:users' %} "
-            class="  dark:text-gray-500 text-gray-400 transition-transform duration-200 text-lg mt-2 flex flex-row ml-11 w-fit group-hover:text-gray-100 hover:underline">
-            <div>
-               Mark Manually
-
+               Face Recognition not working??
             </div>
-            <i class="fi ml-2 fi-rs-arrow-up-right-from-square"></i>
-         </a>
-      </div>
-      <div class="flex  justify-center rounded bg-gray-50 h-28 dark:bg-gray-800 flex-col group">
-         <div class="text-xl text-gray-100 dark:text-gray-300 ml-8">
-
-            Want to generate some Reports??
-         </div>
-         <a href=" {% url 'staff:users' %} "
-            class="  dark:text-gray-500 text-gray-400 transition-transform duration-200 text-lg mt-2 flex flex-row ml-8 w-fit group-hover:text-gray-100 hover:underline">
-            <div>
-               Lets Go
-
-            </div>
-            <i class="fi ml-2 fi-rs-arrow-up-right-from-square hover:underline "></i>
-         </a>
-      </div>
-   </div>
-
-   <div class="flex flex-col justify-center p-2 mb-4 rounded bg-gray-50 dark:bg-gray-800">
-      <div class="text-xl text-gray-400 dark:text-gray-200  mx-2 my-2">
-         Monthly report - {{ chart_data.month }} {{ chart_data.year }}
-      </div>
-      <div id="myChart2">
-
-      </div>
-   </div>
-   <div class="grid grid-cols-2 gap-4 mb-4">
-      <div class="flex justify-center rounded bg-gray-50 h-28 dark:bg-gray-800 flex-col group">
-         <div class="text-xl text-gray-100 dark:text-gray-300 ml-8">
-
-            Want to Edit Shifts and Departments??
-         </div>
-         <a href=" {% url 'staff:other-tables' %} "
-            class="  dark:text-gray-500 text-gray-400 transition-transform duration-200 text-lg mt-2 flex flex-row ml-8 w-fit group-hover:text-gray-100 hover:underline">
-            <div>
-               Lets Go
-
-            </div>
-            <i class="fi ml-2 fi-rs-arrow-up-right-from-square hover:underline "></i>
-         </a>
-      </div>
-      <div class="flex justify-center rounded bg-gray-50 h-28 dark:bg-gray-800 flex-col group">
-         <div class="text-xl text-gray-100 dark:text-gray-300 ml-8">
-
-            Want to see Attendance Logs??
-         </div>
-         <a href=" {% url 'staff:attendance' %} "
-            class="  dark:text-gray-500 text-gray-400 transition-transform duration-200 text-lg mt-2 flex flex-row ml-8 w-fit group-hover:text-gray-100 hover:underline">
-            <div>
-               Lets Go
-
-            </div>
-            <i class="fi ml-2 fi-rs-arrow-up-right-from-square hover:underline "></i>
-         </a>
-      </div>
-   
-   </div>
-   <div class="grid grid-cols-1 gap-4 mb-4">
-      {% if user.is_superuser %}
-      <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-         
-         <div class="flex justify-center rounded bg-gray-50 h-28 dark:bg-gray-800 flex-col group">
-
-            <div class="text-xl text-gray-100 dark:text-gray-300 ">
-   
-               New Collegue Joined?? 
-               Welcome them with their registration.
-            </div>
-            <a href=" {% url 'staff:attendance' %} "
-               class="  dark:text-gray-500 text-gray-400 transition-transform duration-200 text-lg mt-2 flex flex-row w-fit group-hover:text-gray-100 hover:underline">
+            <a href=" {% url 'staff:users' %} "
+               class="  dark:text-gray-500 text-gray-400 transition-transform duration-200 text-lg mt-2 flex flex-row ml-11 w-fit group-hover:text-gray-100 hover:underline">
                <div>
-                  Lets Begin
-   
+                  Mark Manually
+
+               </div>
+               <i class="fi ml-2 fi-rs-arrow-up-right-from-square"></i>
+            </a>
+         </div>
+         <div class="flex  justify-center rounded bg-gray-50 h-28 dark:bg-gray-800 flex-col group">
+            <div class="text-xl text-gray-100 dark:text-gray-300 ml-8">
+
+               Want to generate some Reports??
+            </div>
+            <a href=" {% url 'staff:users' %} "
+               class="  dark:text-gray-500 text-gray-400 transition-transform duration-200 text-lg mt-2 flex flex-row ml-8 w-fit group-hover:text-gray-100 hover:underline">
+               <div>
+                  Lets Go
+
                </div>
                <i class="fi ml-2 fi-rs-arrow-up-right-from-square hover:underline "></i>
             </a>
          </div>
       </div>
-      {% endif %}
-      <div class="flex items-center justify-around flex-col  rounded bg-gray-50 h-40 dark:bg-gray-800">
-       
+
+      <div class="flex justify-center align-center p-2 mb-4 rounded bg-gray-50 dark:bg-gray-800 flex-wrap">
+         <div class="text-xl text-gray-400 dark:text-gray-200  mx-2 my-2 w-full">
+            Monthly report - {{ chart_data.month }} {{ chart_data.year }}
+         </div>
+            <div id="myChart2" >
+   
+            </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4 mb-4">
+         <div class="flex justify-center rounded bg-gray-50 h-28 dark:bg-gray-800 flex-col group">
+            <div class="text-xl text-gray-100 dark:text-gray-300 ml-8">
+
+               Want to Edit Shifts and Departments??
+            </div>
+            <a href=" {% url 'staff:other-tables' %} "
+               class="  dark:text-gray-500 text-gray-400 transition-transform duration-200 text-lg mt-2 flex flex-row ml-8 w-fit group-hover:text-gray-100 hover:underline">
+               <div>
+                  Lets Go
+
+               </div>
+               <i class="fi ml-2 fi-rs-arrow-up-right-from-square hover:underline "></i>
+            </a>
+         </div>
+         <div class="flex justify-center rounded bg-gray-50 h-28 dark:bg-gray-800 flex-col group">
+            <div class="text-xl text-gray-100 dark:text-gray-300 ml-8">
+
+               Want to see Attendance Logs??
+            </div>
+            <a href=" {% url 'staff:attendance' %} "
+               class="  dark:text-gray-500 text-gray-400 transition-transform duration-200 text-lg mt-2 flex flex-row ml-8 w-fit group-hover:text-gray-100 hover:underline">
+               <div>
+                  Lets Go
+
+               </div>
+               <i class="fi ml-2 fi-rs-arrow-up-right-from-square hover:underline "></i>
+            </a>
+         </div>
+
+      </div>
+      <div class="grid grid-cols-1 gap-4 mb-4">
+         {% if user.is_superuser %}
+         <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+
+            <div class="flex justify-center rounded bg-gray-50 h-28 dark:bg-gray-800 flex-col group">
+
+               <div class="text-xl text-gray-100 dark:text-gray-300 ">
+
+                  New Collegue Joined??
+                  Welcome them with their registration.
+               </div>
+               <a href=" {% url 'staff:attendance' %} "
+                  class="  dark:text-gray-500 text-gray-400 transition-transform duration-200 text-lg mt-2 flex flex-row w-fit group-hover:text-gray-100 hover:underline">
+                  <div>
+                     Lets Begin
+
+                  </div>
+                  <i class="fi ml-2 fi-rs-arrow-up-right-from-square hover:underline "></i>
+               </a>
+            </div>
+         </div>
+         {% endif %}
+         <div class="flex items-center justify-around flex-col  rounded bg-gray-50 h-40 dark:bg-gray-800">
+
 
             <div class="flex flex-row flex-nowrap w-full justify-evenly">
-        
-                <div class="w-auto ">
-                    <a
-                        href="{% url 'developer-support' %}"
-                        class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-gray-300 mr-4"
-                      >
-                        Developer Support
-                      </a>
-                </div>
-                <div class="w-auto ">
-                    <a
-                        href="{% url 'about-us' %}"
-                        class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-gray-300 mr-4"
-                      >
-                        About Us
-                      </a>
-                </div>
-                <div class="w-auto ">
-                    <a
-                        href="{% url 'report-issue' %}"
-                        class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-gray-300 mr-4"
-                      >
-                        Report Issue
-                      </a>
-                </div>
-                
+
+               <div class="w-auto ">
+                  <a href="{% url 'developer-support' %}"
+                     class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-gray-300 mr-4">
+                     Developer Support
+                  </a>
+               </div>
+               <div class="w-auto ">
+                  <a href="{% url 'about-us' %}"
+                     class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-gray-300 mr-4">
+                     About Us
+                  </a>
+               </div>
+               <div class="w-auto ">
+                  <a href="{% url 'report-issue' %}"
+                     class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-gray-300 mr-4">
+                     Report Issue
+                  </a>
+               </div>
+
             </div>
-            
-                <div class=" flex justify-center align-center  text-md sm:text-x  text-gray-400 group">
-                    Made with 
-                    <i class="mx-2 fi fi-rs-heart text-red-500 "></i> 
-                    by 
-                    <a href="https://github.com/kaur-mannu" class="mx-2 group-hover:text-gray-300  group-hover:underline  ">
-                     Sandeep Kaur
-                  </a>
-                   & 
-                   <a href="https://github.com/GurpreetSarangal" class="mx-2 group-hover:text-gray-300 group-hover:underline ">
-                     Gurpreet Sarangal
-                  </a>
-                </div  >
-           
-          
+
+            <div class=" flex justify-center align-center  text-md sm:text-x  text-gray-400 group">
+               Made with
+               <i class="mx-2 fi fi-rs-heart text-red-500 "></i>
+               by
+               <a href="https://github.com/kaur-mannu" class="mx-2 group-hover:text-gray-300  group-hover:underline  ">
+                  Sandeep Kaur
+               </a>
+               &
+               <a href="https://github.com/GurpreetSarangal"
+                  class="mx-2 group-hover:text-gray-300 group-hover:underline ">
+                  Gurpreet Sarangal
+               </a>
+            </div>
+
+
+         </div>
       </div>
-</div>
-</div>
+   </div>
 </div>
 
 
-<aside id="separator-sidebar"
+<!-- <aside id="separator-sidebar" class="top-0 right-0 z-40 col-6 h-screen transition-transform " aria-label="Sidebar"> -->
+   <aside id="separator-sidebar"
    class="fixed top-0 right-0 z-40 w-72 h-screen transition-transform -translate-x-full sm:translate-x-0"
    aria-label="Sidebar">
-   <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+   <div class=" h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
       <a href="{% url 'user:dashboard' %} " class="flex items-center pl-2.5 mb-5 justify-center flex-wrap flex-col">
 
          <img src=" {% static 'pictures\hacker.png' %} " class="h-8 mr-3 sm:h-28" alt="Flowbite Logo" />
@@ -448,6 +457,10 @@
    </div>
 </aside>
 
+
+
+
+
 {{ content|json_script:"content" }}
 {{ chart_data|json_script:"chart_data" }}
 {% endblock container %}
@@ -540,7 +553,7 @@
 
          var options = {
             chart: {
-               title: chart_data.month+" "+chart_data.year,
+               title: chart_data.month + " " + chart_data.year,
                subtitle: 'Daily report for a month'
             },
             axes: {
