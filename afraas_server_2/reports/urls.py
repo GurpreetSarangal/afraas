@@ -15,5 +15,6 @@ urlpatterns = [
     path("mark_absent/", views.mark_absent, name="mark_absent"),
     path("mark_face_registered/", views.mark_face_registered, name="mark_face_registered"),
     path("mark_face_unregistered/", views.mark_face_unregistered, name="mark_face_unregistered"),
+    path("check_image_input/", views.checkImageInput, name="check"),
 
 ]

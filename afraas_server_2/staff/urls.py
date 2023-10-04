@@ -9,5 +9,6 @@ urlpatterns = [
     path('other-tables/', views.other_tables, name="other-tables"),
     path('attendance/', views.attendance, name="attendance"),
     path('reports/', views.reports, name="reports"),
+    path('test/', views.test_new_user, name="test"),
    
 ]

@@ -8,6 +8,10 @@ import datetime
 
 import pytz
 import calendar
+import numpy as np
+from urllib.request import urlopen
+import cv2
+import base64
 
 # Create your views here.
 @csrf_exempt
@@ -855,3 +859,44 @@ def default(o):
     if isinstance(o, (datetime.date, datetime.datetime, datetime.time)):
         return o.isoformat()
 
+@csrf_exempt
+def checkImageInput(request):
+    res = {
+        "success": False,
+        "error": "",
+        "content": "",
+    }
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        print("the request is ajax")
+        if request.method == "POST":
+            data = json.loads(request.body.decode('utf-8'))
+            # img = request.POST["img"]
+            # print(data["imageData"])
+            img = url_to_image(data["imageData"].split(",")[1]);
+            # cv2.imshow("testimg",img);
+            output_path = r'C:\Users\gurpr\Documents\_StudyMaterial\code\afraas\afraas_server_2\staff\static\pictures\output_image.jpg'
+
+            # Save the image using cv2.imwrite()
+            cv2.imwrite(output_path, img)
+            res["success"] = True;
+    else:
+        res["error"] = "Not a POST Request";
+
+    json_data = res
+    json_data = json.dumps(json_data)
+    return HttpResponse(json_data, content_type="application/json")
+
+def url_to_image(data):
+	# download the image, convert it to a NumPy array, and then read
+	# it into OpenCV format
+	# resp = urlopen(url)
+	# image = np.asarray(bytearray(url), dtype="uint8")
+
+    binary_data = base64.b64decode(data)
+
+    # Convert the binary data to a NumPy array
+    image_array = np.frombuffer(binary_data, dtype=np.uint8)
+    image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
+	# return the image
+    return image
+    

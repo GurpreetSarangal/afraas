@@ -491,6 +491,9 @@ def reports(request):
     # print(context["content"])
     return render(request, "staff/reports.html", context)
 
+def test_new_user(request):
+    return render(request, "staff/test_new_user.html")
+
 def truncate(f, n):
     '''Truncates/pads a float f to n decimal places without rounding'''
     s = '{}'.format(f)

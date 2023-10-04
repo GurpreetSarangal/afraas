@@ -1,0 +1,41 @@
+{% extends 'staff/base.html' %}
+{% load static %}
+
+{% block css %}
+{% comment %}
+<link rel="stylesheet" href=" {% static 'staff\css\dashboard.css' %} "> {% endcomment %}
+
+<style>
+
+</style>
+{% endblock css %}
+
+{% block container %}
+
+    <h1>face Detection</h1>
+    <video id="video" autoplay hidden></video>
+    <canvas id="canvas" width="151px" height="151px"></canvas>
+
+    {{ content|json_script:"content" }}
+    
+    {% endblock container %}
+    
+    {% block javascript %}
+        <!-- Require the peer dependencies of face-detection. -->
+        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+        
+        <!-- You must explicitly require a TF.js backend if you're not using the TF.js union bundle. -->
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
+        
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-detection"></script>
+        
+        <script src="./afraas_server/static/scripts/jquery-3.6.4.min.js"></script>
+        
+            <script src="{% static 'staff\scripts\tensorflow_script.js' %}"></script>
+    
+
+
+
+
+{% endblock javascript %}

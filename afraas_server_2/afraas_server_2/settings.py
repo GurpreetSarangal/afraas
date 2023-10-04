@@ -85,9 +85,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'afraas_server_2.wsgi.application'
 
-# CORS_ORIGIN_WHITELIST = [
-#     'http://127.0.0.1:8000',
-# ]
+CORS_ORIGIN_WHITELIST = [
+    'http://127.0.0.1:8000',
+    'http://127.0.0.1:5500',
+]
 
 
 # Database
