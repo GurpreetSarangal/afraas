@@ -335,87 +335,88 @@ def add_user(request):
             "error" : '',
             "success": False,
     }
-
-    if request.method == "POST" and request.user.is_staff:
-        
-        name = request.POST["name"]
-        email = request.POST["email"]
-        shift = request.POST["shift"]
-        department = request.POST["department"]
-        psw = request.POST["new_password"]
-        confirm_psw = request.POST["confirm_new_password"]
-        type_of_user = request.POST["type_of_user"]
-        is_unique_mail = True
-        print(name)
-        print(email)
-        print(shift)
-        print(department)
-        print(psw)
-        print(confirm_psw)
-        print(type_of_user)
-
-        if not request.user.is_superuser and type_of_user!="gen_user":
-            res["error"] = "A Staff member is not allowed to create "+type_of_user+" type of users"
-        
-        else:
-
-            all_users = User.objects.all().order_by("id")
-            for obj in all_users:
-                print(obj)
-                if email == obj.email:
-                    is_unique_mail = False
-                    break
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        # print("the request is ajax")
+        if request.method == "POST" and request.user.is_staff:
             
-            if not is_unique_mail:
-                res["error"] = f"Email [{email}] is already registred"
-            
-            if not psw==confirm_psw:
-                res["error"]= "Passwords are not same. Try Again"
+            name = request.POST["name"]
+            email = request.POST["email"]
+            shift = request.POST["shift"]
+            department = request.POST["department"]
+            psw = request.POST["new_password"]
+            confirm_psw = request.POST["confirm_new_password"]
+            type_of_user = request.POST["type_of_user"]
+            is_unique_mail = True
+            print(name)
+            print(email)
+            print(shift)
+            print(department)
+            print(psw)
+            print(confirm_psw)
+            print(type_of_user)
 
+            if not request.user.is_superuser and type_of_user!="gen_user":
+                res["error"] = "A Staff member is not allowed to create "+type_of_user+" type of users"
+            
             else:
-                res["success"] = True
-            try:
-                dept = Department.objects.get(id=department)
-                sh = Shift.objects.get(id=shift)
-                
-                if type_of_user == "gen_user":
-                    u = User.objects.create_user(
-                        email= email,
-                        
-                        password= psw,
-                        name= name,
-                        department=dept,
-                        shift=sh,
-                    )
-                    u.save()
 
-                elif type_of_user == "staff":
-                    u = User.objects.create_staffuser(
-                        email=email,
-                        
-                        password=psw,
-                        name= name,
-                        department=dept,
-                        shift=sh,
-                    )
-                    u.save()
-
-                elif type_of_user == "superuser":
-                    u = User.objects.create_superuser(
-                        email=email,
-                        
-                        password=psw,
-                        name= name,
-                        department=dept,
-                        shift=sh,
-                    )
-                    u.save()
+                all_users = User.objects.all().order_by("id")
+                for obj in all_users:
+                    print(obj)
+                    if email == obj.email:
+                        is_unique_mail = False
+                        break
                 
-            except Exception as e:
-                print(e)
-                res["error"]= "There is some internal server error"
-                res["success"] = False
-       
+                if not is_unique_mail:
+                    res["error"] = f"Email [{email}] is already registred"
+                
+                if not psw==confirm_psw:
+                    res["error"]= "Passwords are not same. Try Again"
+
+                else:
+                    res["success"] = True
+                try:
+                    dept = Department.objects.get(id=department)
+                    sh = Shift.objects.get(id=shift)
+                    
+                    if type_of_user == "gen_user":
+                        u = User.objects.create_user(
+                            email= email,
+                            
+                            password= psw,
+                            name= name,
+                            department=dept,
+                            shift=sh,
+                        )
+                        u.save()
+
+                    elif type_of_user == "staff":
+                        u = User.objects.create_staffuser(
+                            email=email,
+                            
+                            password=psw,
+                            name= name,
+                            department=dept,
+                            shift=sh,
+                        )
+                        u.save()
+
+                    elif type_of_user == "superuser":
+                        u = User.objects.create_superuser(
+                            email=email,
+                            
+                            password=psw,
+                            name= name,
+                            department=dept,
+                            shift=sh,
+                        )
+                        u.save()
+                    
+                except Exception as e:
+                    print(e)
+                    res["error"]= "There is some internal server error"
+                    res["success"] = False
+        
     else:
         res["error"]="Either this is not a POST request Or You are not a authorized user"
     

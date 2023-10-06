@@ -19,7 +19,7 @@ $(function () {
         // alert("the message is sent");
         var formData = $(this).serialize();
         $.ajax({
-          url: 'login/',
+          url: 'accounts/login/',
           method: 'POST',
           data: formData,
           success: function(response) {

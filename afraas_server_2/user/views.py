@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import HttpResponse
 import datetime
@@ -8,6 +9,7 @@ import pytz
 import calendar
 
 # Create your views here.
+@login_required
 def dashboard(request):
     context = {
         "title" : "AFRAAS | User",
@@ -171,11 +173,14 @@ def monthly_on_daily_basis(user_id):
 
     return data
 
+@login_required
 def apply_leave(request):
     return HttpResponse("apply leave here")
 
+@login_required
 def profile(request):
     return HttpResponse("view you profile")
 
+@login_required
 def profile_edit(request):
     return HttpResponse("edit your profile here")

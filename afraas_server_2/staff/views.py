@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 import datetime
 from user.models import *
 from reports.models import *
@@ -7,6 +8,7 @@ import pytz
 import calendar
 
 # Create your views here.
+@login_required
 def dashboard(request):
     context = {
         "title" : "AFRAAS | Staff",
@@ -186,6 +188,7 @@ def dashboard(request):
     print(context["chart_data"])
     return render(request, "staff/dashboard.html", context) 
 
+
 def monthly_on_daily_basis():
     now = datetime.datetime.now()
     # at = Attendance.objects.filter(time_stamp__month = now.month, time_stamp__year = now.year).order_by("time_stamp__day")
@@ -247,6 +250,7 @@ def monthly_on_daily_basis():
     return data
 
 
+@login_required
 def users(request):
     context = {
         "title" : "Users | Staff",
@@ -336,6 +340,7 @@ def users(request):
 
     return render(request, "staff/users.html", context)
 
+@login_required
 def other_tables(request):
     context = {
         "title" : "Tables | Staff",
@@ -378,6 +383,7 @@ def other_tables(request):
 
  
 
+@login_required
 def attendance(request):
     context = {
         "title" : "Attendance | Staff",
@@ -428,6 +434,7 @@ def attendance(request):
     return render(request, "staff/attendance.html", context) 
 
 
+@login_required
 def reports(request):
     context = {
         "title" : "Reports | Staff",

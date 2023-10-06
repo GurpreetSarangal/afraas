@@ -26,6 +26,8 @@ def landingPage(request):
 
 def _login(request):
 
+
+
     if request.method == "POST":
         res = {
                 "content" : "",
@@ -70,6 +72,8 @@ def _login(request):
         else:
             return HttpResponse("not an ajax request")
 
+    elif request.method == "GET":
+        return redirect("home")
 
     else:
 
