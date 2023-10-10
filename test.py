@@ -14,11 +14,11 @@ import json
 #    "id" : 7
 # }
 
-url = "http://localhost:8000/api/mark_face_unregistered/"
-now = datetime.datetime.now()
-data = {
-   "id" : 7
-}
+# url = "http://localhost:8000/api/mark_face_unregistered/"
+# now = datetime.datetime.now()
+# data = {
+#    "id" : 7
+# }
 
 # url = "http://localhost:8000/api/report/"
 # now = datetime.datetime.now()

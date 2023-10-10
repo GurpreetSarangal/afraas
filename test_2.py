@@ -6,14 +6,14 @@ import afraas_client
 # obj = Recognizer()
 # obj.recompileDataSet()
 
-# afraas_client.boot()
+afraas_client.boot()
 
 
 
 
 # afraas_client.addNewFace(1)
 # afraas_client.addNewFace(2)
-# afraas_client.removeFace(2)
+# afraas_client.removeFace(3)
 # afraas_client.mark_attendance("1_2_sandeep kaur")
 
 # obj=Camera(1)
