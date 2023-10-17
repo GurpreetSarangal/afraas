@@ -1,10 +1,17 @@
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from user.models import *
+from user.manager import *
 from .models import *
+from .test import test
+import pickle
+import os.path
+import datetime
+
 
 import json
 import datetime
+import face_recognition
 
 import pytz
 import calendar
@@ -874,12 +881,29 @@ def checkImageInput(request):
             # img = request.POST["img"]
             # print(data["imageData"])
             img = url_to_image(data["imageData"].split(",")[1]);
+            name = data["name"]
+            print("the name is "+name)
             # cv2.imshow("testimg",img);
-            output_path = r'C:\Users\gurpr\Documents\_StudyMaterial\code\afraas\afraas_server_2\staff\static\pictures\output_image.jpg'
-
+            
+            output_path = f'''C:\\Users\\gurpr\\Documents\\_StudyMaterial\\code\\afraas\\afraas_server_2\\reports\\face_data\\{name}.jpg'''
+            # print(output_path)
             # Save the image using cv2.imwrite()
-            cv2.imwrite(output_path, img)
-            res["success"] = True;
+
+            label = test(
+                image=img,
+                model_dir=r'C:\Users\gurpr\Documents\_StudyMaterial\code\afraas\afraas_server_2\reports\resources\anti_spoof_models',
+                device_id=0
+            )
+            if(label == 1):
+                cv2.imwrite(output_path, img)
+                res["success"] = True
+                print("valid image")
+            else:
+                print("INvalid image")
+                res["success"] = False
+
+
+            
     else:
         res["error"] = "Not a POST Request";
 

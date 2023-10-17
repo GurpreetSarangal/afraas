@@ -1,15 +1,18 @@
 let video = document.getElementById("video");
 let canvas = document.getElementById("canvas");
+let name_input = document.getElementById("name");
 let model, detector;
 let ctx = canvas.getContext("2d");
 
-function sendJSON(data){
+function sendJSON(data, name){
     // Assuming 'data' holds the data URL from your canvas
     var dataURL = canvas.toDataURL('image/jpeg');
+    
 
     // Create a JavaScript object to hold the data you want to send to the server
     var requestData = {
-        imageData: dataURL // You can use any key you prefer
+        imageData: dataURL, // You can use any key you prefer
+        name: name,
     };
 
     // Make an AJAX POST request to your server
@@ -66,7 +69,11 @@ const detectFaces = async () => {
         
         var data = canvas.toDataURL('image/jpeg');
         console.log(data);
-        sendJSON(data);
+        var name = name_input.value;
+        console.log("the name is");
+        console.log(name);
+
+        sendJSON(data, name);
     }
 
     // faces.forEach(face => {

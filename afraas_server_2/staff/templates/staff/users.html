@@ -153,9 +153,13 @@
                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded
                 focus:ring-blue-500 dark:focus:ring-blue-600
                 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800
-                focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {% if
-                obj.status == "Not Marked Yet" %} {% else %} {% comment %}
-                disabled {% endcomment %} {% endif %} >
+                focus:ring-2 dark:bg-gray-700 dark:border-gray-600" 
+                {% if obj.status == "Not Marked Yet" %} 
+                
+                {% else %} {% comment %}
+                disabled {% endcomment %} 
+                
+                {% endif %} >
                 <label for="checkbox-table-search-1" class="sr-only"
                   >checkbox</label
                 >
@@ -190,9 +194,13 @@
               <div class="pl-3">
                 <div>
                   <span class="text-base font-semibold">
-                    #{{ obj.id }} {{ obj.name }} {% if obj.itself == "true" %}
+                    #{{ obj.id }} {{ obj.name }} 
+                    
+                    {% if obj.itself == "true" %}
                     <span class="text-sm text-gray-400"> (you) </span>
-                    {% endif %} {% if not obj.is_registered %}
+                    {% endif %} 
+                    
+                    {% if not obj.is_registered %}
                     <i
                       class="fi fi-rs-exclamation text-red-300 text-lg"
                       title="Not Registred"
@@ -209,8 +217,7 @@
             <td class="px-6 py-4">{{ obj.department|title }}</td>
 
             <td class="px-6 py-4">
-              {{ obj.timings.in|time:"P"|capfirst}} - {{
-              obj.timings.out|time:"P"|capfirst }}
+              {{ obj.timings.in|time:"P"|capfirst}} - {{ obj.timings.out|time:"P"|capfirst }}
             </td>
 
             <td class="px-6 py-4">
@@ -378,15 +385,9 @@
                       <div class="flex items-center pl-3">
                         <input
                           id="radio_is_superuser"
-                          {%
-                          if
-                          not
-                          user.is_superuser
-                          %}
+                          {% if not user.is_superuser %}
                           disabled
-                          {%
-                          endif
-                          %}
+                          {% endif %}
                           type="radio"
                           value="superuser"
                           name="type_of_user"
@@ -406,15 +407,9 @@
                         <input
                           id="radio_is_staff"
                           type="radio"
-                          {%
-                          if
-                          not
-                          user.is_superuser
-                          %}
+                          {% if not user.is_superuser %}
                           disabled
-                          {%
-                          endif
-                          %}
+                          {% endif %}
                           value="staff"
                           name="type_of_user"
                           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
@@ -499,8 +494,8 @@
     </div>
   </div>
 </div>
-{{ content|json_script:"content" }} {{ error|json_script:"error" }} {% endblock
-container %} {% block javascript %}
+{{ content|json_script:"content" }} {{ error|json_script:"error" }} 
+{% endblock container %} {% block javascript %}
 <script>
   const content = JSON.parse(document.getElementById("content").textContent);
   const error = JSON.parse(document.getElementById("error").textContent);

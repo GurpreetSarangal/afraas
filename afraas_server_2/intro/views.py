@@ -50,10 +50,10 @@ def _login(request):
                 login(request, user)
                 # print("valid")
                 # print(user)
-                if user.is_superuser:
-                    next = "django-admin/"
+                # if user.is_superuser:
+                #     next = "django-admin/"
                 
-                elif user.is_staff:
+                if user.is_staff:
                     next = reverse('staff:dashboard')
                 else:
                     next = reverse('user:dashboard')
