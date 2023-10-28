@@ -341,7 +341,7 @@
             }
             console.log(data)
 
-            url = `http://localhost:8000{% url 'reports:reports' %}`
+            url = `http://127.0.0.1:8000{% url 'reports:reports' %}`
             $.ajax({
                 url: url,
                 method: 'POST',

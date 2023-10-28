@@ -270,7 +270,7 @@
               id: {{ user.id }}
           };
           console.log(data);
-          url = 'http://localhost:8000{% url 'reports:mark_absent' %}'
+          url = 'http://127.0.0.1:8000{% url 'reports:mark_absent' %}'
           $.ajax({
                   url: url,
                   method: 'POST',

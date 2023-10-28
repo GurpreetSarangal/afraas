@@ -46,13 +46,15 @@ def mark(request):
             
         # now = datetime.datetime.now()
         time = datetime.datetime.now()
+        print(label)
         label = label.split('_')[1]
+        print(label)
         
         
         
 
 
-        u = User.objects.filter(id=label[0])
+        u = User.objects.filter(id=label)
 
         if len(u) == 0:
             res["error"] = "No user - rejected"
@@ -337,29 +339,88 @@ def recent_entries(request):
 
 
 @csrf_exempt
+def delete_user(request):
+    res = {
+            "error" : '',
+            "success": False,
+    }
+    db_path = r"C:\Users\gurpr\Documents\_StudyMaterial\code\afraas\afraas_server_2\reports\static\reports\faceData"
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        
+        if request.method == "POST" and request.user.is_staff:
+            
+            data = json.loads(request.body)
+            print(data["label"])
+
+            uid = int(data["label"].split("_")[1])
+
+            if uid != request.user.id:
+
+
+                for i in range(1, 4):
+                    file_path = db_path + "\\" + str(uid) + "_" + str(i) + ".pickle"
+                    print(file_path)
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+                    else:
+                        print("File not found. "+file_path)
+                        res["error"] = "There is some internal db error"
+                        break
+
+                
+                if res["error"] == '':
+                    temp_user = User.objects.get(id=uid);
+                    # print(temp_user)
+                    temp_user.delete()
+                    res["success"] = True
+            else:
+                res["error"] = "Current user cannot be deleted."
+           
+    else:
+        res["error"]="Either this is not a POST request Or You are not a authorized user"
+    
+    json_data = res
+    json_data = json.dumps(json_data)
+    return HttpResponse(json_data, content_type="application/json")
+
+
+@csrf_exempt
 def add_user(request):
     res = {
             "error" : '',
             "success": False,
     }
+    # print("This runs")
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         # print("the request is ajax")
         if request.method == "POST" and request.user.is_staff:
+            data = json.loads(request.body)
             
-            name = request.POST["name"]
-            email = request.POST["email"]
-            shift = request.POST["shift"]
-            department = request.POST["department"]
-            psw = request.POST["new_password"]
-            confirm_psw = request.POST["confirm_new_password"]
-            type_of_user = request.POST["type_of_user"]
+            # print(type(data))
+
+            name = data["name"]
+            email = data["email"]
+            shift = data["shift"]
+            department = data["department"]
+            psw = data["new_password"]
+
+            confirm_psw = data["confirm_new_password"]
+            # img1 = data["img1"]
+            # img2 = data["img2"]
+            # img3 = data["img3"]
+            type_of_user = data["type_of_user"]
             is_unique_mail = True
             print(name)
             print(email)
             print(shift)
             print(department)
             print(psw)
+            # print(img1)
+            # print(img2)
+            # print(img3)
             print(confirm_psw)
+
             print(type_of_user)
 
             if not request.user.is_superuser and type_of_user!="gen_user":
@@ -367,62 +428,84 @@ def add_user(request):
             
             else:
 
-                all_users = User.objects.all().order_by("id")
-                for obj in all_users:
-                    print(obj)
-                    if email == obj.email:
-                        is_unique_mail = False
-                        break
-                
-                if not is_unique_mail:
-                    res["error"] = f"Email [{email}] is already registred"
-                
                 if not psw==confirm_psw:
                     res["error"]= "Passwords are not same. Try Again"
 
                 else:
-                    res["success"] = True
-                try:
-                    dept = Department.objects.get(id=department)
-                    sh = Shift.objects.get(id=shift)
-                    
-                    if type_of_user == "gen_user":
-                        u = User.objects.create_user(
-                            email= email,
-                            
-                            password= psw,
-                            name= name,
-                            department=dept,
-                            shift=sh,
-                        )
-                        u.save()
 
-                    elif type_of_user == "staff":
-                        u = User.objects.create_staffuser(
-                            email=email,
-                            
-                            password=psw,
-                            name= name,
-                            department=dept,
-                            shift=sh,
-                        )
-                        u.save()
+                    all_users = User.objects.all().order_by("id")
+                    for obj in all_users:
+                        print(obj)
+                        print(email+" "+obj.email+" ", end="")
+                        print(email==obj.email)
 
-                    elif type_of_user == "superuser":
-                        u = User.objects.create_superuser(
-                            email=email,
-                            
-                            password=psw,
-                            name= name,
-                            department=dept,
-                            shift=sh,
-                        )
-                        u.save()
+                        if email == obj.email:
+                            is_unique_mail = False
+                            break
                     
-                except Exception as e:
-                    print(e)
-                    res["error"]= "There is some internal server error"
-                    res["success"] = False
+                    if not is_unique_mail:
+                        res["error"] = f"Email [{email}] is already registred"
+
+                    else:        
+                        result_face_check, error, spoof_result = spoof_check(data)
+
+                        if not result_face_check:   
+                            res["error"] = error
+                            res["spoof_result"] = spoof_result
+
+                        else:
+                            res["success"] = True
+                            u = None
+                            try:
+                                dept = Department.objects.get(id=department)
+                                sh = Shift.objects.get(id=shift)
+                                
+                                if type_of_user == "gen_user":
+                                    u = User.objects.create_user(
+                                        email= email,
+                                        is_registered =  True,
+                                        password= psw,
+                                        name= name,
+                                        department=dept,
+                                        shift=sh,
+                                    )
+                                    # u.save()
+
+                                elif type_of_user == "staff":
+                                    u = User.objects.create_staffuser(
+                                        email=email,
+                                        is_registered =  True,
+                                        password=psw,
+                                        name= name,
+                                        department=dept,
+                                        shift=sh,
+                                    )
+                                    # u.save()
+
+                                elif type_of_user == "superuser":
+                                    u = User.objects.create_superuser(
+                                        email=email,
+                                        is_registered =  True,
+                                        password=psw,
+                                        name= name,
+                                        department=dept,
+                                        shift=sh,
+                                    )
+                                    # u.save()
+                                
+                            except Exception as e:
+                                print(e)
+                                res["error"]= "There is some internal server error"
+                                res["success"] = False
+                            
+                            try:
+                                if u is not None:
+                                    data["id"] = User.objects.get(email=data["email"]).id
+                                    print(data["id"])
+                                    issaved, error = save_face(data)
+                            
+                            except Exception as e:
+                                print(e)
         
     else:
         res["error"]="Either this is not a POST request Or You are not a authorized user"
@@ -430,6 +513,80 @@ def add_user(request):
     json_data = res
     json_data = json.dumps(json_data)
     return HttpResponse(json_data, content_type="application/json")
+
+def save_face(data):
+    output_path = r'''C:\\Users\\gurpr\\Documents\\_StudyMaterial\\code\\afraas\\afraas_server_2\\reports\\static\\reports\\faceData\\'''
+    temp_img1 = url_to_image(data["img1"].split(",")[1])
+    temp_img2 = url_to_image(data["img2"].split(",")[1])
+    temp_img3 = url_to_image(data["img3"].split(",")[1])
+
+
+    embeddings1 = face_recognition.face_encodings(temp_img1)[0]
+    name = str(data["id"])+"_1"
+    file = open(os.path.join(output_path, '{}.pickle'.format(name)), 'wb')
+    pickle.dump(embeddings1, file)
+
+    embeddings2 = face_recognition.face_encodings(temp_img2)[0]
+    file = open(os.path.join(output_path, '{}.pickle'.format(str(data["id"])+"_2")), 'wb')
+    pickle.dump(embeddings2, file)
+
+    embeddings3 = face_recognition.face_encodings(temp_img3)[0]
+    file = open(os.path.join(output_path, '{}.pickle'.format(str(data["id"])+"_3")), 'wb')
+    pickle.dump(embeddings3, file)
+
+    return True, ""
+
+def spoof_check(data):
+    temp_img1 = url_to_image(data["img1"].split(",")[1])
+    temp_img2 = url_to_image(data["img2"].split(",")[1])
+    temp_img3 = url_to_image(data["img3"].split(",")[1])
+    output_path = f'''C:\\Users\\gurpr\\Documents\\_StudyMaterial\\code\\afraas\\afraas_server_2\\reports\\static\\reports\\faceData\\'''
+    model_dir = r'C:\Users\gurpr\Documents\_StudyMaterial\code\afraas\afraas_server_2\reports\resources\anti_spoof_models'
+    first_checked = 1
+    second_checked = 1
+    third_checked = 1
+
+    label_1 = test(
+                image=temp_img1,
+                model_dir=model_dir,
+                device_id=0
+            )
+    
+    if (label_1 != 1):
+        print(label_1)
+        first_checked = 0
+        # return False, 'Image is not real'
+
+
+    label_2 = test(
+                image=temp_img2,
+                model_dir=model_dir,
+                device_id=0
+            )
+    if (label_2 != 1):
+        print(label_2)
+        second_checked = 0
+        # return False, 'Image is not real'
+    
+    
+    label_3 = test(
+                image=temp_img3,
+                model_dir=model_dir,
+                device_id=0
+            )
+    
+    if (label_3 != 1):
+        print(label_3)
+        third_checked = 0
+        # return False, 'Image is not real'
+
+    
+    if first_checked and second_checked and third_checked:
+        return True, '', [first_checked, second_checked, third_checked]
+    else:
+        return False, "Images needs to be re-captured" , [first_checked, second_checked, third_checked]
+
+
 
 @csrf_exempt
 def mark_absent(request):

@@ -26,7 +26,7 @@
         <div class="ml-2 relative">
           <button
             id="dropdownActionButton"
-            data-dropdown-toggle="dropdownAction"
+            
             class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-base px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
             type="button"
           >
@@ -51,21 +51,21 @@
           <!-- Dropdown menu -->
           <div
             id="dropdownAction"
-            class="z-50 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
+            class="z-50 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600 translate-x-0"
             style="
               position: absolute;
               inset: 0px auto auto 0px;
               margin: 0px;
-              transform: translate(7px, 42px);
+              transform: translate(7px, 38.6px);
             "
           >
             <ul
               class="py-1 text-sm text-gray-700 dark:text-gray-200"
-              aria-labelledby="dropdownActionButton"
+              
             >
               <li>
-                <a
-                  href="#"
+                <p
+                  
                   id="mark-present"
                   class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white group flex justify-between items-center"
                 >
@@ -74,11 +74,11 @@
                   <div
                     class="h-2.5 w-2.5 hidden group-hover:block rounded-full bg-green-500 mr-2"
                   ></div>
-                </a>
+              </p>
               </li>
               <li>
-                <a
-                  href="#"
+                <p
+                  
                   id="left-premesis"
                   class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white group flex justify-between items-center"
                 >
@@ -87,11 +87,11 @@
                   <div
                     class="h-2.5 hidden group-hover:block w-2.5 rounded-full bg-yellow-500 mr-2"
                   ></div>
-                </a>
+              </p>
               </li>
               <li>
-                <a
-                  href="#"
+                <p
+                  
                   id="mark-absent"
                   class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white group flex justify-between items-center"
                 >
@@ -100,7 +100,21 @@
                   <div
                     class="h-2.5 hidden group-hover:block w-2.5 rounded-full bg-red-500 mr-2"
                   ></div>
-                </a>
+              </p>
+              </li>
+              <li>
+                <p
+                  
+                  id="delete-user"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white group flex justify-between items-center"
+                >
+                  Delete User(s)
+
+                  <!-- <div
+                    class="h-2.5 hidden group-hover:block w-2.5 rounded-full bg-red-500 mr-2"
+                  ></div> -->
+                  <i class="fi ml-1 fi-rs-delete-user text-red-500 text-xl"></i>
+                  </p>
               </li>
             </ul>
           </div>
@@ -146,6 +160,7 @@
 
           <tr
             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+            id="user-{{ obj.id }}"
           >
             <td class="w-4 p-4">
               <div class="flex items-center">
@@ -309,7 +324,7 @@
                     name="Uname"
                     id="Uname"
                     class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Bonnie"
+                    placeholder="Full Name"
                     required=""
                   />
                 </div>
@@ -325,7 +340,7 @@
                     name="email"
                     id="email"
                     class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="shift"
+                    placeholder="Email"
                     required=""
                   />
                 </div>
@@ -366,11 +381,40 @@
                     {% for obj in all_shifts %}
 
                     <option value="{{ obj.id }}">
-                      #{{ obj.id }} {{ obj.name }} [{{ obj.time_in|time:"P"
-                      }}-{{ obj.time_out|time:"P" }}]
+                      #{{ obj.id }} {{ obj.name }} [{{ obj.time_in|time:"P"}}-{{ obj.time_out|time:"P" }}]
                     </option>
                     {% endfor %}
                   </select>
+                </div>
+                <div class="col-span-6 sm:col-span-6">
+                  <div class="flex mb-4 w-full" id="start_cam">
+                    <div class="ml-2 text-sm">
+                      <label for="helper-checkbox"  class="font-medium text-gray-900 dark:text-gray-300 flex items-center">
+                        <i class="fi ml-2 mr-2 mt-2 fi-rs-video-camera-alt text-emerald-200 text-2xl"></i>
+                          <span id="cam_message">
+                            
+                            Click to Start Capturing
+                          </span>
+                      </label>
+                        <!-- <p id="helper-checkbox-text" class="text-xs font-normal text-gray-500 dark:text-gray-400">This will be checked when your face is successfully recorded</p> -->
+                    </div>
+                    <div class="flex items-center">
+                        <input id="face_recorded"
+                        name="face_recorded" 
+                        aria-describedby="helper-checkbox-text" type="checkbox" value="" class="w-4 h-5 ml-2 mt-1 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" >
+                    </div>
+                  </div>
+                  
+                  <!-- <span id="" >Capture Face</span> -->
+                  <!-- <span id="stop_cam" class="hidden" >stop Cam</span> -->
+
+                  <video id="video" class="hidden" autoplay ></video>
+                  <canvas id="canvas" width="151px" height="151px" hidden></canvas>
+                  <input type="text" id="img1" name="img1" class="hidden">
+                  <input type="text" id="img2" name="img2" class="hidden">
+                  <input type="text" id="img3" name="img3" class="hidden">
+                  
+                  
                 </div>
                 <div class="col-span-6 sm:col-span-6">
                   <h3 class="mb-1 font-semibold text-gray-900 dark:text-white">
@@ -485,7 +529,7 @@
                 type="submit"
                 class="flex items-center p-2 rounded-lg bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% text-gray-900 dark:text-white px-8"
               >
-                Register
+                Proceed
               </button>
             </div>
           </form>
@@ -494,11 +538,28 @@
     </div>
   </div>
 </div>
-{{ content|json_script:"content" }} {{ error|json_script:"error" }} 
-{% endblock container %} {% block javascript %}
+
+{{ content|json_script:"content" }} 
+{{ error|json_script:"error" }} 
+{% endblock container %} 
+
+{% block javascript %}
+
+<!-- Require the peer dependencies of face-detection. -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+
+<!-- You must explicitly require a TF.js backend if you're not using the TF.js union bundle. -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-detection"></script>
+
 <script>
   const content = JSON.parse(document.getElementById("content").textContent);
   const error = JSON.parse(document.getElementById("error").textContent);
+  img_1 = 0;
+  img_2 = 0;
+  img_3 = 0;
   console.log(content);
   console.log(error);
 
@@ -533,6 +594,21 @@
         minlength: 8,
         maxlength: 12,
       },
+      // img1: {
+      //   required: true,
+      //   minlength: 8,
+      // },
+      // img2: {
+      //   required: true,
+      //   minlength: 8,
+      // },
+      // img3: {
+      //   required: true,
+      //   minlength: 8,
+      // },
+      face_recorded: {
+        required: true,
+      },
       confirm_new_password: {
         required: true,
         minlength: 8,
@@ -541,7 +617,7 @@
       },
     },
     messages: {
-      name: {
+      Uname: {
         required: "Please provide your name",
         minlength: jQuery.validator.format("At least {3} characters required!"),
       },
@@ -549,21 +625,40 @@
         required: "We need your email address to contact you",
         // minlength: jQuery.validator.format("At least {0} characters required!")
       },
+      // img1: {
+      //   required: "We need your picture to recognize you",
+      //   // minlength: jQuery.validator.format("At least {0} characters required!")
+      // },
+      // img2: {
+      //   required: "We need your picture to recognize you",
+      //   // minlength: jQuery.validator.format("At least {0} characters required!")
+      // },
+      // img3: {
+      //   required: "We need your picture to recognize you",
+      //   // minlength: jQuery.validator.format("At least {0} characters required!")
+      // },
+      face_recorded: {
+        required: "We need your picture to recognize you",
+        // minlength: jQuery.validator.format("At least {0} characters required!")
+      },
     },
     submitHandler: function () {
-      url = "http://localhost:8000/api/add_user/";
-      console.log("submitted");
+      url = "http://127.0.0.1:8000/api/add_user/";
+      // console.log("submitted");
       data = {
         name: Uname.value,
         email: email.value,
         department: department.value,
         shift: shift.value,
         new_password: new_password.value,
+        img1: img1.value,
+        img2: img2.value,
+        img3: img3.value,
         confirm_new_password: confirm_new_password.value,
         type_of_user: $('input[name="type_of_user"]:checked').val(),
       };
       console.log(data);
-
+      data = JSON.stringify(data);
       $.ajax({
         url: url,
         method: "POST",
@@ -578,6 +673,9 @@
             window.location.reload();
           } else {
             alert(response.error);
+            set_spoof_check(response.spoof_result);
+            console.log(response.spoof_result);
+
           }
         },
       });
@@ -585,6 +683,12 @@
       console.log("abcdefgh");
     },
   });
+
+  function set_spoof_check(spoof_result){
+    img_1 = spoof_result[0];
+    img_2 = spoof_result[1];
+    img_3 = spoof_result[2];
+  }
 
   $("#mark-present").on("click", function (e) {
     users_to_mark = [];
@@ -597,7 +701,7 @@
     });
     console.log(users_to_mark);
     users_to_mark.forEach(function (u) {
-      var url = "http://localhost:8000/api/mark/";
+      var url = "http://127.0.0.1:8000/api/mark/";
       // const now = new Date();
       // const options = { timeZone: 'UTC' };
       // const istTime = now.toLocaleString('en-US', options);
@@ -623,9 +727,9 @@
           if (response.success) {
             $("#dropdownAction").toggleClass("hidden");
             console.log("Successfully marked");
-            console.log(response.content);
           } else {
             console.log("Not marked");
+            console.log(response.error);
           }
           window.location.reload();
         },
@@ -644,7 +748,7 @@
     });
     console.log(users_to_mark);
     users_to_mark.forEach(function (u) {
-      var url = "http://localhost:8000/api/mark/";
+      var url = "http://127.0.0.1:8000/api/mark/";
 
       iso = Date().toLocaleString("en_us", { timezone: "Asia/Kolkata" });
       isoTime = new Date(iso).toISOString();
@@ -687,7 +791,7 @@
     });
     console.log(users_to_mark);
     users_to_mark.forEach(function (u) {
-      var url = "http://localhost:8000/api/mark/";
+      var url = "http://127.0.0.1:8000/api/mark/";
 
       iso = Date().toLocaleString("en_us", { timezone: "Asia/Kolkata" });
       isoTime = new Date(iso).toISOString();
@@ -718,11 +822,177 @@
       });
     });
   });
+  $("#delete-user").on("click", function (e) {
+    users_to_mark = [];
+    content.forEach(function (obj) {
+      var isChecked = $("#checkbox-user-" + String(obj.id))[0].checked;
+
+      if (isChecked) {
+        users_to_mark.push(obj.id);
+      }
+    });
+    console.log(users_to_mark);
+    users_to_mark.forEach(function (u) {
+      var url = "http://127.0.0.1:8000/api/delete_user/";
+
+      iso = Date().toLocaleString("en_us", { timezone: "Asia/Kolkata" });
+      isoTime = new Date(iso).toISOString();
+      var req_data = {
+        label: "4_" + String(u) + "_delete",
+      };
+      console.log(req_data);
+      var data = JSON.stringify(req_data);
+      console.log(data);
+
+      $.ajax({
+        url: url,
+        method: "POST",
+        data: data,
+        success: function (response) {
+          if (response.success) {
+            
+            console.log("Successfully deleted");
+            console.log(response.content);
+            $("#user-"+String(u)).addClass("hidden");
+          } else {
+            console.log("Not deleted");
+            alert(response.error);
+          }
+          // window.location.reload();
+        },
+      });
+    });
+    
+    $("#dropdownAction").toggleClass("hidden");
+  });
   // $("#dropdownActionButton").on("click", function(e) {
 
   //     $("#dropdownAction").toggle();
-
+  
   // });
+  let video = document.getElementById("video");
+  let canvas = document.getElementById("canvas");
+  
+  let model, detector;
+  let ctx = canvas.getContext("2d");
+  let img_num = [0, 0, 0];
+
+  const detectFaces = async () => {
+
+    if(img_num <= 3){
+      
+          const estimationConfig = { flipHorizontal: false };
+          const faces = await detector.estimateFaces(video, estimationConfig);
+      
+          console.log(faces);
+      
+          // ctx.drawImage(video, 0, 0, 600, 400);
+          if (faces.length === 1) {
+      
+      
+              ctx.drawImage(
+                  video,
+                  faces[0].box.xMin,
+                  faces[0].box.yMin,
+                  faces[0].box.width,
+                  faces[0].box.height,
+                  0,
+                  0,
+                  151,
+                  151
+              );
+      
+              var data = canvas.toDataURL('image/jpeg');
+              console.log(data);
+             
+      
+              if(img_1 === 0){
+                $("#img1").val(data);
+                img_1 = 1;
+                console.log("image 1 is changed")
+              }
+              else if(img_2 === 0){
+                $("#img2").val(data);
+                img_2 = 1;
+                console.log("image 2 is changed")
+              }
+              else if(img_3 === 0){
+                $("#img3").val(data);
+                img_3 = 1;
+                console.log("image 3 is changed")
+              }
+
+
+              if( img_num === 1){
+                $("#cam_message").html("Capturing .");
+              }
+              else if( img_num === 2){
+                $("#cam_message").html("Capturing . .");
+              }
+              if( img_num === 3){
+                $("#cam_message").html("Capturing . . .");
+              }
+
+              img_num+=1;
+              // sendJSON(data, name);
+      
+          }
+          else if(faces.length === 0){
+            $("#cam_message").html("No Face is detected");
+          }
+          else if(faces.length > 1){
+            $("#cam_message").html("More than one face is detected");
+          }
+    }
+    else{
+      stopCamera();
+      $("#video").hide();
+      $("#cam_message").html("Done. Click to restart capturing");
+      $("#face_recorded").prop("checked", true);
+    }
+};
+
+  const detectorConfig = {
+      runtime: 'mediapipe',
+      solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_detection',
+      // or 'base/node_modules/@mediapipe/face_detection' in npm.
+  };
+
+  video.addEventListener("loadeddata", async () => {
+    console.log("this runs")
+    model = await faceDetection.SupportedModels.MediaPipeFaceDetector;
+    detector = await faceDetection.createDetector(model, detectorConfig);
+
+    setInterval(detectFaces, 950);
+
+});
+
+  const setupCamera = () => {
+    navigator.mediaDevices
+        .getUserMedia({
+            video: { width: 600, height: 400 },
+            audio: false,
+        })
+        .then((stream) => {
+            video.srcObject = stream;
+        });
+        img_num=1;
+  };
+
+  const stopCamera = () => {
+    var stream = video.srcObject;
+    var tracks = stream.getTracks();
+  
+    for (var i = 0; i < tracks.length; i++) {
+      var track = tracks[i];
+      track.stop();
+    }
+  
+    video.srcObject = null;
+    img_num = 1;
+  }
+
+
 
   $(document).ready(function () {
     // Show/hide the dropdown menu when the button is clicked
@@ -743,17 +1013,40 @@
     $("#addNewUser").on("click", function (e) {
       $("#addUserModal").show();
       console.log("clicked");
+      // setupCamera();
     });
 
     $("#closeModal").on("click", function (e) {
       $("#addUserModal").hide();
       const formToReset = document.getElementById("addUserForm");
       formToReset.reset();
+      stopCamera();
     });
+    $("#start_cam").on("click", function (e) {
+      
+      $("#video").show();
+      setupCamera();
+            
+      
+      
+    });
+
+    $("#stop_cam").on("click", function (e) {
+      
+      $("#video").hide();
+      stopCamera();
+            
+      $("#start_cam").show();
+      $("#stop_cam").hide();
+    });
+
   });
 
   if (error != "") {
     alert(error);
   }
+
+
+
 </script>
 {% endblock javascript %}
