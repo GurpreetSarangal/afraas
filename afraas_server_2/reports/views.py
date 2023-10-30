@@ -7,6 +7,7 @@ from .test import test
 import pickle
 import os.path
 import datetime
+import cv2 as cv
 
 
 import json
@@ -23,87 +24,127 @@ import base64
 # Create your views here.
 @csrf_exempt
 def mark(request):
+    res = {
+            "content" : "",
+            "error" : "",
+            "success": False,
+            "name": "",
+
+    }
     if request.method == "POST":
-        res = {
-                "content" : "",
-                "error" : "",
-                "success": False,
 
-        }
-
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            # print("the request is ajax")
-            data = json.loads(request.body.decode('utf-8'))
-            label = data.get('label')
-            st = data.get('status')
-            timestamp = str(data.get('timestamp'))
-            # date_string = timestamp.split(".")[0]
-            print(" original ", timestamp)
-            # Parse the string with a custom format string
-        else:
-            label = request.POST["label"]
-            st = request.POST["status"]
-            
-        # now = datetime.datetime.now()
+        data = json.loads(request.body.decode('utf-8'))
+        face_url = data["image"]
         time = datetime.datetime.now()
-        print(label)
-        label = label.split('_')[1]
-        print(label)
-        
-        
-        
+
+        found, user = whoIs(face_url)
+        print(user)
+        if found:
+
+            u = User.objects.filter(id=user)
+
+            if len(u) == 0:
+                res["error"] = "No user - rejected"
+            else:
+                res["name"] = u[0].name
+
+                check = Attendance.objects.filter(user=u[0], time_stamp__year=time.year, time_stamp__month=time.month, time_stamp__day=time.day, status="absent")
 
 
-        u = User.objects.filter(id=label)
+                if len(check) >= 1:
+                    res["error"] = "already marked absent rejected"
+                else:
+                    
+                    check = Attendance.objects.filter(user=u[0], time_stamp__year=time.year, time_stamp__month=time.month, time_stamp__day=time.day, status="exit")
+                    
+                    if len(check)==1:
+                        res["error"] = "user has already left the office after work"
+                    
+                    else:
+                        check = Attendance.objects.filter(user=u[0], time_stamp__year=time.year, time_stamp__month=time.month, time_stamp__day=time.day, status="enter")
 
-        if len(u) == 0:
-            res["error"] = "No user - rejected"
-            json_data = json.dumps(res)
-            return HttpResponse(json_data, content_type="application/json")
+                        if len(check)==1:  
+                            print(check[0].time_stamp.hour, "  ", time.hour+5)
 
-        check = Attendance.objects.filter(user=u[0], time_stamp__year=time.year, time_stamp__month=time.month, time_stamp__day=time.day, status="absent")
-        if len(check) >= 1:
-            res["error"] = "already marked absent rejected"
-            json_data = json.dumps(res)
-            return HttpResponse(json_data, content_type="application/json")
-
-        if st == "exit":
-            check = Attendance.objects.filter(user=u[0], time_stamp__year=time.year, time_stamp__month=time.month, time_stamp__day=time.day, status="enter")
-            if len(check)==0:
-                res["error"] = "to exit first enter the user"
-                json_data = json.dumps(res)
-                return HttpResponse(json_data, content_type="application/json")
-
-        if st=="absent":
-            check = Attendance.objects.filter(user=u[0], time_stamp__year=time.year, time_stamp__month=time.month, time_stamp__day=time.day, status="exit")
-            if len(check)==1:
-                res["error"] = "user has already left the office after work"
-                json_data = json.dumps(res)
-                return HttpResponse(json_data, content_type="application/json")
-
-            check = Attendance.objects.filter(user=u[0], time_stamp__year=time.year, time_stamp__month=time.month, time_stamp__day=time.day, status="enter")
-            if len(check)==1:
-                res["error"] = "user already in the office"
-                json_data = json.dumps(res)
-                return HttpResponse(json_data, content_type="application/json")
+                            if (time.hour >= u[0].shift.time_out.hour-1):
 
 
-        check = Attendance.objects.filter(user=u[0], time_stamp__year=time.year, time_stamp__month=time.month, time_stamp__day=time.day, status=st)
-        if len(check) == 1:
-            res["error"] = "same status already marked rejected"
-            json_data = json.dumps(res)
-            return HttpResponse(json_data, content_type="application/json")
-        
-        
+                                res["status"] = "exit"
+                                att = Attendance(status="exit", user=u[0], time_stamp = time)  
+                                att.save()
+                                res["content"] = "accepted"+str(time)
+                                res["success"] = True
+                            
+                            else:
+                                res["error"] = "It is not the time to leave"
 
-        att = Attendance(status=st, user=u[0], time_stamp = time)  
-        att.save()
-        res["content"] = "accepted"+str(time)
-        res["success"] = True
-        json_data = json.dumps(res)
-        return HttpResponse(json_data, content_type="application/json")
+                
+                        else:
+                            res["status"] = "enter"
+                            att = Attendance(status="enter", user=u[0], time_stamp = time)  
+                            att.save()
+            
+                            res["content"] = "accepted"+str(time)
+                            res["success"] = True
+        else:
+            res["error"] = "No face was found"
+
     else:
-        return HttpResponse("not a post request")
+        res["error"] = "Not a Post Request"
+    
+    json_data = json.dumps(res)
+    return HttpResponse(json_data, content_type="application/json")
+
+
+
+@csrf_exempt
+def mark_present(request):
+    res = {
+        "content" : "",
+        "error" : "",
+            "success": False,
+            "name": "",
+    }
+
+    data = json.loads(request.body.decode('utf-8'))
+    time = datetime.datetime.now()
+    # print(data)
+    try:
+        u = User.objects.get(id=data["label"])
+        a = Attendance(status="enter", user=u, time_stamp=time)
+        a.save()
+        print("done")
+
+    except:
+        res["error"] = "User id does not exist"
+
+    json_data = json.dumps(res)
+    return HttpResponse(json_data, content_type="application/json")
+
+@csrf_exempt
+def mark_left(request):
+    res = {
+        "content" : "",
+        "error" : "",
+            "success": False,
+            "name": "",
+    }
+
+    data = json.loads(request.body.decode('utf-8'))
+    time = datetime.datetime.now()
+    # print(data)
+    try:
+        u = User.objects.get(id=data["label"])
+        a = Attendance(status="exit", user=u, time_stamp=time)
+        a.save()
+        print("done")
+
+    except:
+        res["error"] = "User id does not exist"
+
+    json_data = json.dumps(res)
+    return HttpResponse(json_data, content_type="application/json")
+
 
 @csrf_exempt
 def check_registered(request):
@@ -354,28 +395,31 @@ def delete_user(request):
             print(data["label"])
 
             uid = int(data["label"].split("_")[1])
-
-            if uid != request.user.id:
-
-
-                for i in range(1, 4):
-                    file_path = db_path + "\\" + str(uid) + "_" + str(i) + ".pickle"
-                    print(file_path)
-                    if os.path.exists(file_path):
-                        os.remove(file_path)
-                    else:
-                        print("File not found. "+file_path)
-                        res["error"] = "There is some internal db error"
-                        break
-
-                
-                if res["error"] == '':
-                    temp_user = User.objects.get(id=uid);
-                    # print(temp_user)
-                    temp_user.delete()
-                    res["success"] = True
+            
+            if uid == 1:
+                res["error"] = "Root User cannot be deleted"
             else:
-                res["error"] = "Current user cannot be deleted."
+                if uid != request.user.id:
+
+
+                    for i in range(1, 4):
+                        file_path = db_path + "\\" + str(uid) + "_" + str(i) + ".pickle"
+                        print(file_path)
+                        if os.path.exists(file_path):
+                            os.remove(file_path)
+                        else:
+                            print("File not found. "+file_path)
+                            res["error"] = "There is some internal db error"
+                            break
+
+                    
+                    if res["error"] == '':
+                        temp_user = User.objects.get(id=uid);
+                        # print(temp_user)
+                        temp_user.delete()
+                        res["success"] = True
+                else:
+                    res["error"] = "Current user cannot be deleted."
            
     else:
         res["error"]="Either this is not a POST request Or You are not a authorized user"
@@ -535,6 +579,38 @@ def save_face(data):
     pickle.dump(embeddings3, file)
 
     return True, ""
+
+def whoIs(face_url):
+    temp_path = r"C:\Users\gurpr\Documents\_StudyMaterial\code\afraas\afraas_server_2\reports\face_data\tempimg.jpeg"
+    db_path = r"C:\Users\gurpr\Documents\_StudyMaterial\code\afraas\afraas_server_2\reports\static\reports\faceData"
+    temp_img = url_to_image(face_url.split("'")[1])
+    cv.imwrite(temp_path, temp_img)
+
+    embeddings_unknown = face_recognition.face_encodings(temp_img)
+    
+    if len(embeddings_unknown) == 0:
+        return False, 'no_persons_found'
+    else:
+        embeddings_unknown = embeddings_unknown[0]
+
+    db_dir = sorted(os.listdir(db_path))
+    match = False
+    j = 0
+
+    while not match and j < len(db_dir):
+        path_ = os.path.join(db_path, db_dir[j])
+        # print(path_)
+        file = open(path_, 'rb')
+        embeddings = pickle.load(file)
+
+        match = face_recognition.compare_faces([embeddings], embeddings_unknown)[0]
+        j += 1
+
+    if match:
+        return True, db_dir[j - 1][:-9]
+    else:
+        return False, 'unknown_person'
+    
 
 def spoof_check(data):
     temp_img1 = url_to_image(data["img1"].split(",")[1])

@@ -2,35 +2,23 @@
 {% load static %}
 
 {% block css %}
-<link rel="stylesheet" href=" {% static 'staff\css\dashboard.css' %} ">
 
 <style>
    @keyframes animtoday {
       100% {
-
-         stroke-dashoffset: {
-               {
-               attendance_today_meter
-            }
-         }
-
-         ;
+         
+         stroke-dashoffset: {{attendance_today_meter}};
       }
    }
-
+   
    @keyframes animyest {
       100% {
-
-         stroke-dashoffset: {
-               {
-               attendance_yest_meter
-            }
-         }
-
-         ;
+         
+         stroke-dashoffset: {{attendance_yest_meter}};
       }
    }
 </style>
+<link rel="stylesheet" href=" {% static 'staff\css\dashboard.css' %} ">
 {% endblock css %}
 
 {% block container %}
@@ -315,13 +303,13 @@
                Made with
                <i class="mx-2 fi fi-rs-heart text-red-500 "></i>
                by
-               <a href="https://github.com/kaur-mannu" class="mx-2 group-hover:text-gray-300  group-hover:underline  ">
+               {% comment %} <a href="https://github.com/kaur-mannu" class="mx-2 group-hover:text-gray-300  group-hover:underline  ">
                   Sandeep Kaur
                </a>
-               &
+               & {% endcomment %}
                <a href="https://github.com/GurpreetSarangal"
                   class="mx-2 group-hover:text-gray-300 group-hover:underline ">
-                  Gurpreet Sarangal
+                  Code Dragons
                </a>
             </div>
 

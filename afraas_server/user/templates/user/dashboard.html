@@ -1,4 +1,7 @@
-{% extends 'user/base.html' %} {% load static %} {% block container %} 
+{% extends 'user/base.html' %} 
+{% load static %}
+
+{% block container %} 
 {%include "user/sidebar.html" %}
 
 <div class="p-4 sm:ml-64 sm:mr-72">
@@ -133,7 +136,7 @@
         Made with
         <i class="mx-2 fi fi-rs-heart text-red-500"></i>
         by
-        <a
+        {% comment %} <a
           href="https://github.com/kaur-mannu"
           class="mx-2 group-hover:text-gray-300 group-hover:underline"
         >
@@ -145,7 +148,11 @@
           class="mx-2 group-hover:text-gray-300 group-hover:underline"
         >
           Gurpreet Sarangal
-        </a>
+        </a> {% endcomment %}
+
+        <span class="mx-2 group-hover:text-gray-300 group-hover:underline"> 
+          Code Dragons
+        </span>
       </div>
     </div>
   </div>

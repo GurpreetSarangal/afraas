@@ -1,0 +1,80 @@
+{% extends 'user/base.html' %} 
+
+{% load static %} 
+{% block container %} 
+{%include "user/sidebar.html" %}
+
+<div class="p-4 sm:ml-64 ">
+    <div
+      class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+      <div
+        class="flex justify-start flex-col h-40 mb-4 rounded bg-gray-50 dark:bg-gray-800 flex-wrap"
+      >
+        <div class="text-4xl text-gray-100 my-3 mx-2">Leave Form</div>
+        <div class="text-base text-gray-400 dark:text-gray-500 mx-2">
+          Apply for multiple day leave. <br />
+        </div>
+      </div>
+      
+  
+      <div
+        class="flex items-center justify-center mb-4 rounded bg-gray-50 dark:bg-gray-800 flex-wrap pb-2">
+        
+        
+  
+        
+      </div>
+  
+      <div
+        class="flex items-center justify-around flex-col rounded bg-gray-50 h-40 dark:bg-gray-800">
+        <div class="flex flex-row flex-nowrap w-full justify-evenly">
+          <div class="w-auto">
+            <a
+              href="{% url 'developer-support' %}"
+              class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-gray-300 mr-4"
+            >
+              Developer Support
+            </a>
+          </div>
+          <div class="w-auto">
+            <a
+              href="{% url 'about-us' %}"
+              class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-gray-300 mr-4"
+            >
+              About Us
+            </a>
+          </div>
+          <div class="w-auto">
+            <a
+              href="{% url 'report-issue' %}"
+              class="block mt-4 lg:inline-block lg:mt-0 text-gray-500 hover:text-gray-300 mr-4"
+            >
+              Report Issue
+            </a>
+          </div>
+        </div>
+  
+        <div
+          class="flex justify-center align-center text-md sm:text-x text-gray-400 group"
+        >
+          Made with
+          <i class="mx-2 fi fi-rs-heart text-red-500"></i>
+          by
+          {% comment %} <a
+            href="https://github.com/kaur-mannu"
+            class="mx-2 group-hover:text-gray-300 group-hover:underline"
+          >
+            Sandeep Kaur
+          </a>
+          & {% endcomment %}
+          <a
+            href="https://github.com/GurpreetSarangal"
+            class="mx-2 group-hover:text-gray-300 group-hover:underline"
+          >
+            Code Dragons
+          </a>
+        </div>
+      </div>
+    </div>
+
+{% endblock container %}

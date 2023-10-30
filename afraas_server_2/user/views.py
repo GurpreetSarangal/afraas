@@ -175,7 +175,11 @@ def monthly_on_daily_basis(user_id):
 
 @login_required
 def apply_leave(request):
-    return HttpResponse("apply leave here")
+    context = {
+        "title" : "AFRAAS | Apply Leave",
+        "page" : "apply_leave",
+    }
+    return render(request, "user/apply_leave.html", context)
 
 @login_required
 def profile(request):

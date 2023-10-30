@@ -64,58 +64,43 @@
               
             >
               <li>
-                <p
-                  
-                  id="mark-present"
-                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white group flex justify-between items-center"
-                >
+                <p id="mark-present"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white group flex justify-between items-center">
                   Mark Present
 
                   <div
-                    class="h-2.5 w-2.5 hidden group-hover:block rounded-full bg-green-500 mr-2"
-                  ></div>
-              </p>
+                    class="h-2.5 w-2.5 hidden group-hover:block rounded-full bg-green-500 mr-2"></div>
+                </p>
               </li>
               <li>
-                <p
-                  
-                  id="left-premesis"
-                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white group flex justify-between items-center"
-                >
+                <p id="left-premesis"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white group flex justify-between items-center" >
                   Left Premesis
 
                   <div
-                    class="h-2.5 hidden group-hover:block w-2.5 rounded-full bg-yellow-500 mr-2"
-                  ></div>
+                    class="h-2.5 hidden group-hover:block w-2.5 rounded-full bg-yellow-500 mr-2"></div>
               </p>
               </li>
               <li>
-                <p
-                  
-                  id="mark-absent"
-                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white group flex justify-between items-center"
-                >
+                <p id="mark-absent"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white group flex justify-between items-center">
                   Mark On Leave
 
-                  <div
-                    class="h-2.5 hidden group-hover:block w-2.5 rounded-full bg-red-500 mr-2"
-                  ></div>
+                  <div class="h-2.5 hidden group-hover:block w-2.5 rounded-full bg-red-500 mr-2" ></div>
               </p>
               </li>
+              {% if user.is_superuser %}
               <li>
-                <p
-                  
-                  id="delete-user"
-                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white group flex justify-between items-center"
-                >
+                <p  id="delete-user"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white group flex justify-between items-center" >
                   Delete User(s)
 
-                  <!-- <div
-                    class="h-2.5 hidden group-hover:block w-2.5 rounded-full bg-red-500 mr-2"
-                  ></div> -->
+                  
                   <i class="fi ml-1 fi-rs-delete-user text-red-500 text-xl"></i>
                   </p>
               </li>
+              
+              {% endif %}
             </ul>
           </div>
         </div>
@@ -701,20 +686,12 @@
     });
     console.log(users_to_mark);
     users_to_mark.forEach(function (u) {
-      var url = "http://127.0.0.1:8000/api/mark/";
-      // const now = new Date();
-      // const options = { timeZone: 'UTC' };
-      // const istTime = now.toLocaleString('en-US', options);
-      // const isoTime = new Date(istTime).toISOString();
-      // console.log(isoTime)
-
-      iso = Date().toLocaleString("en_us", { timezone: "Asia/Kolkata" });
-      isoTime = new Date(iso).toISOString();
+      var url = "http://127.0.0.1:8000/api/mark_present/";
+      
       var req_data = {
-        label: "3_" + String(u) + "_manual",
-        status: "enter",
-        timestamp: isoTime,
+        label: u,
       };
+
       console.log(req_data);
       var data = JSON.stringify(req_data);
       console.log(data);
@@ -748,14 +725,13 @@
     });
     console.log(users_to_mark);
     users_to_mark.forEach(function (u) {
-      var url = "http://127.0.0.1:8000/api/mark/";
+      var url = "http://127.0.0.1:8000/api/mark_absent/";
 
       iso = Date().toLocaleString("en_us", { timezone: "Asia/Kolkata" });
       isoTime = new Date(iso).toISOString();
       var req_data = {
-        label: "3_" + String(u) + "_manual",
-        status: "absent",
-        timestamp: isoTime,
+        id: u,
+        
       };
       console.log(req_data);
       var data = JSON.stringify(req_data);
@@ -791,14 +767,12 @@
     });
     console.log(users_to_mark);
     users_to_mark.forEach(function (u) {
-      var url = "http://127.0.0.1:8000/api/mark/";
+      var url = "http://127.0.0.1:8000/api/mark_left/";
 
-      iso = Date().toLocaleString("en_us", { timezone: "Asia/Kolkata" });
-      isoTime = new Date(iso).toISOString();
+      
       var req_data = {
-        label: "3_" + String(u) + "_manual",
-        status: "exit",
-        timestamp: isoTime,
+        label: u,
+        
       };
       console.log(req_data);
       var data = JSON.stringify(req_data);
@@ -1020,6 +994,7 @@
       $("#addUserModal").hide();
       const formToReset = document.getElementById("addUserForm");
       formToReset.reset();
+      $("#cam_message").html("Click to Start Capturing");
       stopCamera();
     });
     $("#start_cam").on("click", function (e) {
