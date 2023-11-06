@@ -18,3 +18,7 @@ afraas_client_2.boot()
 
 # obj=Camera(1)
 # obj.test_Cam()
+
+
+# python manage.py runserver 0.0.0.0:8000
+# always run using this command

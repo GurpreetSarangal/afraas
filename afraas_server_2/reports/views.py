@@ -8,6 +8,7 @@ import pickle
 import os.path
 import datetime
 import cv2 as cv
+from urllib.parse import unquote
 
 
 import json
@@ -580,10 +581,15 @@ def save_face(data):
 
     return True, ""
 
-def whoIs(face_url):
+def whoIs(face_url, isRemote=False):
     temp_path = r"C:\Users\gurpr\Documents\_StudyMaterial\code\afraas\afraas_server_2\reports\face_data\tempimg.jpeg"
     db_path = r"C:\Users\gurpr\Documents\_StudyMaterial\code\afraas\afraas_server_2\reports\static\reports\faceData"
-    temp_img = url_to_image(face_url.split("'")[1])
+
+    if isRemote:
+        temp_img = url_to_image(face_url)
+    else:
+
+        temp_img = url_to_image(face_url.split("'")[1])
     cv.imwrite(temp_path, temp_img)
 
     embeddings_unknown = face_recognition.face_encodings(temp_img)
@@ -666,7 +672,8 @@ def spoof_check(data):
 
 @csrf_exempt
 def mark_absent(request):
-    id = int(request.POST["id"])
+    data = json.loads(request.body)
+    id = int(data["id"])
 
     print(type(id))
     print(type(request.user.id))
@@ -676,12 +683,18 @@ def mark_absent(request):
         "success": False,
     }
     if request.method == "POST":
-        if request.user.id == id:
+        # if request.user.id == id:
             try:
                 now = datetime.datetime.now()
+                print(str(now.date()))
                 u = User.objects.get(id=id)
-                ch = Attendance.objects.filter(user=u,
-                time_stamp__date=now.date() ).order_by("-id")
+                ch = Attendance.objects.filter(
+                        user=u,
+                        time_stamp__date=str(now.date()),
+                        # time_stamp__day=now.day,
+                        # time_stamp__month=now.month,
+                        # time_stamp__year=now.year 
+                    ).order_by("-id")
                 if len(ch)>0:
                     if ch[0].status == "exit":
                         res["error"]="You have already left the premesis"
@@ -693,18 +706,20 @@ def mark_absent(request):
 
                     att = Attendance(
                         user=u,
-                        time_stamp = datetime.datetime.now.time(),
+                        time_stamp = now,
                         status="absent",
                     )
                     att.save()
                     res["success"] = True
             except:
                 res["error"] = "Not Marked due to internal error"
-        else:
-            res["error"] = "ID Sent and user logged in don't match"
+        # else:
+        #     res["error"] = "ID Sent and user logged in don't match"
     else:
         
         res["error"] = "Not a POST Request"
+
+    print(res)
     json_data = res
     json_data = json.dumps(json_data)
     return HttpResponse(json_data, content_type="application/json")
@@ -1143,6 +1158,99 @@ def checkImageInput(request):
     json_data = res
     json_data = json.dumps(json_data)
     return HttpResponse(json_data, content_type="application/json")
+
+@csrf_exempt
+def remote_image(request):
+    res = {
+            "content" : "",
+            "error" : "",
+            "success": False,
+            "name": "",
+
+    }
+    if request.method == "POST":
+
+        # print(request.body.decode('utf-8'))
+        data = request.body.decode('utf-8')
+        time = datetime.datetime.now()
+        # print(data)
+
+        imgb64 = unquote(data.split(",")[1])
+
+        isFound, label = whoIs(imgb64, isRemote=True)
+
+        print(isFound)
+        print(label)
+
+        # print(imgb64)
+
+        img = url_to_image(imgb64)
+
+        cv.imwrite(r"C:\Users\gurpr\Documents\_StudyMaterial\code\afraas\afraas_server_2\reports\face_data\tempimg.jpg", img)
+        # statement gives the string sent
+
+        if isFound:
+
+            u = User.objects.filter(id=label)
+
+            if len(u) == 0:
+                res["error"] = "No user - rejected"
+            else:
+                res["name"] = u[0].name
+
+                check = Attendance.objects.filter(user=u[0], time_stamp__year=time.year, time_stamp__month=time.month, time_stamp__day=time.day, status="absent")
+
+
+                if len(check) >= 1:
+                    res["error"] = "already marked absent rejected"
+                else:
+                    
+                    check = Attendance.objects.filter(user=u[0], time_stamp__year=time.year, time_stamp__month=time.month, time_stamp__day=time.day, status="exit")
+                    
+                    if len(check)==1:
+                        res["error"] = "user has already left the office after work"
+                    
+                    else:
+                        check = Attendance.objects.filter(user=u[0], time_stamp__year=time.year, time_stamp__month=time.month, time_stamp__day=time.day, status="enter")
+
+                        if len(check)==1:  
+                            print(check[0].time_stamp.hour, "  ", time.hour+5)
+
+                            if (time.hour >= u[0].shift.time_out.hour-1):
+
+
+                                res["status"] = "exit"
+                                att = Attendance(status="exit", user=u[0], time_stamp = time)  
+                                # att.save()
+                                res["content"] = "accepted"+str(time)
+                                res["success"] = True
+                            
+                            else:
+                                res["error"] = "It is not the time to leave"
+
+                
+                        else:
+                            res["status"] = "enter"
+                            att = Attendance(status="enter", user=u[0], time_stamp = time)  
+                            # att.save()
+            
+                            res["content"] = "accepted"+str(time)
+                            res["success"] = True
+        else:
+            res["error"] = "No face was found"
+
+        # if isFound:
+        #     return HttpResponse("The Person Marked")
+        # else:
+        #     return HttpResponse("Not Recongnized")
+    else:
+        res["error"] = "Not a Post Request"
+
+    json_data = json.dumps(res)
+    return HttpResponse(json_data, content_type="application/json")
+    
+
+
 
 def url_to_image(data):
 	# download the image, convert it to a NumPy array, and then read
