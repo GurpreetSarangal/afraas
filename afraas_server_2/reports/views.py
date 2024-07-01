@@ -14,7 +14,7 @@ from urllib.parse import unquote
 import json
 import datetime
 import face_recognition
-
+from django.contrib.auth.hashers import make_password
 import pytz
 import calendar
 import numpy as np
@@ -436,9 +436,11 @@ def add_user(request):
             "error" : '',
             "success": False,
     }
-    # print("This runs")
+    print("This runs")
+    print(request.method)
+    print(request.headers.get('x-requested-with'))
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        # print("the request is ajax")
+        print("the request is ajax")
         if request.method == "POST" and request.user.is_staff:
             data = json.loads(request.body)
             
@@ -1221,7 +1223,7 @@ def remote_image(request):
 
                                 res["status"] = "exit"
                                 att = Attendance(status="exit", user=u[0], time_stamp = time)  
-                                # att.save()
+                                att.save()
                                 res["content"] = "accepted"+str(time)
                                 res["success"] = True
                             
@@ -1232,7 +1234,7 @@ def remote_image(request):
                         else:
                             res["status"] = "enter"
                             att = Attendance(status="enter", user=u[0], time_stamp = time)  
-                            # att.save()
+                            att.save()
             
                             res["content"] = "accepted"+str(time)
                             res["success"] = True
@@ -1246,11 +1248,131 @@ def remote_image(request):
     else:
         res["error"] = "Not a Post Request"
 
+    print(res)
+    json_data = json.dumps(res)
+    return HttpResponse(json_data, content_type="application/json")
+
+
+@csrf_exempt
+def edit_user(request):
+    res = {
+        "success": False,
+        "error": "",
+    }
+    db_path = r"C:\Users\gurpr\Documents\_StudyMaterial\code\afraas\afraas_server_2\reports\static\reports\faceData"
+    
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        
+        if request.method == "POST" and request.user.is_superuser:
+            data = json.loads(request.body)
+            print(data)
+
+            id = int(data["id"])
+            name = data["name"]
+            email = data["email"]
+            shift = data["shift"]
+            department = data["department"]
+            psw = data["new_password"]
+            type_of_user = data["type_of_user"]
+            confirm_psw = data["confirm_new_password"]
+
+            # img1 = data["img1"]
+            # img2 = data["img2"]
+            # img3 = data["img3"]
+            is_unique_mail = True
+
+            print(name)
+            print(email)
+            print(shift)
+            print(department)
+            print(type_of_user)
+            print(psw)
+            print(confirm_psw)
+            # print(img1)
+            # print(img2)
+            # print(img3)
+
+            if id == 1:
+                res["error"] = "You cannot edit your root user's details. Please contact your developers."
+            
+            else:
+
+                if not psw==confirm_psw:
+                    res["error"]= "Passwords are not same."
+
+                else:
+
+                    all_users = User.objects.all().order_by("id")
+                    for obj in all_users:
+                        print(obj)
+                        print(email+" "+obj.email+" ", end="")
+                        print(email==obj.email and obj.id != id)
+
+                        if email == obj.email and obj.id != id:
+
+                            is_unique_mail = False
+                            break
+                    
+                    if not is_unique_mail:
+                        res["error"] = f"Email [{email}] is already registred"
+
+                    else:
+
+                        if data["img3"] != "":
+                            result_face_check, error, spoof_result = spoof_check(data)
+
+                            if not result_face_check:   
+                                res["error"] = error
+                                res["spoof_result"] = spoof_result
+
+                        else:
+                            
+                            u = None
+                            try:
+                                u = User.objects.get(id=id)
+                                u.name = name
+                                u.email = email
+                                u.department = Department.objects.get(id=int(department))
+                                u.shift = Shift.objects.get(id=int(shift))
+
+                                if type_of_user == "superuser":
+                                    u.is_superuser = True
+                                    u.is_staff = True
+                                elif type_of_user == "staff":
+                                    u.is_superuser = False
+                                    u.is_staff = True
+                                else:
+                                    u.is_superuser = False
+                                    u.is_staff = False
+
+
+
+                                if psw != "" and confirm_psw != "" :
+                                    u.password =  make_password(psw)
+                                
+                                u.save() 
+                                if data["img3"] != "":
+                                        save_face(data)
+                                    
+
+                            except Exception as e:
+                                print(e)
+                                res["error"]= "There is some internal server error. We are working on it. Please try again later."
+                                res["success"] = False
+                            
+                            res["success"] = True
+
+                            
+
+        else:
+            res["error"] = "not a post request"
+    else:
+        res["error"] = "not an ajax request"
+        
+
     json_data = json.dumps(res)
     return HttpResponse(json_data, content_type="application/json")
     
-
-
 
 def url_to_image(data):
 	# download the image, convert it to a NumPy array, and then read

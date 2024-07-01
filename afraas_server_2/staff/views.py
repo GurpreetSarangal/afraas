@@ -300,6 +300,8 @@ def users(request):
             "name": obj.name,
             "email": obj.email,
             "department": obj.department.name,
+            "dep_id": obj.department.id,
+            "shift_id": obj.shift.id,
             "timings": {
                     "in": obj.shift.time_in,
                     "out": obj.shift.time_out,

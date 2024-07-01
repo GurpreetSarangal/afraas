@@ -6,6 +6,9 @@ app_name = 'reports'
 urlpatterns = [
     path("add_user/", views.add_user, name="add_user"),
     path("delete_user/", views.delete_user, name="delete_user"),
+    path("edit_user/", views.edit_user, name="edit_user"),
+
+   
 
     path("reports/", views.report, name="reports"),
     path("recent-entries/", views.recent_entries, name="recent-entries"),

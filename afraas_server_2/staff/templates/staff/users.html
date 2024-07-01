@@ -239,10 +239,10 @@
             {% if user.is_superuser %}
             <td class="px-6 py-4">
               <!-- Modal toggle -->
-              <a
-                href=" {% url 'admin:user_user_change' obj.id %} "
+              <span
+                id="user_edit_button-{{ obj.id }}"
                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                >Edit user</a
+                >Edit user</span
               >
             </td>
             {% endif %}
@@ -500,6 +500,287 @@
                     class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="••••••••"
                     required=""
+                  />
+                </div>
+              </div>
+            </div>
+            <!-- Modal footer -->
+            <div
+              class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600"
+            >
+              <!-- <button type="submit"
+                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Register</button> -->
+              <button
+                type="submit"
+                class="flex items-center p-2 rounded-lg bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% text-gray-900 dark:text-white px-8"
+              >
+                Proceed
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+
+      <div
+        id="editUserModal"
+        tabindex="-1"
+        aria-hidden="true"
+        class="fixed top-0 backdrop-blur-sm left-28 right-28 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-full max-h-full"
+      >
+        <div class="relative w-full mx-auto mt-8 mb-4 max-w-2xl">
+          <!-- Modal content -->
+          <form
+            id="editUserForm"
+            class="relative bg-white rounded-lg shadow dark:bg-gray-700"
+          >
+            {% csrf_token %}
+            <!-- Modal header -->
+            <div
+              class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600"
+            >
+              <h3
+                class="text-xl font-semibold text-gray-900 dark:text-white flex"
+              >
+                <div id="edit_uname"></div>
+                <i class="fi ml-2 fi-rs-user-add text-emerald-200 text-2xl"></i>
+              </h3>
+              <button
+                id="closeEditModal"
+                type="button"
+                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-6 space-y-6">
+              <div class="grid grid-cols-6 gap-4">
+                <div class="col-span-6 sm:col-span-3">
+                  <label
+                    for="EDIT_Uname"
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    name="Uname"
+                    id="EDIT_Uname"
+                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Full Name"
+                    required=""
+                  />
+                  <input
+                    type="text"
+                    name="EDIT_user_id"
+                    id="EDIT_user_id"
+                    class="hidden shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    
+                    required=""
+                  />
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                  <label
+                    for="EDIT_email"
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >Email</label
+                  >
+                  <input
+                    type="email"
+                    name="EDIT_email"
+                    id="EDIT_email"
+                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Email"
+                    required=""
+                  />
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                  <label
+                    for="EDIT_department"
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >Department</label
+                  >
+                  <select
+                    id="EDIT_department"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 mb-6 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    name="department"
+                  >
+                    <option value="" >Choose a Department</option>
+                    {% for obj in all_departments %}
+
+                    <option value="{{ obj.id }}" class="EDIT_department_options_{{ obj.id }}">
+                      #{{ obj.id }} {{ obj.name }}
+                    </option>
+
+                    
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-span-6 sm:col-span-3">
+                  <label
+                    for="EDIT_shift"
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >Shift</label
+                  >
+                  <select
+                    id="EDIT_shift"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 mb-6 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    name="shift"
+                  >
+                    <option value="" selected>Choose a Shift</option>
+
+                    {% for obj in all_shifts %}
+
+                    <option value="{{ obj.id }}">
+                      #{{ obj.id }} {{ obj.name }} [{{ obj.time_in|time:"P"}}-{{ obj.time_out|time:"P" }}]
+                    </option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-span-6 sm:col-span-6">
+                  <div class="flex mb-4 w-full" id="EDIT_start_cam">
+                    <div class="ml-2 text-sm">
+                      <label for="helper-checkbox"  class="font-medium text-gray-900 dark:text-gray-300 flex items-center">
+                        <i class="fi ml-2 mr-2 mt-2 fi-rs-video-camera-alt text-emerald-200 text-2xl"></i>
+                          <span id="EDIT_cam_message">
+                            
+                            Click to Start Capturing
+                          </span>
+                      </label>
+                        <!-- <p id="EDIT_helper-checkbox-text" class="text-xs font-normal text-gray-500 dark:text-gray-400">This will be checked when your face is successfully recorded</p> -->
+                    </div>
+                    <div class="flex items-center">
+                        <input id="EDIT_face_recorded"
+                        name="EDIT_face_recorded" 
+                        aria-describedby="helper-checkbox-text" type="checkbox" value="" class="w-4 h-5 ml-2 mt-1 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" >
+                    </div>
+                  </div>
+                  
+                  <!-- <span id="EDIT_" >Capture Face</span> -->
+                  <!-- <span id="EDIT_stop_cam" class="hidden" >stop Cam</span> -->
+
+                  <video id="EDIT_video" class="hidden" autoplay ></video>
+                  <canvas id="EDIT_canvas" width="151px" height="151px" hidden></canvas>
+                  <input type="text" id="EDIT_img1" name="EDIT_img1" class="hidden">
+                  <input type="text" id="EDIT_img2" name="EDIT_img2" class="hidden">
+                  <input type="text" id="EDIT_img3" name="EDIT_img3" class="hidden">
+                  
+                  
+                </div>
+                <div class="col-span-6 sm:col-span-6">
+                  <h3 class="mb-1 font-semibold text-gray-900 dark:text-white">
+                    Type of User
+                  </h3>
+                  <ul
+                    class="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  >
+                    <li
+                      class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600"
+                    >
+                      <div class="flex items-center pl-3">
+                        <input
+                          id="EDIT_radio_is_superuser"
+                          {% if not user.is_superuser %}
+                          disabled
+                          {% endif %}
+                          type="radio"
+                          value="superuser"
+                          name="EDIT_type_of_user"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                        />
+                        <label
+                          for="EDIT_radio_is_superuser"
+                          class="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                          >Superuser
+                        </label>
+                      </div>
+                    </li>
+                    <li
+                      class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600"
+                    >
+                      <div class="flex items-center pl-3">
+                        <input
+                          id="EDIT_radio_is_staff"
+                          type="radio"
+                          {% if not user.is_superuser %}
+                          disabled
+                          {% endif %}
+                          value="staff"
+                          name="EDIT_type_of_user"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                        />
+                        <label
+                          for="EDIT_radio_is_staff"
+                          class="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                          >Staff</label
+                        >
+                      </div>
+                    </li>
+                    <li
+                      class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600"
+                    >
+                      <div class="flex items-center pl-3">
+                        <input
+                          id="EDIT_radio_is_gen_user"
+                          type="radio"
+                          value="gen_user"
+                          name="EDIT_type_of_user"
+                          
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                        />
+                        <label
+                          for="EDIT_radio_is_gen_user"
+                          class="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                          >General User</label
+                        >
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                  <label
+                    for="EDIT_new_password"
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >New Password</label
+                  >
+                  <input
+                    type="password"
+                    name="EDIT_new_password"
+                    id="EDIT_new_password"
+                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="••••••••"
+                    
+                  />
+                </div>
+                <div class="col-span-6 sm:col-span-3">
+                  <label
+                    for="EDIT_confirm_new_password"
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >Confirm New Password</label
+                  >
+                  <input
+                    type="password"
+                    name="EDIT_confirm_new_password"
+                    id="EDIT_confirm_new_password"
+                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="••••••••"
+                    
                   />
                 </div>
               </div>
@@ -839,14 +1120,11 @@
     
     $("#dropdownAction").toggleClass("hidden");
   });
-  // $("#dropdownActionButton").on("click", function(e) {
+ 
 
-  //     $("#dropdownAction").toggle();
-  
-  // });
+  // -----------------------------
   let video = document.getElementById("video");
-  let canvas = document.getElementById("canvas");
-  
+  let canvas = document.getElementById("canvas");  
   let model, detector;
   let ctx = canvas.getContext("2d");
   let img_num = [0, 0, 0];
@@ -926,7 +1204,7 @@
     }
 };
 
-  const detectorConfig = {
+const detectorConfig = {
       runtime: 'mediapipe',
       solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_detection',
       // or 'base/node_modules/@mediapipe/face_detection' in npm.
@@ -936,25 +1214,257 @@
     console.log("this runs")
     model = await faceDetection.SupportedModels.MediaPipeFaceDetector;
     detector = await faceDetection.createDetector(model, detectorConfig);
-
+    
     setInterval(detectFaces, 950);
+
+  });
+  const setupCamera = () => {
+    navigator.mediaDevices
+    .getUserMedia({
+      video: { width: 600, height: 400 },
+      audio: false,
+    })
+    .then((stream) => {
+      video.srcObject = stream;
+    });
+    img_num=1;
+  };
+  const stopCamera = () => {
+    var stream = video.srcObject;
+    var tracks = stream.getTracks();
+    
+    for (var i = 0; i < tracks.length; i++) {
+      var track = tracks[i];
+      track.stop();
+    }
+    
+    video.srcObject = null;
+    img_num = 1;
+  }
+
+  // -------------------------------- EDIT
+
+  $("#editUserForm").validate({
+    rules: {
+      // simple rule, converted to {required:true}
+      EDIT_user_id: {
+        required: true,
+      },
+      EDIT_Uname: {
+        required: true,
+        minlength: 3,
+      },
+      // compound rule
+      EDIT_email: {
+        required: true,
+        email: true,
+      },
+      EDIT_department: {
+        required: true,
+      },
+      EDIT_shift: {
+        required: true,
+      },
+      EDIT_new_password: {
+        required: false,
+        minlength: 8,
+        maxlength: 12,
+      },
+      // img1: {
+      //   required: true,
+      //   minlength: 8,
+      // },
+      // img2: {
+      //   required: true,
+      //   minlength: 8,
+      // },
+      // img3: {
+      //   required: true,
+      //   minlength: 8,
+      // },
+      EDIT_face_recorded: {
+        required: false,
+      },
+      EDIT_confirm_new_password: {
+        required: false,
+        minlength: 8,
+        maxlength: 12,
+        le: "#EDIT_new_password",
+      },
+    },
+    messages: {
+      EDIT_Uname: {
+        required: "Please provide your name",
+        minlength: jQuery.validator.format("At least {3} characters required!"),
+      },
+      EDIT_email: {
+        required: "We need your email address to contact you",
+        // minlength: jQuery.validator.format("At least {0} characters required!")
+      },
+      // img1: {
+      //   required: "We need your picture to recognize you",
+      //   // minlength: jQuery.validator.format("At least {0} characters required!")
+      // },
+      // img2: {
+      //   required: "We need your picture to recognize you",
+      //   // minlength: jQuery.validator.format("At least {0} characters required!")
+      // },
+      // img3: {
+      //   required: "We need your picture to recognize you",
+      //   // minlength: jQuery.validator.format("At least {0} characters required!")
+      // },
+      EDIT_face_recorded: {
+        required: "We need your picture to recognize you",
+        // minlength: jQuery.validator.format("At least {0} characters required!")
+      },
+    },
+    submitHandler: function () {
+      url = "http://127.0.0.1:8000/api/edit_user/";
+      // console.log("submitted");
+      data = {
+        id: EDIT_user_id.value,
+        name: EDIT_Uname.value,
+        email: EDIT_email.value,
+        department: EDIT_department.value,
+        shift: EDIT_shift.value,
+        new_password: EDIT_new_password.value,
+        img1: EDIT_img1.value,
+        img2: EDIT_img2.value,
+        img3: EDIT_img3.value,
+        confirm_new_password: EDIT_confirm_new_password.value,
+        type_of_user: $('input[name="EDIT_type_of_user"]:checked').val(),
+      };
+      console.log(data);
+      data = JSON.stringify(data);
+      $.ajax({
+        url: url,
+        method: "POST",
+        type: "POST",
+        data: data,
+        contentType: "application/json",
+        success: function (response) {
+          if (response.success) {
+            $("#editUserModal").hide();
+            const formToReset = document.getElementById("editUserForm");
+            formToReset.reset();
+            window.location.reload();
+          } else {
+            alert(response.error);
+            set_spoof_check(response.spoof_result);// defined above
+            console.log(response.spoof_result);
+
+          }
+        },
+      });
+      console.log("sent");
+      console.log("abcdefgh");
+    },
+  });
+
+  let EDIT_video = document.getElementById("EDIT_video");
+  let EDIT_canvas = document.getElementById("EDIT_canvas");
+  let EDIT_img_num = 1;
+
+
+  const EDIT_detectFaces = async () => {
+  
+    if(EDIT_img_num <= 3){
+      
+          const estimationConfig = { flipHorizontal: false };
+          const faces = await detector.estimateFaces(EDIT_video, estimationConfig);
+      
+          console.log(faces);
+      
+          // ctx.drawImage(video, 0, 0, 600, 400);
+          if (faces.length === 1) {
+      
+      
+              ctx.drawImage(
+                  video,
+                  faces[0].box.xMin,
+                  faces[0].box.yMin,
+                  faces[0].box.width,
+                  faces[0].box.height,
+                  0,
+                  0,
+                  151,
+                  151
+              );
+      
+              var data = EDIT_canvas.toDataURL('image/jpeg');
+              console.log(data);
+             
+      
+              if(img_1 === 0){
+                $("#EDIT_img1").val(data);
+                img_1 = 1;
+                console.log("image 1 is changed")
+              }
+              else if(img_2 === 0){
+                $("#EDIT_img2").val(data);
+                img_2 = 1;
+                console.log("image 2 is changed")
+              }
+              else if(img_3 === 0){
+                $("#EDIT_img3").val(data);
+                img_3 = 1;
+                console.log("image 3 is changed")
+              }
+  
+  
+              if( EDIT_img_num === 1){
+                $("#EDIT_cam_message").html("Capturing .");
+              }
+              else if( EDIT_img_num === 2){
+                $("#EDIT_cam_message").html("Capturing . .");
+              }
+              if( EDIT_img_num === 3){
+                $("#EDIT_cam_message").html("Capturing . . .");
+              }
+  
+              EDIT_img_num+=1;
+              // sendJSON(data, name);
+      
+          }
+          else if(faces.length === 0){
+            $("#EDIT_cam_message").html("No Face is detected");
+          }
+          else if(faces.length > 1){
+            $("#EDIT_cam_message").html("More than one face is detected");
+          }
+    }
+    else{
+      EDIT_stopCamera();
+      $("#EDIT_video").hide();
+      $("#EDIT_cam_message").html("Done. Click to restart capturing");
+      $("#EDIT_face_recorded").prop("checked", true);
+    }
+  };
+  
+  EDIT_video.addEventListener("loadeddata", async () => {
+    console.log("this runs")
+    model = await faceDetection.SupportedModels.MediaPipeFaceDetector;
+    detector = await faceDetection.createDetector(model, detectorConfig);
+
+    setInterval(EDIT_detectFaces, 950);
 
 });
 
-  const setupCamera = () => {
+
+  const EDIT_setupCamera = () => {
     navigator.mediaDevices
         .getUserMedia({
             video: { width: 600, height: 400 },
             audio: false,
         })
         .then((stream) => {
-            video.srcObject = stream;
+          EDIT_video.srcObject = stream;
         });
-        img_num=1;
+        EDIT_img_num=1;
   };
 
-  const stopCamera = () => {
-    var stream = video.srcObject;
+  const EDIT_stopCamera = () => {
+    var stream = EDIT_video.srcObject;
     var tracks = stream.getTracks();
   
     for (var i = 0; i < tracks.length; i++) {
@@ -962,16 +1472,71 @@
       track.stop();
     }
   
-    video.srcObject = null;
-    img_num = 1;
+    EDIT_video.srcObject = null;
+    EDIT_img_num = 1;
+  }
+
+  function reveal_edit_form(obj){
+      $("#edit_uname").html("#" + String(obj.id)+ " " +obj.name);
+      $("#EDIT_Uname").val(obj.name);
+      $("#EDIT_email").val(obj.email);
+      $("#EDIT_user_id").val(obj.id);
+
+      // console.log($("#EDIT_department option:not(:selected)").val())
+
+      // $("#EDIT_department option:not(selected)").each(() => {
+      //     console.log($(this).val());
+      // });
+
+      var unselectedDepartment = $("#EDIT_department option:not(:selected)").map(function() {
+        if(this.value == obj.dep_id){
+          $("#EDIT_department").val(this.value);
+        }
+        return this.value;
+      }).get();
+
+      console.log(unselectedDepartment)
+
+      var unselectedShift = $("#EDIT_shift option:not(:selected)").map(function() {
+        if(this.value == obj.shift_id){
+          $("#EDIT_shift").val(this.value);
+        }
+        return this.value;
+      }).get();
+
+      if(obj.is_superuser){
+        $("#EDIT_radio_is_superuser").prop("checked", true);
+      }
+      else if(obj.is_staff){
+        $("#EDIT_radio_is_staff").prop("checked", true);
+
+      }
+      else {
+        $("#EDIT_radio_is_gen_user").prop("checked", true);
+
+      }
+
+      console.log(unselectedDepartment)
+
+      $("#editUserModal").show();
   }
 
 
 
   $(document).ready(function () {
+
+    content.forEach((obj) => {
+      console.log("#user_edit_button-"+String(obj.id));
+      $("#user_edit_button-"+String(obj.id)).on("click", () => {
+          console.log(obj.id);
+          reveal_edit_form(obj);
+      });
+    });
+
     // Show/hide the dropdown menu when the button is clicked
     $("#dropdownActionButton").on("click", function () {
       $("#dropdownAction").toggleClass("hidden");
+
     });
 
     // Hide the dropdown menu when the user clicks outside of the button and dropdown
@@ -997,6 +1562,16 @@
       $("#cam_message").html("Click to Start Capturing");
       stopCamera();
     });
+
+    $("#closeEditModal").on("click", function (e) {
+      $("#editUserModal").hide();
+      const formToReset = document.getElementById("editUserForm");
+      formToReset.reset();
+      $("#EDIT_cam_message").html("Click to Start Capturing");
+      stopCamera();
+    });
+
+
     $("#start_cam").on("click", function (e) {
       
       $("#video").show();
@@ -1013,6 +1588,23 @@
             
       $("#start_cam").show();
       $("#stop_cam").hide();
+    });
+
+
+    $("#EDIT_start_cam").on("click", function (e) {
+      
+      $("#EDIT_video").show();
+      EDIT_setupCamera();
+      
+    });
+
+    $("#EDIT_stop_cam").on("click", function (e) {
+      
+      $("#EDIT_video").hide();
+      EDIT_stopCamera();
+            
+      $("#EDIT_start_cam").show();
+      $("#EDIT_stop_cam").hide();
     });
 
   });
